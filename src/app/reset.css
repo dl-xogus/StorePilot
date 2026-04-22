@@ -2,6 +2,7 @@ body {
     margin: 0;
     background-color: #17181B;
     color: #e8e8e8;
+    font-family: 'PyeojinGothic';
 }
 * { box-sizing: border-box; }
 img { vertical-align: middle; }

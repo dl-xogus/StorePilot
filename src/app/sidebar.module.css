@@ -1,5 +1,13 @@
 .sidebar {
     width: 360px;
-    height: 100vh;
+    height: 100%;
+    
+}
+
+.inner {
+    width: 360px;
+    height: 100%;
+    z-index: 999999;
+    position: fixed;
     background-color: #1E2126;
 }

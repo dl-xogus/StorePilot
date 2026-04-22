@@ -1,0 +1,255 @@
+[
+  {
+    "ownerId": "qwe@email.com",
+    "storeId": "001",
+    "employees": [
+      {
+        "name": "김태식",
+        "age": "38",
+        "phone": "010-2345-6789",
+        "part": "주방장",
+        "hourlyWage": "15000",
+        "schedules": [
+          {
+            "day": "월",
+            "startTime": "15:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "화",
+            "startTime": "15:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "수",
+            "startTime": "15:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "목",
+            "startTime": "15:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "금",
+            "startTime": "15:00",
+            "endTime": "01:00"
+          }
+        ]
+      },
+      {
+        "name": "이민준",
+        "age": "25",
+        "phone": "010-3456-7890",
+        "part": "주방",
+        "hourlyWage": "12000",
+        "schedules": [
+          {
+            "day": "화",
+            "startTime": "16:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "수",
+            "startTime": "16:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "목",
+            "startTime": "16:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "금",
+            "startTime": "16:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "토",
+            "startTime": "14:00",
+            "endTime": "24:00"
+          }
+        ]
+      },
+      {
+        "name": "박소연",
+        "age": "22",
+        "phone": "010-4567-8901",
+        "part": "홀",
+        "hourlyWage": "11500",
+        "schedules": [
+          {
+            "day": "월",
+            "startTime": "17:00",
+            "endTime": "23:00"
+          },
+          {
+            "day": "수",
+            "startTime": "17:00",
+            "endTime": "23:00"
+          },
+          {
+            "day": "금",
+            "startTime": "17:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "토",
+            "startTime": "15:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "일",
+            "startTime": "15:00",
+            "endTime": "23:00"
+          }
+        ]
+      },
+      {
+        "name": "최지우",
+        "age": "21",
+        "phone": "010-5678-9012",
+        "part": "홀",
+        "hourlyWage": "11000",
+        "schedules": [
+          {
+            "day": "화",
+            "startTime": "17:00",
+            "endTime": "23:00"
+          },
+          {
+            "day": "목",
+            "startTime": "17:00",
+            "endTime": "23:00"
+          },
+          {
+            "day": "토",
+            "startTime": "15:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "일",
+            "startTime": "15:00",
+            "endTime": "23:00"
+          }
+        ]
+      },
+      {
+        "name": "정현우",
+        "age": "26",
+        "phone": "010-6789-0123",
+        "part": "홀",
+        "hourlyWage": "11000",
+        "schedules": [
+          {
+            "day": "월",
+            "startTime": "18:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "화",
+            "startTime": "18:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "수",
+            "startTime": "18:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "목",
+            "startTime": "18:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "금",
+            "startTime": "18:00",
+            "endTime": "01:00"
+          }
+        ]
+      },
+      {
+        "name": "강민호",
+        "age": "29",
+        "phone": "010-7890-1234",
+        "part": "배달",
+        "hourlyWage": "12500",
+        "schedules": [
+          {
+            "day": "금",
+            "startTime": "17:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "토",
+            "startTime": "14:00",
+            "endTime": "01:00"
+          },
+          {
+            "day": "일",
+            "startTime": "14:00",
+            "endTime": "23:00"
+          }
+        ]
+      },
+      {
+        "name": "신짱구",
+        "age": "5",
+        "phone": "010-1234-5678",
+        "part": "주방",
+        "hourlyWage": "12000",
+        "schedules": [
+          {
+            "day": "월",
+            "startTime": "16:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "화",
+            "startTime": "16:00",
+            "endTime": "24:00"
+          },
+          {
+            "day": "수",
+            "startTime": "16:00",
+            "endTime": "24:00"
+          }
+        ]
+      },
+      {
+        "name": "김철수",
+        "age": "5",
+        "phone": "010-1111-2222",
+        "part": "홀",
+        "hourlyWage": "11000",
+        "schedules": [
+          {
+            "day": "월",
+            "startTime": "18:00",
+            "endTime": "22:00"
+          },
+          {
+            "day": "화",
+            "startTime": "18:00",
+            "endTime": "22:00"
+          },
+          {
+            "day": "수",
+            "startTime": "18:00",
+            "endTime": "22:00"
+          },
+          {
+            "day": "목",
+            "startTime": "18:00",
+            "endTime": "22:00"
+          },
+          {
+            "day": "금",
+            "startTime": "18:00",
+            "endTime": "22:00"
+          }
+        ]
+      }
+    ]
+  }
+]
