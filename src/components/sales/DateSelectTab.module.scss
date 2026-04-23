@@ -1,7 +1,7 @@
 .period {
     display: flex;
     gap: 4px;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
 
     .periodItem {
         position: relative;
@@ -65,8 +65,7 @@
         }
 
         &::-webkit-scrollbar-track {
-            // background: transparent;
-            // background-color: white;
+            background: transparent;
         }
 
         &::-webkit-scrollbar-thumb {

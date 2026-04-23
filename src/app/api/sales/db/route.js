@@ -59,20 +59,24 @@ export async function PUT(request) {
   return NextResponse.json({ ok: true })
 }
 
-// DELETE /api/sales?ownerId=xxx&storeId=xxx&date=xxx
-// 특정 날짜 매출 삭제
+// DELETE /api/sales/db?ownerId=xxx&storeId=xxx&dates=xxx,yyy,zzz
+// 체크된 날짜들 일괄 삭제 (쉼표 구분)
 export async function DELETE(request) {
   const { searchParams } = new URL(request.url)
   const ownerId = searchParams.get('ownerId')
   const storeId = searchParams.get('storeId')
-  const date = searchParams.get('date')
+  const datesParam = searchParams.get('dates')
+
+  const dates = datesParam ? datesParam.split(',') : []
+  if (dates.length === 0)
+    return NextResponse.json({ ok: false, error: 'dates required' }, { status: 400 })
 
   const col = await getCollection()
 
-  // sales 배열에서 해당 date 항목 제거
+  // sales 배열에서 해당 date들 일괄 제거
   await col.updateOne(
     { ownerId, storeId },
-    { $pull: { sales: { date } } }
+    { $pull: { sales: { date: { $in: dates } } } }
   )
 
   return NextResponse.json({ ok: true })

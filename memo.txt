@@ -1,0 +1,26 @@
+============================
+[2026-04-23] 작업 기록
+============================
+
+■ 체크박스 선택 항목 일괄 삭제 (DB 연동)
+- 문제: ic-bin.svg 클릭 시 체크된 항목을 DB에서 삭제해야 함
+- 해결:
+  1. /api/sales/db/route.js DELETE 핸들러 수정
+     - 기존: 단일 date 파라미터
+     - 변경: dates 파라미터(쉼표 구분) + MongoDB $pull + $in 으로 일괄 삭제
+  2. page.jsx에 handleDelete 함수 추가
+     - checked 배열 기준으로 선택된 날짜들 추출
+     - axios.delete('/api/sales/db', { params: { dates: '...,...' } }) 호출
+     - 성공 후 salesData에서도 제거 + checked/checkedAll 초기화
+  3. ic-bin.svg 버튼에 onClick={handleDelete} 연결
+
+■ 팝업 바깥 클릭 시 닫기 (이벤트 버블링 문제)
+- 문제: .back에 onClick={onClose}를 넣으면 팝업 내부 클릭해도 닫힘
+- 원인: 이벤트 버블링 — 내부 클릭 이벤트가 .back까지 올라감
+- 해결 방법 1 (권장): e.target === e.currentTarget 조건
+    <div onClick={e => e.target === e.currentTarget && onClose()}>
+- 해결 방법 2: 내부 컨테이너에 e.stopPropagation()
+- 개념 정리:
+    e.target        → 실제로 클릭된 요소
+    e.currentTarget → onClick이 달린 요소 (이벤트 리스너 위치)
+    둘이 같으면 = 배경(.back) 자체를 클릭한 것
