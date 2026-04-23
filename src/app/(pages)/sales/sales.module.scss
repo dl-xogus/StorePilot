@@ -12,7 +12,7 @@
 
     width: 100%;
     max-width: 1260px;
-    margin: 100px auto;
+    margin: 100px auto 0px;
 
     .checkbox {
         appearance: none;
@@ -36,101 +36,7 @@
         }
     }
 
-    .period {
-        display: flex;
-        gap: 4px;
-        padding-bottom: 40px;
-
-        .periodItem {
-            position: relative;
-            // z-index: -1;
-        }
-
-        .periodBtn {
-            width: 70px;
-            background: #191A1C;
-            border: 1px solid rgba(179, 179, 179, 0.2);
-            font-size: 14px;
-            color: #e8e8e8;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            &:hover,
-            &.periodBtnOpen {
-                color: #fff;
-                border: 1px solid #76DE99;
-            }
-
-            >p {
-                width: 13px;
-
-                >img {
-                    width: 100%;
-                }
-            }
-        }
-
-        .dropdown {
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            background-color: #1F2022;
-            border: 1px solid rgba(118, 222, 153, 0.32);
-            border-radius: 10px;
-            padding: 4px;
-            list-style: none;
-            // z-index: 100;
-            width: 70px;
-            max-height: 200px;
-            overflow-y: auto;
-
-            &::-webkit-scrollbar {
-                width: 10px;
-            }
-
-            &::-webkit-scrollbar-track {
-                // background: transparent;
-                // background-color: white;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background: #565656;
-                border-radius: 999px;
-                border: 2px solid transparent;
-                background-clip: padding-box;
-
-                &:hover {
-                    background: #76DE99;
-                    border: 2px solid transparent;
-                    background-clip: padding-box;
-                }
-            }
-
-            li {
-                padding: 6px;
-                font-size: 13px;
-                color: #e8e8e8;
-                border-radius: 10px;
-                cursor: pointer;
-                white-space: nowrap;
-                transition: 0.3s;
-
-                &:hover {
-                    background-color: #2D2C2F;
-                    padding-left: 8px;
-                }
-
-                &.dropdownActive {
-                    color: #76DE99;
-                    font-weight: bold;
-                }
-            }
-        }
-    }
+    
 
     .title {
         width: 100%;
@@ -147,36 +53,7 @@
             }
         }
 
-        .tab {
-            display: flex;
-            gap: 10px;
-            border: 1px solid #434246;
-            border-radius: 10px;
-            padding: 5px;
 
-            button {
-                font-size: 14px;
-                font-weight: bold;
-                padding: 5px 10px;
-                border: none;
-                border-radius: 5px;
-                background-color: transparent;
-                color: #7B7B7B;
-
-                &.active {
-                    color: #000;
-                    background-color: #76DE99;
-
-                    &:hover {
-                        color: #000;
-                    }
-                }
-
-                &:hover {
-                    color: #e8e8e8;
-                }
-            }
-        }
     }
 }
 
@@ -298,6 +175,10 @@
             &.sale {
                 font-weight: bold;
             }
+
+            &.date {
+                color: #898F9A;
+            }
         }
     }
 
@@ -308,10 +189,17 @@
         align-items: center;
         gap: 40px;
         font-weight: bold;
+
+        .sortTab {
+            cursor: pointer;
+            > p {
+                cursor: pointer;
+            }
+        }
     }
 
     .lines {
-        flex-grow: 1;       // 부모의 남은 영역 채우기
+        flex-grow: 1; // 부모의 남은 영역 채우기
         overflow: auto;
 
         &::-webkit-scrollbar {
@@ -319,8 +207,7 @@
         }
 
         &::-webkit-scrollbar-track {
-            // background: transparent;
-            // background-color: white;
+            background: transparent;
         }
 
         &::-webkit-scrollbar-thumb {
@@ -352,10 +239,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+        }
 
-            &:hover {
-                background-color: #2D2C2F;
-            }
+        &:hover {
+            background-color: #262729;
+            border-radius: 10px;
         }
     }
 }
