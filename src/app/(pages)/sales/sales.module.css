@@ -1,0 +1,52 @@
+.sales {
+  width: 100%;
+  max-width: 1263px;
+  margin: 40px auto;
+  height: 999px;
+}
+.sales .title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sales .title > h1 {
+  font-size: 40px;
+}
+.sales .title > h1 > span {
+  color: #76DE99;
+}
+.sales .title .tab {
+  display: flex;
+  gap: 10px;
+  border: 1px solid #434246;
+  border-radius: 10px;
+  padding: 5px;
+}
+.sales .title .tab button {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: transparent;
+  color: #7B7B7B;
+}
+.sales .title .tab button.active {
+  color: #000;
+  background-color: #76DE99;
+}
+
+section .title .btns {
+  display: flex;
+  gap: 10px;
+}
+section .title .btns > p {
+  width: 33px;
+  aspect-ratio: 1/1;
+  background-color: #76DE99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8;
+}/*# sourceMappingURL=sales.module.css.map */
