@@ -1,27 +1,23 @@
 import { NextResponse } from 'next/server'
 import clientPromise from '@/lib/mongodb'
-
-const DB = 'store_pilot'
-const COL = 'sale'
+import { getSales, deleteSales } from '@/lib/db/sales'
 
 async function getCollection() {
-  const client = await clientPromise
-  return client.db(DB).collection(COL)
-}
+  const client = await clientPromise;
+  return client.db('store_pilot').collection('sale');
+};
 
 // GET /api/sales?ownerId=xxx&storeId=xxx
 // 특정 매장의 매출 전체 조회
 export async function GET(request) {
-  const { searchParams } = new URL(request.url)
-  const ownerId = searchParams.get('ownerId')
-  const storeId = searchParams.get('storeId')
+  const { searchParams } = new URL(request.url);
+  const ownerId = searchParams.get('ownerId');
+  const storeId = searchParams.get('storeId');
 
-  const col = await getCollection()
-  const doc = await col.findOne({ ownerId, storeId })
+  const sales = await getSales(ownerId, storeId);
 
-  if (!doc) return NextResponse.json({ sales: [] })
-  return NextResponse.json({ sales: doc.sales })
-}
+  return NextResponse.json({ sales });
+};
 
 // POST /api/sales
 // 새 날짜 매출 추가
@@ -62,22 +58,17 @@ export async function PUT(request) {
 // DELETE /api/sales/db?ownerId=xxx&storeId=xxx&dates=xxx,yyy,zzz
 // 체크된 날짜들 일괄 삭제 (쉼표 구분)
 export async function DELETE(request) {
-  const { searchParams } = new URL(request.url)
-  const ownerId = searchParams.get('ownerId')
-  const storeId = searchParams.get('storeId')
-  const datesParam = searchParams.get('dates')
+  const { searchParams } = new URL(request.url);
+  const ownerId = searchParams.get('ownerId');
+  const storeId = searchParams.get('storeId');
+  const datesParam = searchParams.get('dates');
 
-  const dates = datesParam ? datesParam.split(',') : []
-  if (dates.length === 0)
-    return NextResponse.json({ ok: false, error: 'dates required' }, { status: 400 })
-
-  const col = await getCollection()
-
-  // sales 배열에서 해당 date들 일괄 제거
-  await col.updateOne(
-    { ownerId, storeId },
-    { $pull: { sales: { date: { $in: dates } } } }
-  )
-
-  return NextResponse.json({ ok: true })
+  try {
+    await deleteSales(ownerId, storeId, datesParam);
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    if (e.message === 'dates required')
+      return NextResponse.json({ ok: false, error: e.message }, { status: 400 });
+    return NextResponse.json({ ok: false, error: e.message }, { status: 500 });
+  }
 }

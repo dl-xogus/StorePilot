@@ -66,8 +66,8 @@ export default function sale() {
       }
     })
       .then(res => {
-        setSalesData(res.data.sales)
-        setChecked(new Array(res.data.sales.length).fill(false))
+        setSalesData(res.data.sales);
+        setChecked(new Array(res.data.sales.length).fill(false));
       })
       .catch(err => console.error('매출 조회 실패', err));
   }, []);
@@ -88,9 +88,9 @@ export default function sale() {
 
     if (activeTab === '월별') return itemYear === selYear;
     if (activeTab === '주별') return itemYear === selYear && itemMonth === selMonth;
+
     return itemYear === selYear && itemMonth === selMonth && itemWeek === selWeek;
   });
-
 
   const getCompare = () => {
     switch (activeTab) {
@@ -330,15 +330,9 @@ export default function sale() {
         popupOpen &&
           <AddSalesPopup
             onClose={() => setPopupOpen(false)}
-            sales={sales}
-            checkedAll={checkedAll}
-            setCheckedAll={setCheckedAll}
-            checked={checked}
-            setChecked={setChecked}
-            sortedData={sortedData}
             salesData={salesData}
-            handleSort={handleSort}
             getSortIcon={getSortIcon}
+            today={today}
           />
       }
     </div>

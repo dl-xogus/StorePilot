@@ -24,8 +24,9 @@ export default function DateSelectTab({ activeTab, selected, setSelected, openDr
     ];
 
     // 각 드롭다운의 선택지 목록
+    const currentYear = new Date().getFullYear();
     const options = {
-        year: Array.from({ length: 27 }, (_, i) => `${i + 2000}년`).reverse(),
+        year: Array.from({ length: currentYear - 1999 }, (_, i) => `${2000 + i}년`).reverse(),
         month: Array.from({ length: 12 }, (_, i) => `${i + 1}월`),
         // 선택된 년/월 기준으로 실제 주차 수만큼만 생성
         week: Array.from({ length: getWeeksInMonth(y, m) }, (_, i) => `${i + 1}주차`),

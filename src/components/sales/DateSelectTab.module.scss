@@ -1,6 +1,6 @@
 .period {
     display: flex;
-    gap: 4px;
+    gap: 10px;
     padding-bottom: 20px;
 
     .periodItem {
@@ -16,7 +16,7 @@
         color: #e8e8e8;
         cursor: pointer;
         padding: 5px;
-        border-radius: 10px;
+        border-radius: 7px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -85,7 +85,7 @@
             padding: 6px;
             font-size: 13px;
             color: #e8e8e8;
-            border-radius: 10px;
+            border-radius: 7px;
             cursor: pointer;
             white-space: nowrap;
             transition: 0.3s;
