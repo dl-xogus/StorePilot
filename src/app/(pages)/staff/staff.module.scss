@@ -1,0 +1,142 @@
+/* ===== Layout ===== */
+.staff {
+    max-width: 1240px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.container {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+}
+
+.staff-contents {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+
+/* ===== Title ===== */
+.staff-title {
+    h2 {
+        font-size: 2.5rem;
+        margin-top: 100px;
+    }
+
+    .title {
+        color: #76DE99;
+    }
+
+}
+
+.total {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 3px;
+    margin-bottom: 46px;
+
+    p {
+        font-size: 1rem;
+        color: #766F6F;
+        padding-left: 7px;
+    }
+}
+
+
+
+
+.actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 13px;
+}
+
+
+.paper {
+    width: 100%;
+    max-width: 270px;
+    height: 35px;
+
+    background-color: #262729 !important;
+    border: 1px solid #76DE99 !important;
+    border-radius: 50px !important;
+}
+
+.staff-icon {
+    display: flex;
+    gap: 7px;
+
+    img {
+        background-color: #76DE99;
+        border-radius: 8px;
+        padding: 5px;
+    }
+}
+
+.checkbox {
+    appearance: none;
+    cursor: pointer;
+    width: 13px;
+    height: 13px;
+    aspect-ratio: 1/1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #262729;
+    border: 1px solid #5A5B5C;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+
+    &:checked {
+        background: url(/img/icon/ic-check.svg) no-repeat center / contain;
+        background-color: #85D575;
+        border: 1px solid #5A5B5C;
+        border-radius: 3px;
+    }
+}
+
+.table{
+    width: 100%;
+    height: 640px;
+    border: 1px solid #2D2C2F;
+    border-radius: 11px;
+    background-color: #1F2022;
+}
+
+
+.tableHeader,
+.tableRow {
+    display: grid;
+    grid-template-columns: 
+        40px   /* 체크박스 */
+        1.2fr  /* 이름 */
+        80px   /* 나이 */
+        100px  /* 시급 */
+        100px  /* 파트 */
+        140px  /* 요일 */
+        140px  /* 시간 */
+        1.5fr  /* 전화번호 */
+        40px;  /* 수정 */
+    align-items: center;
+    column-gap: 20px;
+}
+
+
+.tableHeader {
+    padding: 20px 36px;
+    background-color: #262729;
+}
+
+.tableRow {
+    padding: 25px 36px;
+    border-bottom: 1px solid #2D2C2F;
+}
