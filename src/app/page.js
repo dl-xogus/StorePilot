@@ -80,7 +80,7 @@ export default function Landing() {
       {/* 기능 상세 3개 */}
       <section className={styles.section3}>
 
-        <FadeGroup>
+        <FadeGroup delay={0}>
           <div className={styles.function1}>
             <div className={styles.functionImg1}>
               <img src='./img/landing/landing_ai.png' className={styles.Aichat_Img} />
@@ -95,9 +95,10 @@ export default function Landing() {
               </p>
             </div>
           </div>
+        </FadeGroup>
 
 
-
+        <FadeGroup delay={150}>
           <div className={styles.function1}>
             <div className={styles.functionTxt1}>
               <h4>매출 관리</h4>
@@ -113,9 +114,10 @@ export default function Landing() {
               <img src='./img/landing/sales.png' className={styles.sales_Img} />
             </div>
           </div>
+        </FadeGroup>
 
 
-
+        <FadeGroup delay={300}>
           <div className={styles.function1}>
             <div className={styles.functionImg2}>
               <img src='./img/landing/landing_img3.png' className={styles.back_Img} />
@@ -132,9 +134,10 @@ export default function Landing() {
           </div>
         </FadeGroup>
 
+
       </section>
 
-      
+
 
       {/* 하단 내용 */}
       <section className={styles.section4}>
@@ -142,7 +145,7 @@ export default function Landing() {
           <span>지금 바로 스마트한 매장 운영을 시작하세요.</span>
         </div>
         <div className={styles.btn}>
-          <button>시작하기<img src='./img/landing/Arrow.svg' /></button>
+          <button>시작하기<img src='./img/landing/Arrow.svg' className={styles.arrow} /></button>
         </div>
 
       </section>
