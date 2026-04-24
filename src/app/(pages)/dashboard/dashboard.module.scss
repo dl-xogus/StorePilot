@@ -1,0 +1,89 @@
+.dashboard {
+    width: 1260px;
+    margin: 0 auto;
+    font-family: 'PyeojinGothic';
+
+    .inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 73px;
+
+        position: relative;
+
+        .backBtn {
+            position: absolute;
+            right: 0;
+            top: 30;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 100px;
+        }
+
+        .cardWrap {
+            display: flex;
+            gap: 5%;
+
+            .summaryCard {
+                width: 100%;
+                height: auto;
+                background-color: #26272A;
+                border-radius: 9px;
+                padding: 41px 0;
+                min-height: 140px;
+                position: relative;
+
+                .summaryInner {
+                    display: flex;
+                    justify-content: flex-start;
+                    ;
+                    align-items: center;
+                    margin-left: 24px;
+
+                    >p {
+                        margin-right: 18px;
+                    }
+
+                    .summaryText {
+
+                        p {
+                            font-size: 16px;
+                            font-weight: 400;
+                            margin-bottom: 10px;
+                        }
+
+                        strong {
+
+                            font-size: 26px;
+                            font-weight: 700;
+                        }
+                    }
+
+
+                }
+
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 6px;
+                    height: 100%;
+                    background: linear-gradient(180deg, #76DE99, #4CAF70);
+                    border-radius: 12px 0 0 12px;
+                    z-index: 10;
+                }
+            }
+        }
+
+
+        .chartSection{
+            
+        }
+    }
+}
