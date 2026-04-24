@@ -121,8 +121,32 @@
 .main section .answerBox .scrollBox::-webkit-scrollbar-button {
   display: none;
 }
+.main section .answerBox .scrollBox .questionPreview {
+  margin-bottom: 4%;
+}
 .main section .answerBox .scrollBox .answerContent {
-  height: 999px;
+  height: 300px;
+}
+.main section .answerBox .scrollBox .answerContent .dots::after {
+  content: "";
+  animation: dots 1.2s steps(3, end) infinite;
+}
+@keyframes dots {
+  0% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}
+.main section .answerBox .scrollBox .answerContent pre {
+  font-size: 16px;
 }
 .main .summary {
   width: 100%;
@@ -132,18 +156,19 @@
   margin-bottom: 20px;
 }
 .main .summary .summaryTitle a {
-  position: relative;
   display: flex;
   align-items: center;
 }
 .main .summary .summaryTitle a p {
+  position: relative;
   font-size: 24px;
   font-weight: 500;
 }
 .main .summary .summaryTitle a p .tooltip {
   position: absolute;
-  left: 0;
+  left: 50%;
   bottom: 100%;
+  transform: translateX(-50%);
   margin-bottom: 8px;
   background: #000;
   color: #fff;

@@ -1,0 +1,65 @@
+.dashboard {
+  width: 1260px;
+  margin: 0 auto;
+  font-family: "PyeojinGothic";
+}
+.dashboard .inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 73px;
+  position: relative;
+}
+.dashboard .inner .backBtn {
+  position: absolute;
+  right: 0;
+  top: 30;
+}
+.dashboard .inner .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 100px;
+}
+.dashboard .inner .cardWrap {
+  display: flex;
+  gap: 5%;
+}
+.dashboard .inner .cardWrap .summaryCard {
+  width: 100%;
+  height: auto;
+  background-color: #26272A;
+  border-radius: 9px;
+  padding: 41px 0;
+  min-height: 140px;
+  position: relative;
+}
+.dashboard .inner .cardWrap .summaryCard .summaryInner {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 24px;
+}
+.dashboard .inner .cardWrap .summaryCard .summaryInner > p {
+  margin-right: 18px;
+}
+.dashboard .inner .cardWrap .summaryCard .summaryInner .summaryText p {
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+.dashboard .inner .cardWrap .summaryCard .summaryInner .summaryText strong {
+  font-size: 26px;
+  font-weight: 700;
+}
+.dashboard .inner .cardWrap .summaryCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(180deg, #76DE99, #4CAF70);
+  border-radius: 12px 0 0 12px;
+  z-index: 10;
+}/*# sourceMappingURL=dashboard.module.css.map */

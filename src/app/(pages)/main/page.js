@@ -3,24 +3,28 @@
 import React from 'react'
 import style from '@/app/(pages)/main/main.module.scss'
 import { useState, useEffect } from "react";
-import { Suspense } from "react";
 import Link from 'next/link'
+
+
+import axios from 'axios'
 
 export default function main() {
 
   const [input, setInput] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState("");
-  const [answer, setAnswer] = useState(`test`);
+  const [answer, setAnswer] = useState("");
+  const [loading, setLoading] = useState(false);
 
 
   const quickQuestions = [
-    "이번주 인건비 얼마나 나가?",
+    "이번 주 인건비 얼마나 나가?",
     "이번 주 매출 지난주 대비 얼마나 차이나?",
     "오늘 매출 예상 얼마야?",
     "현재 재고 부족한 항목 있어?",
     "요즘 잘 안 팔리는 메뉴 뭐야?",
     "폐기 위험 있는 재고 알려줘",
-    "오늘 근무하는 인원 누구야?"
+    "오늘 근무하는 인원 누구야?",
+    "요즘 잘 팔리는 메뉴 뭐야?"
   ];
 
   // 추가: 처음에는 고정 2개로 시작
@@ -37,16 +41,32 @@ export default function main() {
     setRandomQuestions(getRandomQuestions(quickQuestions, 2));
   }, []);
 
-  function handleAsk(item) {
-    const finalQuestion = item || input;
-
-    if (!finalQuestion.trim()) return;
-    alert(finalQuestion);
-
-    setCurrentQuestion(finalQuestion);
-    setInput(finalQuestion);
 
 
+
+  async function handleAsk(item) {
+    const finalQuestion = item || input
+
+    if (!finalQuestion.trim()) return
+
+    setCurrentQuestion("질문 : "+finalQuestion)
+    setLoading(true) // 🔥 시작
+
+    try {
+      const res = await axios.post('/api/chat/openai', {
+        question: finalQuestion,
+        ownerId: 'qwe@email.com',
+        storeId: '001'
+      })
+
+      setAnswer(res.data.answer)
+      setInput('')
+    } catch (err) {
+      console.error('❌ 챗봇 호출 실패:', err)
+      setAnswer('호출 실패')
+    } finally {
+      setLoading(false) // 🔥 끝
+    }
   }
 
   const handleKeyDown = (e) => {
@@ -64,7 +84,13 @@ export default function main() {
           <div className={style.chatTop}>
             <h1>오늘 무엇을 도와드릴까요?</h1>
 
-            <div className={style.inputWrap}>
+            <form
+              className={style.inputWrap}
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleAsk();
+              }}
+            >
               <input
                 type='text'
                 placeholder="질문을 입력하세요"
@@ -72,10 +98,10 @@ export default function main() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
               />
-              <button type="button" onClick={() => handleAsk()}>
+              <button type="submit">
                 <img src='/img/icon/ic-enter.png' />
               </button>
-            </div>
+            </form>
 
             <div className={style.quickList}>
               {randomQuestions.map((item, i) => (
@@ -98,13 +124,14 @@ export default function main() {
           <div className={style.answerBox}>
             <div className={style.scrollBox}>
               <div className={style.questionPreview}>
-                <span>질문 : {currentQuestion}</span>
+                <span>{currentQuestion}</span>
                 <p></p>
               </div>
               <div className={style.answerContent}>
-                <Suspense fallback={<div>분석 중...</div>}>
-                  <pre>어쩌구 저쩌구</pre>
-                </Suspense>
+                <pre>
+                  {loading ? '분석 중' : answer}
+                  {loading && <span className={style.dots}></span>}
+                </pre>
               </div>
             </div>
           </div>
@@ -117,12 +144,12 @@ export default function main() {
         <div className={style.summaryTitle}>
           <Link href="/dashboard">
             <p>오늘 요약
-              <span className={style.tooltip}>대시보드로 이동</span>
+              <span className={style.tooltip}>상세 보기</span>
             </p>
             <span>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M13.1717 11.9997L8.22168 7.04972L9.63568 5.63672L15.9997 11.9997L9.63568 18.3637L8.22168 16.9487L13.1717 11.9997Z" fill="currentColor" />
-            </svg>
+                <path d="M13.1717 11.9997L8.22168 7.04972L9.63568 5.63672L15.9997 11.9997L9.63568 18.3637L8.22168 16.9487L13.1717 11.9997Z" fill="currentColor" />
+              </svg>
             </span>
 
           </Link>
@@ -171,6 +198,6 @@ export default function main() {
         </div>
 
       </aside>
-    </main>
+    </main >
   )
 }

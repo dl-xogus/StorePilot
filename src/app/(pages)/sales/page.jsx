@@ -59,7 +59,7 @@ export default function sale() {
 
   // 컴포넌트 마운트 시 매출 데이터 API 호출
   useEffect(() => {
-    axios.get('/api/sales', {
+    axios.get('/api/sales/db', {
       params: {
         ownerId: 'qwe@email.com', // 추후 세션값으로 교체
         storeId: '001',
