@@ -15,7 +15,11 @@
     "@mui/material": "^9.0.0",
     "@nivo/core": "^0.99.0",
     "@nivo/line": "^0.99.0",
+<<<<<<< HEAD
     "axios": "^1.15.1",
+=======
+    "axios": "^1.15.2",
+>>>>>>> 76ad88f7c549acb91098276a1de1c9af0df65d27
     "mongodb": "^7.2.0",
     "next": "16.2.4",
     "openai": "^6.34.0",

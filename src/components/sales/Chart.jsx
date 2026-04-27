@@ -52,7 +52,7 @@ export default function WeeklyChart() {
         margin={{ top: 20, right: 20, bottom: 40, left: 80 }}
         xScale={{ type: "point" }}
         yScale={{ type: "linear", min: 0, max: 1400000 }}
-        curve="monotoneX"
+        curve="linear"
         colors={["#4ade80"]}
         lineWidth={2}
         pointSize={7}

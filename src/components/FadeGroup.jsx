@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import styles from '../app/landing.module.scss'
 
 export default function FadeGroup({ children }) {
   const ref = useRef(null);
@@ -13,17 +14,17 @@ export default function FadeGroup({ children }) {
           setShow(true);
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.5 }
     );
 
     if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    //return () => observer.disconnect();
   }, []);
 
   return (
     <div
       ref={ref}
-      className={`fadeGroup ${show ? "show" : ""}`}
+      className={`${styles.fadeGroup} ${show ? styles.show : ""}`}
     >
       {children}
     </div>

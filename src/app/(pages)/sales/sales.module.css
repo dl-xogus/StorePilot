@@ -1,14 +1,44 @@
+.sales p,
+.sales div,
+.sales span {
+  cursor: default;
+}
+.sales h3 {
+  font-size: 24px;
+}
 .sales {
   width: 100%;
-  max-width: 1263px;
-  margin: 40px auto;
-  height: 999px;
+  max-width: 1260px;
+  margin: 100px auto 0px;
+}
+.sales .checkbox {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+  aspect-ratio: 1/1;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #262729;
+  border: 1px solid #5A5B5C;
+  border-radius: 3px;
+}
+.sales .checkbox:checked {
+  background: url(/img/icon/ic-check.svg) no-repeat center/contain;
+  background-color: #85D575;
+  border: 1px solid #5A5B5C;
+  border-radius: 3px;
 }
 .sales .title {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-bottom: 40px;
 }
 .sales .title > h1 {
   font-size: 40px;
@@ -16,32 +46,24 @@
 .sales .title > h1 > span {
   color: #76DE99;
 }
-.sales .title .tab {
-  display: flex;
-  gap: 10px;
-  border: 1px solid #434246;
-  border-radius: 10px;
-  padding: 5px;
-}
-.sales .title .tab button {
-  font-size: 14px;
-  font-weight: bold;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: transparent;
-  color: #7B7B7B;
-}
-.sales .title .tab button.active {
-  color: #000;
-  background-color: #76DE99;
-}
 
-section .title .btns {
+.section {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  flex: 1;
+  height: 584px;
+}
+.section .title {
+  padding-bottom: 20px;
+  height: 60px;
+}
+.section .title .btns {
   display: flex;
   gap: 10px;
 }
-section .title .btns > p {
+.section .title .btns > p {
   width: 33px;
   aspect-ratio: 1/1;
   background-color: #76DE99;
@@ -49,4 +71,143 @@ section .title .btns > p {
   align-items: center;
   justify-content: center;
   border-radius: 8;
+  cursor: pointer;
+}
+.section .left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.section .left .graph {
+  flex: 1;
+  height: 600px;
+}
+.section .right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.section .right .graphs {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.section .right .graphs .graph {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  display: flex;
+  padding: 20px;
+}
+.section .right .graphs .graph:nth-of-type(1) {
+  align-items: center;
+  justify-content: center;
+}
+.section .right .graphs .graph:nth-of-type(2) {
+  flex-direction: column;
+  gap: 20px;
+}
+.section .right .graphs .graph .AItitle {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.graph {
+  background-color: #1F2022;
+  border-radius: 11px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.graph .text {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+.graph .text > div {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+.graph .text > div.plus {
+  color: #85D575;
+  font-weight: bold;
+}
+.graph .text > div.minus {
+  color: #F34C4C;
+  font-weight: bold;
+}
+.graph .text > div.sale {
+  font-weight: bold;
+}
+.graph .text > div.date {
+  color: #898F9A;
+}
+.graph .titleLine {
+  padding: 0 90px 0 20px;
+  background-color: #262729;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  font-weight: bold;
+}
+.graph .titleLine .sortTab {
+  cursor: pointer;
+}
+.graph .titleLine .sortTab > p {
+  cursor: pointer;
+}
+.graph .lines {
+  flex-grow: 1;
+  overflow: auto;
+}
+.graph .lines::-webkit-scrollbar {
+  width: 10px;
+}
+.graph .lines::-webkit-scrollbar-track {
+  background: transparent;
+}
+.graph .lines::-webkit-scrollbar-thumb {
+  background: #565656;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.graph .lines::-webkit-scrollbar-thumb:hover {
+  background: #76DE99;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.graph .oneline {
+  padding: 0 20px;
+  border-bottom: 1px solid #2D2C2F;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.graph .oneline .editBtn {
+  width: 30px;
+  height: 30px;
+  aspect-ratio: 1/1;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.graph .oneline:hover {
+  background-color: #262729;
+  border-radius: 10px;
+}
+
+.aiText {
+  color: #898F9A;
 }/*# sourceMappingURL=sales.module.css.map */

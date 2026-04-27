@@ -1,5 +1,4 @@
 .sales {
-
     p,
     div,
     span {
@@ -12,7 +11,7 @@
 
     width: 100%;
     max-width: 1260px;
-    margin: 100px auto 0px;
+    margin: 100px auto;
 
     .checkbox {
         appearance: none;
@@ -43,7 +42,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-bottom: 40px;
+        padding-bottom: 20px;
 
         >h1 {
             font-size: 40px;

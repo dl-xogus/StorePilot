@@ -1,32 +1,32 @@
-/* ===== Layout ===== */
+/* ================== Layout ================== */
 .schedule {
-    max-width: 1240px;
+    margin: 100px auto 0;
     width: 100%;
-    margin: 0 auto;
+    max-width: 1240px;
 }
 
 .container {
-    max-width: 1100px;
-    width: 100%;
-    margin: 0 auto;
     display: flex;
+    gap: 26px;
+    align-items: flex-start;
 }
 
-.schedule-contents {
-    width: 100%;
+.scheduleMain {
+    flex: 1;
+    max-width: 700px;
 }
 
 
 
 
-/* ===== Title ===== */
-.schedule-title {
+
+/* ================== Header ================== */
+.scheduleHeader {
     h2 {
         font-size: 2.5rem;
-        margin-top: 100px;
     }
 
-    .title {
+    .scheduleTitle {
         color: #76DE99;
     }
 
@@ -35,63 +35,72 @@
 .total {
     display: flex;
     align-items: flex-end;
-    margin-top: 3px;
+    color: #766F6F;
+    font-size: 1rem;
+    margin-top: 5px;
 
     p {
-        font-size: 1rem;
-        color: #766F6F;
-        padding-left: 7px;
+        padding-left: 5px;
     }
-}
-
-
-
-
-
-/* ===== Schedule Box ===== */
-.schedule-box {
-    margin: 46px 0 0 0;
-    width: 100%;
-    max-width: 700px;
-}
-
-.top {
-    padding: 24px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    background-color: #262729;
-    border-top-left-radius: 11px;
-    border-top-right-radius: 11px;
-    border: 1px solid #2D2C2F;
-}
-
-
-
-
-/* ===== Arrow / Calendar ===== */
-.ic-arrow {
 
     img {
         display: inline-block;
-        vertical-align: baseline;
-        cursor: pointer;
-    }
-
-    b {
-        font-size: 1.8rem;
-        padding-left: 10px;
+        vertical-align: middle;
     }
 }
 
-.ic-calendar {
+
+
+
+
+
+/* ================== Panel ================== */
+.schedulePanel {
+    margin: 35px auto 0;
+    background-color: #1F2022;
+    border: 1px solid #2D2C2F;
+    border-radius: 11px;
+}
+
+
+
+
+
+
+/* ================== Navigation ================== */
+.scheduleNav {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    background-color: #262729;
+    border-bottom: 1px solid #2D2C2F;
+    border-top-left-radius: 11px;
+    border-top-right-radius: 11px;
+    padding: 24px 40px;
+
+    b {
+        font-size: 1.7rem;
+    }
+
+}
+
+.scheduleNavArrow {
+    img {
+        padding-right: 7px;
+        cursor: pointer;
+        padding-bottom: 5px;
+    }
+}
+
+.scheduleNavDate {
+    img {
+        padding-right: 5px;
+    }
+}
+
+.scheduleNavDate {
     display: flex;
     align-items: center;
-    gap: 5px;
-
-    img {
-        width: 15px;
-    }
 
     p {
         font-size: 1rem;
@@ -101,354 +110,89 @@
 
 
 
-/* ===== Weeks ===== */
-.weeks {
+
+
+/* ================== Week ================== */
+.scheduleWeek {
     display: flex;
-    background-color: #1F2022;
-    padding: 26px 43px;
-    border-left: 1px solid #2D2C2F;
-    border-right: 1px solid #2D2C2F;
+    justify-content: center;
+    align-items: center;
+    gap: 52px;
+    padding: 30px 37px;
+    border-bottom: 1px solid #2D2C2F;
 
     p {
-        color: #aaa;
         font-size: 1.5rem;
-        font-weight: 600;
-        margin: 0 auto;
+        font-weight: bold;
         cursor: pointer;
-        padding: 7px 11px;
+        color: #aaa;
 
-        &.active {
-            color: #000000;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0 auto;
-            cursor: pointer;
-            background-color: #76DE99;
-            border-radius: 100%;
-        }
+        padding: 5px 10px;
+
+        border-radius: 100%;
+
+    }
+
+    p:hover {
+        color: #000000;
+        font-weight: 600;
+        background-color: #76DE99;
+
     }
 }
 
 
 
 
-/* ===== Scroll Area ===== */
-.work-schedule {
-    background-color: #1F2022;
-    border-bottom-left-radius: 11px;
-    border-bottom-right-radius: 11px;
-    height: 515px;
+
+
+/* ================== Schedule List ================== */
+.scheduleList {
+    margin: 50px 62px 0 62px;
+
+    height: 45vh;
     overflow-y: auto;
-    width: 100%;
-    scrollbar-color: #4A4A4A #262729;
+
     scrollbar-width: none;
     -ms-overflow-style: none;
-    border: 1px solid #2D2C2F;
 }
 
-.work-schedule::-webkit-scrollbar {
+.scheduleList::-webkit-scrollbar {
     display: none;
 }
 
 
 
 
-/* ===== Day Header ===== */
-.schedule-day {
+
+
+
+/* ================== Day Header ================== */
+.scheduleDayHeader {
     display: flex;
-    padding: 55px 68px;
-    align-items: flex-end;
-
-    b {
-        font-size: 1.8rem;
-        font-weight: 500;
-    }
-
-    p {
-        font-size: 1.2rem;
-        color: #aaa;
-        padding-left: 10px;
-    }
+    justify-content: space-between;
 
     img {
         background-color: #202020;
         border: 1px solid #2D2C2F;
-        margin-left: auto;
         cursor: pointer;
         border-radius: 8px;
-        padding: 5px;
+        padding: 6px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 }
 
-
-
-
-/* ===== Card ===== */
-.schedule-card {
+.scheduleDay {
     display: flex;
-    padding: 0 65px 55px;
-    align-items: center;
-}
-
-.card {
-    background-color: #24272C;
-    border-radius: 9px;
-    display: flex;
-    margin-left: 15px;
-    width: 580px;
-    position: relative;
-}
-
-.checkbox {
-    appearance: none;
-    cursor: pointer;
-    width: 13px;
-    height: 13px;
-    aspect-ratio: 1/1;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #262729;
-    border: 1px solid #5A5B5C;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-
-    &:checked {
-        background: url(/img/icon/ic-check.svg) no-repeat center / contain;
-        background-color: #85D575;
-        border: 1px solid #5A5B5C;
-        border-radius: 3px;
-    }
-}
-
-.card img {
-    width: 18px;
-    height: 16px;
-    position: absolute;
-    top: 5%;
-    right: 1%;
-    cursor: pointer;
-}
-
-.line {
-    border-left: 3px solid #76DE99;
-    margin: 20px 0 20px 20px;
-}
-
-.card-text {
-    padding: 12px 20px 12px 0;
-    display: flex;
-}
-
-.text {
-    padding-left: 30px;
-
-}
-
-.up,
-.down {
-    display: flex;
-}
-
-.up {
-    margin-bottom: 20px;
-}
-
-.up p:nth-of-type(1) {
-    color: #aaa;
-    font-size: 1rem;
-    padding-right: 55px;
-}
-
-.up p:nth-of-type(2) {
-    color: #E8E8E8;
-    font-size: 1rem;
-}
-
-.down p:nth-of-type(1) {
-    color: #aaa;
-    font-size: 1rem;
-    padding-right: 30px;
-}
-
-.down p:nth-of-type(2) {
-    color: #E8E8E8;
-    font-size: 1rem;
-}
-
-
-
-
-/* ===== Layout ===== */
-.analytics {
-    margin-top: 220px;
-    margin-left: 20px;
-}
-
-
-
-/* ===== AI 분석 ===== */
-.Ai {
-    background-color: #1F2022;
-    margin-bottom: 21px;
-    border-radius: 15px;
-    padding: 20px;
-    height: 316px;
-    width: 100%;
-    max-width: 415px;
-    border: 1px solid #2D2C2F;
-}
-
-.ai-list {
-    margin-top: 25px;
-
-    p {
-        line-height: 28px;
-    }
-
-    p:nth-of-type(1) {
-        color: #898F9A;
-        font-size: 1rem;
-    }
-
-    p:nth-of-type(2) {
-        color: #76DE99;
-        font-size: 1rem;
-        margin-bottom: 30px;
-
-        ::before {
-            content: '-> ';
-        }
-    }
-
-}
-
-
-
-/* ===== Title ===== */
-.analytics-title {
-    display: flex;
-    align-items: center;
-
-    h2 {
-        font-size: 1rem;
-        padding-left: 5px;
-
-    }
-}
-
-
-
-
-/* ===== 버튼 ===== */
-.btn {
-    border: 1px solid #434246;
-    border-radius: 10px;
-    padding: 3px;
-    margin-left: 22%;
-
-    button {
-        background-color: #1F2022;
-        color: #7B7B7B;
-        border-radius: 5px;
-        font-weight: bold;
-        border: none;
-        padding: 3px 10px;
-        cursor: pointer;
-
-        &.active {
-            background-color: #76DE99;
-            color: #000000;
-            border-radius: 5px;
-            font-weight: bold;
-            border: none;
-            padding: 3px 10px;
-        }
-    }
-}
-
-
-
-
-
-
-
-/* ===== 직원 분석 박스 ===== */
-.employee {
-    background-color: #1F2022;
-    width: 415px;
-    height: 307px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    padding: 20px 20px 0 20px;
-    border: 1px solid #2D2C2F;
-}
-
-
-
-
-
-/* ===== 직원 카드 ===== */
-.employee-card {
-    margin: 20px 0;
-    padding: 10px 30px;
-    background-color: #25272A;
-    border-radius: 7px;
-    height: 100px;
-    line-height: 27px;
-
-    p {
-        font-size: 1rem;
-        color: #E8E8E8;
-    }
+    align-items: flex-end;
 
     b {
-        font-size: 1rem;
-        color: #898F9A;
-        font-weight: 500;
+        font-size: 1.7rem;
     }
 
-}
-
-
-
-
-
-/* ===== 직원 리스트 ===== */
-.employee-list {
-    height: 255px;
-    overflow-y: auto;
-    scrollbar-color: #4A4A4A #262729;
-    scrollbar-width: none;
-
-    /* IE, Edge (구버전) */
-    -ms-overflow-style: none;
-}
-
-/* Chrome, Safari */
-.employee-list::-webkit-scrollbar {
-    display: none;
-}
-
-
-
-/* ===== 총 인건비 ===== */
-.employee-total {
-    display: flex;
-    padding: 13px 30px;
-    justify-content: space-between;
-    border: 1px solid #2D2C2F;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    background-color: #2c2d2e;
-    width: 415px;
-
-}
-
-.totalText {
-    font-size: 1rem;
-    color: #E8E8E8;
+    p {
+        padding-left: 10px;
+        font-size: 1.2rem;
+        color: #aaa;
+    }
 }

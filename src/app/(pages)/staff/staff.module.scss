@@ -1,85 +1,105 @@
-/* ===== Layout ===== */
+/* ================== Layout ================== */
 .staff {
+    margin: 100px auto 0;
+    width: 100%;
     max-width: 1240px;
-    width: 100%;
-    margin: 0 auto;
 }
 
-.container {
-    max-width: 1100px;
-    width: 100%;
-    margin: 0 auto;
+.staffContainer {
     display: flex;
+    gap: 26px;
+    align-items: flex-start;
 }
 
-.staff-contents {
+.staffMain {
+    flex: 1;
     width: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 
 
 
-/* ===== Title ===== */
-.staff-title {
+
+
+/* ================== Header ================== */
+.staffHeader {
     h2 {
         font-size: 2.5rem;
-        margin-top: 100px;
     }
 
-    .title {
+    .staffTitle {
         color: #76DE99;
     }
 
 }
 
-.total {
+.staffTotal {
     display: flex;
-    align-items: flex-start;
-    margin-top: 3px;
-    margin-bottom: 46px;
+    align-items: flex-end;
+    color: #766F6F;
+    font-size: 1rem;
+    margin-top: 5px;
 
     p {
-        font-size: 1rem;
-        color: #766F6F;
-        padding-left: 7px;
+        padding-left: 5px;
+    }
+
+    img {
+        display: inline-block;
+        vertical-align: middle;
     }
 }
 
 
 
 
-.actions {
-    width: 100%;
+
+
+/* ================== Actions (검색 + 버튼) ================== */
+.staffActions {
+    margin: 35px auto 0;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-bottom: 13px;
+    padding-bottom: 20px;
 }
 
 
-.paper {
+.searchBar {
     width: 100%;
     max-width: 270px;
     height: 35px;
-
     background-color: #262729 !important;
     border: 1px solid #76DE99 !important;
     border-radius: 50px !important;
+    padding: 0 10px;
 }
 
-.staff-icon {
+.staffActionButtons img {
+    width: 18px;
+    height: 18px;
+
+}
+
+.staffActionButtons {
     display: flex;
+    align-items: center;
     gap: 7px;
 
     img {
-        background-color: #76DE99;
+        cursor: pointer;
+        background-color: #76de99;
+        width: 33px;
+        height: 33px;
+        padding: 7px;
+        box-sizing: border-box;
         border-radius: 8px;
-        padding: 5px;
     }
 }
 
+
+
+
+/* ================== Checkbox ================== */
 .checkbox {
     appearance: none;
     cursor: pointer;
@@ -104,39 +124,107 @@
     }
 }
 
-.table{
+
+
+
+
+
+
+/* ================== Table ================== */
+.staffTable {
     width: 100%;
-    height: 640px;
     border: 1px solid #2D2C2F;
     border-radius: 11px;
     background-color: #1F2022;
+    overflow-y: auto;
+
+    height: 65vh;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.staffTable::-webkit-scrollbar {
+    display: none;
 }
 
 
+
+
+
+
+/* ================== Table Layout ================== */
 .tableHeader,
 .tableRow {
     display: grid;
-    grid-template-columns: 
-        40px   /* 체크박스 */
-        1.2fr  /* 이름 */
-        80px   /* 나이 */
-        100px  /* 시급 */
-        100px  /* 파트 */
-        140px  /* 요일 */
-        140px  /* 시간 */
-        1.5fr  /* 전화번호 */
-        40px;  /* 수정 */
+    grid-template-columns:
+        40px
+        /* 체크박스 */
+        100px
+        /* 이름 */
+        100px
+        /* 나이 */
+        115px
+        /* 시급 */
+        100px
+        /* 파트 */
+        130px
+        /* 요일 */
+        140px
+        /* 시간 */
+        1.5fr
+        /* 전화번호 */
+        40px;
+    /* 수정 */
     align-items: center;
     column-gap: 20px;
 }
 
 
+
+
+
+
+
+/* ================== Table Header ================== */
 .tableHeader {
-    padding: 20px 36px;
+    padding: 27px 36px;
     background-color: #262729;
+    color: #E8E8E8;
+    font-size: 1rem;
+    font-weight: bold;
+
+    img {
+        padding-left: 10px;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+    }
 }
 
+
+
+
+
+
+
+/* ================== Table Row ================== */
 .tableRow {
-    padding: 25px 36px;
+    padding: 35px 0 25px 36px;
     border-bottom: 1px solid #2D2C2F;
+    font-size: 1rem;
+    color: #E8E8E8;
+    font-size: 1rem;
+
+    p:nth-of-type(2) {
+        color: #898F9A;
+    }
+
+    p:nth-of-type(7) {
+        color: #898F9A;
+    }
+
+    img {
+        cursor: pointer;
+    }
 }

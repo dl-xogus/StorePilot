@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 import DateSelectTab from '@/components/sales/DateSelectTab'
-import SalesModal from './popup/SalesModal'
+import AddSalesPopup from './popup/AddSalesPopup'
 
 import sales from './sales.module.scss'
 import DayWeekMonthTab from '@/components/sales/DayWeekMonthTab'
@@ -59,15 +59,15 @@ export default function sale() {
 
   // 컴포넌트 마운트 시 매출 데이터 API 호출
   useEffect(() => {
-    axios.get('/api/sales', {
+    axios.get('/api/sales/db', {
       params: {
         ownerId: 'qwe@email.com', // 추후 세션값으로 교체
         storeId: '001',
       }
     })
       .then(res => {
-        setSalesData(res.data.sales)
-        setChecked(new Array(res.data.sales.length).fill(false))
+        setSalesData(res.data.sales);
+        setChecked(new Array(res.data.sales.length).fill(false));
       })
       .catch(err => console.error('매출 조회 실패', err));
   }, []);
@@ -88,9 +88,9 @@ export default function sale() {
 
     if (activeTab === '월별') return itemYear === selYear;
     if (activeTab === '주별') return itemYear === selYear && itemMonth === selMonth;
+
     return itemYear === selYear && itemMonth === selMonth && itemWeek === selWeek;
   });
-
 
   const getCompare = () => {
     switch (activeTab) {
@@ -119,6 +119,28 @@ export default function sale() {
     // 날짜를 'YYYY-MM-DD' 형식으로 변환해서 salesData에서 일치하는 항목 탐색
     const compareDateStr = compareDate.toISOString().slice(0, 10);
     return salesData.find(d => d.date === compareDateStr) ?? null;
+  };
+
+  // 체크된 항목들을 DB에서 일괄 삭제하고 로컬 상태도 갱신
+  const handleDelete = async () => {
+    const datesToDelete = salesData
+      .filter((_, i) => checked[i])
+      .map(item => item.date);
+
+    if (datesToDelete.length === 0) return;
+
+    await axios.delete('/api/sales/db', {
+      params: {
+        ownerId: 'qwe@email.com',
+        storeId: '001',
+        dates: datesToDelete.join(','),
+      }
+    });
+
+    const remaining = salesData.filter(item => !datesToDelete.includes(item.date));
+    setSalesData(remaining);
+    setChecked(new Array(remaining.length).fill(false));
+    setCheckedAll(false);
   };
 
   // 기본값: 날짜 내림차순 (최신이 위)
@@ -202,7 +224,7 @@ export default function sale() {
               <p onClick={() => setPopupOpen(true)}>
                 <img src="./img/icon/ic-plus(black).svg" alt="추가버튼" />
               </p>
-              <p><img src="./img/icon/ic-bin.svg" alt="삭제버튼" /></p>
+              <p onClick={handleDelete}><img src="./img/icon/ic-bin.svg" alt="삭제버튼" /></p>
             </div>
           </div>
 
@@ -235,7 +257,7 @@ export default function sale() {
 
                 // 체크박스는 sortedData 기준이 아닌 원본 salesData 기준 인덱스로 관리
                 // 이유: sortedData는 정렬 + diff 이기때문에 원본 salesData와 순서도 다르고 객체도 새로 만들어진 상태 이기 때문에
-                const idx = salesData.indexOf(salesData.find(d => d.date === item.date))    // indexOf() : 배열의 특정요소 index를 반환
+                const idx = salesData.indexOf(salesData.find(d => d.date === item.date));    // indexOf() : 배열의 특정요소 index를 반환
 
                 return (
                   <div key={item.date} className={sales.oneline}>
@@ -304,7 +326,15 @@ export default function sale() {
         </article>
       </section>
 
-      {popupOpen && <SalesModal onClose={() => setPopupOpen(false)} sales={sales} />}
+      {
+        popupOpen &&
+          <AddSalesPopup
+            onClose={() => setPopupOpen(false)}
+            salesData={salesData}
+            getSortIcon={getSortIcon}
+            today={today}
+          />
+      }
     </div>
   )
 }
