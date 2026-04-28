@@ -6,7 +6,7 @@ import sidebar from "@/app/sidebar.module.scss"
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
-export default function Sidebar() {
+export default function Sidebar({ frontOpen, setFrontOpen }) {
 
   const [isOpen, setIsOpen] = useState(true);
 
@@ -94,8 +94,8 @@ export default function Sidebar() {
 
         <div className={sidebar.line}></div>
 
-        <div className={sidebar.center}>
-          <div className={sidebar.menuItem}>
+        <div className={`${sidebar.center} ${frontOpen === true ? sidebar.active : ''}`}>
+          <div className={sidebar.menuItem} onClick={() => setFrontOpen(!frontOpen)}>
             <span className={sidebar.icon}>
               <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.875 9.58341C2.875 5.96954 2.875 4.16212 3.99817 3.03991C5.12133 1.91771 6.92779 1.91675 10.5417 1.91675H12.4583C16.0722 1.91675 17.8796 1.91675 19.0018 3.03991C20.124 4.16308 20.125 5.96954 20.125 9.58341V13.4167C20.125 17.0306 20.125 18.838 19.0018 19.9602C17.8787 21.0825 16.0722 21.0834 12.4583 21.0834H10.5417C6.92779 21.0834 5.12037 21.0834 3.99817 19.9602C2.87596 18.8371 2.875 17.0306 2.875 13.4167V9.58341Z" stroke="white" strokeWidth="1.5" />

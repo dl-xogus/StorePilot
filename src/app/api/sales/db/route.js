@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import clientPromise from '@/lib/mongodb'
-import { getSales, deleteSales } from '@/lib/db/sales'
+import { getSales, deleteSales, postSales } from '@/lib/db/sales'
 
 async function getCollection() {
   const client = await clientPromise;
@@ -25,15 +25,7 @@ export async function GET(request) {
 export async function POST(request) {
   const { ownerId, storeId, date, day, dailySales, details } = await request.json()
 
-  const col = await getCollection()
-  const newEntry = { date, day, dailySales, details: details ?? [] }
-
-  // 해당 문서가 없으면 생성, 있으면 sales 배열에 추가
-  await col.updateOne(
-    { ownerId, storeId },
-    { $push: { sales: newEntry } },
-    { upsert: true }
-  )
+  await postSales(ownerId, storeId, date, day, dailySales, details);
 
   return NextResponse.json({ ok: true })
 }

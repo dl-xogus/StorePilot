@@ -7,8 +7,7 @@ import MenuAddForm from '@/components/sales/MenuAddForm';
 import MenuRow from '@/components/sales/MenuRow';
 import SalesSummary from '@/components/sales/SalesSummary';
 
-export default function AddSalesPopup({ onClose, salesData, today, onSave, activeTab, editItem }) {
-  const isEdit = !!editItem;
+export default function EditSalesPopup({ onClose, salesData, today, onSave, activeTab }) {
 
   // ─── 메뉴 목록 (API) ────────────────────────────────────────
   const [menuData, setMenuData] = useState([]);
@@ -16,7 +15,7 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
   useEffect(() => {
     axios.get('/api/menu/db', {
       params: {
-        ownerId: 'qwe@email.com',
+        ownerId: 'qwe@email.com', // 추후 세션값으로 교체
         storeId: '001',
       }
     })
@@ -25,7 +24,7 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
   }, []);
 
   // ─── 추가된 메뉴 목록 ────────────────────────────────────────
-  const [addMenus, setAddMenus] = useState(editItem?.details ?? []);
+  const [addMenus, setAddMenus] = useState([]);
   const totalSales = addMenus.reduce((sum, item) => sum + Number(item.sales), 0);
 
   const handleAdd = ({ name, count, sales }) => {
@@ -49,7 +48,7 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
 
   // ─── 체크박스 ───────────────────────────────────────────────
   const [checkedAll, setCheckedAll] = useState(false);
-  const [checked, setChecked] = useState(new Array((editItem?.details ?? []).length).fill(false));
+  const [checked, setChecked] = useState([]);
 
   const handleDelete = () => {
     const deleteNames = addMenus.filter((_, i) => checked[i]).map(item => item.name);
@@ -61,23 +60,17 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
   };
 
   // ─── 인라인 수정 ─────────────────────────────────────────────
-  const [edit, setEdit] = useState(null);
+  const [edit, setEdit] = useState(null);  // 수정 중인 item.name
 
-  // ─── 날짜 선택 ───────────────────────────────────────────────
-  const [selDate, setSelDate] = useState(() => {
-    if (editItem) {
-      const [y, m, d] = editItem.date.split('-');
-      return { year: `${parseInt(y)}년`, month: `${parseInt(m)}월`, date: `${parseInt(d)}일` };
-    }
-    return {
-      year: `${today.getFullYear()}년`,
-      month: `${today.getMonth() + 1}월`,
-      date: `${today.getDate()}일`,
-    };
+  // ─── 날짜 표시 ───────────────────────────────────────────────
+  const [selDate, setSelDate] = useState({
+    year: `${today.getFullYear()}년`,
+    month: `${today.getMonth() + 1}월`,
+    date: `${today.getDate()}일`,
   });
 
   const [dateOpenDropdown, setDateOpenDropdown] = useState(null);
-  const [addInput, setAddInput] = useState(false);
+  const [addInput, setAddInput] = useState(true);
 
   const currentYear = new Date().getFullYear();
   const daysInMonth = new Date(parseInt(selDate.year), parseInt(selDate.month), 0).getDate();
@@ -159,22 +152,17 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
   const saveSales = () => {
     const days = ['일', '월', '화', '수', '목', '금', '토'];
     const day = days[new Date(year, month, date).getDay()];
-    const payload = {
-      ownerId: 'qwe@email.com',
+
+    axios.post('/api/sales/db', {
+      ownerId: 'qwe@email.com', // 추후 세션값으로 교체
       storeId: '001',
       date: fmt(new Date(year, month, date)),
       day,
       dailySales: totalSales,
       details: addMenus,
-    };
-
-    const request = isEdit
-      ? axios.put('/api/sales/db', payload)
-      : axios.post('/api/sales/db', payload);
-
-    request
+    })
       .then(() => { onSave(); onClose(); })
-      .catch(err => console.error('매출 저장 실패', err));
+      .catch(err => console.error('매출 추가 실패', err));
   };
 
 
@@ -190,7 +178,8 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
         <div className={styles.title}>
           <div className={styles.titleName}>
             <p><img src="./img/icon/ic-sales-edit.svg" alt="매출상세아이콘" /></p>
-            <h3>{isEdit ? '매출 수정' : '매출 추가'}</h3>
+            <h3>매출 수정</h3>
+            <small>{today}</small>
           </div>
           <p className={styles.xbtn} onClick={onClose}>
             <img src="./img/icon/ic-x.svg" alt="x버튼" />
@@ -202,36 +191,33 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
           {/* 상단: 날짜 선택 + 추가/삭제 버튼 */}
           <div className={styles.graphTop}>
             <div className={styles.searchAndperiod}>
-              {isEdit
-                ? <p className={styles.editDate}>{editItem.date.replaceAll('-', '.')} ({editItem.day})</p>
-                : <div className={`${period.period} ${styles.period}`}>
-                  {tab.map(({ key, label }) => (
-                    <div key={key} className={period.periodItem}>
-                      <button
-                        className={`${period.periodBtn} ${dateOpenDropdown === key ? period.periodBtnOpen : ''}`}
-                        onClick={() => dateToggleDropdown(key)}
-                      >
-                        {label}
-                        <p><img src="./img/icon/ic-down.svg" alt="펼침아이콘" /></p>
-                      </button>
+              <div className={`${period.period} ${styles.period}`}>
+                {tab.map(({ key, label }) => (
+                  <div key={key} className={period.periodItem}>
+                    <button
+                      className={`${period.periodBtn} ${dateOpenDropdown === key ? period.periodBtnOpen : ''}`}
+                      onClick={() => dateToggleDropdown(key)}
+                    >
+                      {label}
+                      <p><img src="./img/icon/ic-down.svg" alt="펼침아이콘" /></p>
+                    </button>
 
-                      {dateOpenDropdown === key && (
-                        <ul className={`${period.dropdown} ${styles.dropdown}`}>
-                          {options[key].map(opt => (
-                            <li
-                              key={opt}
-                              className={selDate[key] === opt ? period.dropdownActive : ''}
-                              onClick={() => handleDateSelect(key, opt)}
-                            >
-                              {opt}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              }
+                    {dateOpenDropdown === key && (
+                      <ul className={`${period.dropdown} ${styles.dropdown}`}>
+                        {options[key].map(opt => (
+                          <li
+                            key={opt}
+                            className={selDate[key] === opt ? period.dropdownActive : ''}
+                            onClick={() => handleDateSelect(key, opt)}
+                          >
+                            {opt}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className={styles.btns}>
@@ -267,7 +253,7 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
                         src={
                           sortKey !== col.key ? './img/icon/ic-sort-none.svg'
                             : sortDir === 'asc' ? './img/icon/ic-sort-up.svg'
-                              : './img/icon/ic-sort-down.svg'
+                            : './img/icon/ic-sort-down.svg'
                         }
                         alt="정렬아이콘"
                       />

@@ -1,8 +1,40 @@
+"use client"
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import React from 'react'
 import style from '@/app/(pages)/dashboard/dashboard.module.scss'
 import Link from 'next/link'
+import Chart from '@/components/sales/Chart'
+
+const getKoreaToday = () => {
+  const now = new Date()
+  return new Date(now.getTime() + now.getTimezoneOffset() * 60000 + 9 * 3600000)
+}
+
+const getWeekOfMonth = (date) => {
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
+  return Math.ceil((firstDay + date.getDate()) / 7)
+}
+
 
 function Dashboard() {
+  const [salesData, setSalesData] = useState([])
+
+  const today = getKoreaToday()
+  const selected = {
+    year: `${today.getFullYear()}년`,
+    month: `${today.getMonth() + 1}월`,
+    week: `${getWeekOfMonth(today)}주차`,
+  }
+
+  useEffect(() => {
+    axios.get('/api/sales/db', {
+      params: { ownerId: 'qwe@email.com', storeId: '001' }
+    })
+      .then(res => setSalesData(res.data.sales))
+      .catch(err => console.error('매출 조회 실패', err))
+  }, [])
+
   return (
     <div className={style.dashboard}>
       <section className={style.inner}>
@@ -61,18 +93,15 @@ function Dashboard() {
           </div>
         </div>
 
-
         <section className={style.chartSection}>
           <h2>이번주 매출 그래프</h2>
 
           <div className={style.chartBox}>
-            {/* 차트 들어갈 자리 */}
+            <Chart salesData={salesData} activeTab="일별" selected={selected} />
           </div>
         </section>
 
-
       </section>
-
     </div>
   )
 }

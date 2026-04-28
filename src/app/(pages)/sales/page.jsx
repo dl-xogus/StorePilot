@@ -9,6 +9,7 @@ import AddSalesPopup from './popup/AddSalesPopup'
 import sales from './sales.module.scss'
 import DayWeekMonthTab from '@/components/sales/DayWeekMonthTab'
 import Chart from '@/components/sales/Chart'
+import EditSalesPopup from './popup/EditSalesPopup'
 
 // 한국 시간(KST, UTC+9) 기준 오늘 날짜 반환
 const getKoreaToday = () => {
@@ -30,10 +31,11 @@ const getWeekOfMonth = (date) => {
 }
 
 export default function sale() {
-  const [salesData, setSalesData] = useState([]);      // API에서 받아온 전체 매출 데이터
-  const [checkedAll, setCheckedAll] = useState(false); // 전체 선택 체크박스 상태
-  const [checked, setChecked] = useState([]);          // 각 행의 체크박스 상태 배열
-  const [popupOpen, setPopupOpen] = useState(false);   // 매출 추가 팝업 열림 여부
+  const [salesData, setSalesData] = useState([]);             // API에서 받아온 전체 매출 데이터
+  const [checkedAll, setCheckedAll] = useState(false);        // 전체 선택 체크박스 상태
+  const [checked, setChecked] = useState([]);                 // 각 행의 체크박스 상태 배열
+  const [popupOpen, setPopupOpen] = useState(false);          // 매출 추가 팝업 열림 여부
+  const [editItem, setEditItem] = useState(null);             // 수정 팝업에 전달할 항목 (null이면 닫힘)
 
   // DayWeekMonthTab에서 선택한 탭 ('일별' | '주별' | '월별')
   // 이 값에 따라 DateSelectTab의 활성 항목과 매출 목록 필터링 기준이 달라짐
@@ -57,8 +59,7 @@ export default function sale() {
     setOpenDropdown(null);
   };
 
-  // 컴포넌트 마운트 시 매출 데이터 API 호출
-  useEffect(() => {
+  const fetchSales = () => {
     axios.get('/api/sales/db', {
       params: {
         ownerId: 'qwe@email.com', // 추후 세션값으로 교체
@@ -70,7 +71,9 @@ export default function sale() {
         setChecked(new Array(res.data.sales.length).fill(false));
       })
       .catch(err => console.error('매출 조회 실패', err));
-  }, []);
+  };
+
+  useEffect(() => { fetchSales(); }, []);
 
   // activeTab + selected 기준으로 salesData 필터링
   // - 월별: 선택한 연도의 데이터만 표시
@@ -195,86 +198,87 @@ export default function sale() {
 
 
   return (
-    <div className={sales.sales}>
-      <div className={sales.title}>
-        <h1><span>매출</span> 관리</h1>
+    <>
+      <div className={sales.sales}>
+        <div className={sales.title}>
+          <h1><span>매출</span> 관리</h1>
 
-        {/* activeTab 상태를 props로 내려줘서 선택된 탭을 표시하고 변경할 수 있게 함 */}
-        <DayWeekMonthTab activeTab={activeTab} setActiveTab={handleTabChange} />
-      </div>
+          {/* activeTab 상태를 props로 내려줘서 선택된 탭을 표시하고 변경할 수 있게 함 */}
+          <DayWeekMonthTab activeTab={activeTab} setActiveTab={handleTabChange} />
+        </div>
 
-      {/*
+        {/*
         activeTab에 따라 비활성화할 항목이 달라짐
         selected/setSelected: 년, 월, 주차 선택값 (page에서 관리해야 filteredData에 반영됨)
         openDropdown/setOpenDropdown: 탭 전환 시 드롭다운을 닫기 위해 page에서 관리
       */}
-      <DateSelectTab
-        activeTab={activeTab}
-        selected={selected}
-        setSelected={setSelected}
-        openDropdown={openDropdown}
-        setOpenDropdown={setOpenDropdown}
-      />
+        <DateSelectTab
+          activeTab={activeTab}
+          selected={selected}
+          setSelected={setSelected}
+          openDropdown={openDropdown}
+          setOpenDropdown={setOpenDropdown}
+        />
 
-      <section className={sales.section}>
-        <article className={`${sales.left} ${sales.content}`}>
-          <div className={sales.title}>
-            <h3>매출 목록</h3>
-            <div className={sales.btns}>
-              <p onClick={() => setPopupOpen(true)}>
-                <img src="./img/icon/ic-plus(black).svg" alt="추가버튼" />
-              </p>
-              <p onClick={handleDelete}><img src="./img/icon/ic-bin.svg" alt="삭제버튼" /></p>
-            </div>
-          </div>
-
-          <div className={sales.graph}>
-            {/* 헤더 행: 전체 선택 체크박스 + 컬럼명 */}
-            <div className={sales.titleLine}>
-              <input
-                type="checkbox"
-                className={sales.checkbox}
-                checked={checkedAll}
-                onChange={e => {
-                  setCheckedAll(e.target.checked)
-                  setChecked(checked.map(() => e.target.checked))
-                }}
-              />
-              <div className={sales.text}>
-                {columns.map(col => (
-                  <div key={col.key} onClick={() => handleSort(col.key)} className={sales.sortTab}>
-                    <p>{col.label}</p>
-                    <p><img src={getSortIcon(col.key)} alt="정렬아이콘" /></p>
-                  </div>
-                ))}
+        <section className={sales.section}>
+          <article className={`${sales.left} ${sales.content}`}>
+            <div className={sales.title}>
+              <h3>매출 목록</h3>
+              <div className={sales.btns}>
+                <p onClick={() => setPopupOpen(true)}>
+                  <img src="./img/icon/ic-plus(black).svg" alt="추가버튼" />
+                </p>
+                <p onClick={handleDelete}><img src="./img/icon/ic-bin.svg" alt="삭제버튼" /></p>
               </div>
             </div>
 
-            {/* 이미 필터링 + 정렬된 배열(sortedData)을 사용해 .map()으로 출력 */}
-            <div className={sales.lines}>
-              {sortedData.map((item) => {
-                const { diff } = item;
+            <div className={sales.graph}>
+              {/* 헤더 행: 전체 선택 체크박스 + 컬럼명 */}
+              <div className={sales.titleLine}>
+                <input
+                  type="checkbox"
+                  className={sales.checkbox}
+                  checked={checkedAll}
+                  onChange={e => {
+                    setCheckedAll(e.target.checked)
+                    setChecked(checked.map(() => e.target.checked))
+                  }}
+                />
+                <div className={sales.text}>
+                  {columns.map(col => (
+                    <div key={col.key} onClick={() => handleSort(col.key)} className={sales.sortTab}>
+                      <p>{col.label}</p>
+                      <p><img src={getSortIcon(col.key)} alt="정렬아이콘" /></p>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-                // 체크박스는 sortedData 기준이 아닌 원본 salesData 기준 인덱스로 관리
-                // 이유: sortedData는 정렬 + diff 이기때문에 원본 salesData와 순서도 다르고 객체도 새로 만들어진 상태 이기 때문에
-                const idx = salesData.indexOf(salesData.find(d => d.date === item.date));    // indexOf() : 배열의 특정요소 index를 반환
+              {/* 이미 필터링 + 정렬된 배열(sortedData)을 사용해 .map()으로 출력 */}
+              <div className={sales.lines}>
+                {sortedData.map((item) => {
+                  const { diff } = item;
 
-                return (
-                  <div key={item.date} className={sales.oneline}>
-                    <input
-                      type="checkbox"
-                      className={sales.checkbox}
-                      checked={checked[idx] ?? false}
-                      onChange={e => setChecked(prev => prev.map((v, j) => j === idx ? e.target.checked : v))}
-                    />
+                  // 체크박스는 sortedData 기준이 아닌 원본 salesData 기준 인덱스로 관리
+                  // 이유: sortedData는 정렬 + diff 이기때문에 원본 salesData와 순서도 다르고 객체도 새로 만들어진 상태 이기 때문에
+                  const idx = salesData.indexOf(salesData.find(d => d.date === item.date));    // indexOf() : 배열의 특정요소 index를 반환
 
-                    <div className={sales.text}>
-                      <div className={sales.date}>
-                        {item.date.slice(5).replace('-', '.')} ({item.day})
-                      </div>
+                  return (
+                    <div key={item.date} className={sales.oneline}>
+                      <input
+                        type="checkbox"
+                        className={sales.checkbox}
+                        checked={checked[idx] ?? false}
+                        onChange={e => setChecked(prev => prev.map((v, j) => j === idx ? e.target.checked : v))}
+                      />
 
-                      <div className={sales.sale}>
-                        {Number(item.dailySales).toLocaleString()
+                      <div className={sales.text}>
+                        <div className={sales.date}>
+                          {item.date.slice(5).replace('-', '.')} ({item.day})
+                        </div>
+
+                        <div className={sales.sale}>
+                          {Number(item.dailySales).toLocaleString()
                         /*
                           toLocaleString() : 숫자를 지역 형식에 맞는 문자열로 변환하는 메서드
                             const num = 1500000;
@@ -284,57 +288,74 @@ export default function sale() {
 
                           Number()로 먼저 숫자 타입으로 변환한 이유는 dailySales가 문자열로 올 경우 toLocaleString()이 문자열엔 쉼표를 안 찍기 때문
                         */}
+                        </div>
+
+                        {/* diff가 null이면 비교 데이터 없음, 양수면 증가(초록), 음수면 감소(빨강) */}
+                        <div className={diff === null ? '' : diff >= 0 ? sales.plus : sales.minus}>
+                          {diff === null ? '-' : `${diff >= 0 ? '+' : ''}${diff.toLocaleString()}`}
+                        </div>
                       </div>
 
-                      {/* diff가 null이면 비교 데이터 없음, 양수면 증가(초록), 음수면 감소(빨강) */}
-                      <div className={diff === null ? '' : diff >= 0 ? sales.plus : sales.minus}>
-                        {diff === null ? '-' : `${diff >= 0 ? '+' : ''}${diff.toLocaleString()}`}
-                      </div>
+                      <p
+                        className={sales.editBtn}
+                        onClick={() => setEditItem(item)}
+                      >
+                        <img src="./img/icon/ic-edit.svg" alt="수정아이콘" />
+                      </p>
                     </div>
-
-                    <p className={sales.editBtn}>
-                      <img src="./img/icon/ic-edit.svg" alt="수정아이콘" />
-                    </p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-        </article>
-
-        <article className={sales.right}>
-          <h3 className={sales.title}>매출 그래프</h3>
-
-          <div className={sales.graphs}>
-            <div className={sales.graph}>
-              <Chart/>
+                  )
+                })}
+              </div>
             </div>
 
-            <div className={sales.graph}>
-              <div className={sales.AItitle}>
-                <p><img src="./img/icon/ic-AI.svg" alt="AI아이콘" /></p>
-                <h3>AI 분석</h3>
+          </article>
+
+          <article className={sales.right}>
+            <h3 className={sales.title}>매출 그래프</h3>
+
+            <div className={sales.graphs}>
+              <div className={sales.graph}>
+                <Chart salesData={salesData} activeTab={activeTab} selected={selected} />
+
               </div>
 
-              <p className={sales.aiText}>
-                수요일 매출이 평균 대비 낮습니다.<br />
-                원인 후보 : 평일 중간 요일, 날씨 영향, 이벤트 부재
-              </p>
-            </div>
-          </div>
-        </article>
-      </section>
+              <div className={sales.graph}>
+                <div className={sales.AItitle}>
+                  <p><img src="./img/icon/ic-AI.svg" alt="AI아이콘" /></p>
+                  <h3>AI 분석</h3>
+                </div>
 
-      {
-        popupOpen &&
-          <AddSalesPopup
-            onClose={() => setPopupOpen(false)}
-            salesData={salesData}
-            getSortIcon={getSortIcon}
-            today={today}
-          />
+                <p className={sales.aiText}>
+                  수요일 매출이 평균 대비 낮습니다.<br />
+                  원인 후보 : 평일 중간 요일, 날씨 영향, 이벤트 부재
+                </p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+      </div>
+
+      {popupOpen &&
+        <AddSalesPopup
+          onClose={() => setPopupOpen(false)}
+          salesData={salesData}
+          today={today}
+          onSave={fetchSales}
+          activeTab={activeTab}
+        />
       }
-    </div>
+
+      {editItem &&
+        <AddSalesPopup
+          editItem={editItem}
+          onClose={() => setEditItem(null)}
+          salesData={salesData}
+          today={today}
+          onSave={fetchSales}
+          activeTab={activeTab}
+        />
+      }
+    </>
   )
 }

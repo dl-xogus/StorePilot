@@ -10,8 +10,9 @@
     }
 
     width: 100%;
-    max-width: 1260px;
+    max-width: 1300px;
     margin: 100px auto;
+    padding: 0 20px;
 
     .checkbox {
         appearance: none;
@@ -109,8 +110,9 @@
             display: flex;
             flex-direction: column;
             gap: 40px;
-
+            
             .graph {
+                overflow: visible;
                 flex: 1;
                 height: auto;
                 min-height: 0;
