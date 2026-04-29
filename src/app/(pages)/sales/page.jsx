@@ -1,15 +1,13 @@
 "use client"
 import { useState, useEffect } from 'react'
-
 import axios from 'axios'
 
+import sales from './sales.module.scss'
 import DateSelectTab from '@/components/sales/DateSelectTab'
 import AddSalesPopup from './popup/AddSalesPopup'
-
-import sales from './sales.module.scss'
 import DayWeekMonthTab from '@/components/sales/DayWeekMonthTab'
 import Chart from '@/components/sales/Chart'
-import EditSalesPopup from './popup/EditSalesPopup'
+import Ai from '@/components/sales/Ai'
 
 // 한국 시간(KST, UTC+9) 기준 오늘 날짜 반환
 const getKoreaToday = () => {
@@ -208,10 +206,10 @@ export default function sale() {
         </div>
 
         {/*
-        activeTab에 따라 비활성화할 항목이 달라짐
-        selected/setSelected: 년, 월, 주차 선택값 (page에서 관리해야 filteredData에 반영됨)
-        openDropdown/setOpenDropdown: 탭 전환 시 드롭다운을 닫기 위해 page에서 관리
-      */}
+          activeTab에 따라 비활성화할 항목이 달라짐
+          selected/setSelected: 년, 월, 주차 선택값 (page에서 관리해야 filteredData에 반영됨)
+          openDropdown/setOpenDropdown: 탭 전환 시 드롭다운을 닫기 위해 page에서 관리
+        */}
         <DateSelectTab
           activeTab={activeTab}
           selected={selected}
@@ -307,7 +305,6 @@ export default function sale() {
                 })}
               </div>
             </div>
-
           </article>
 
           <article className={sales.right}>
@@ -316,7 +313,6 @@ export default function sale() {
             <div className={sales.graphs}>
               <div className={sales.graph}>
                 <Chart salesData={salesData} activeTab={activeTab} selected={selected} />
-
               </div>
 
               <div className={sales.graph}>
@@ -325,10 +321,13 @@ export default function sale() {
                   <h3>AI 분석</h3>
                 </div>
 
-                <p className={sales.aiText}>
-                  수요일 매출이 평균 대비 낮습니다.<br />
-                  원인 후보 : 평일 중간 요일, 날씨 영향, 이벤트 부재
-                </p>
+                {/* AI 분석 */}
+                <div className={sales.aiText}>
+                  <Ai
+                    salesData={salesData}
+                    today={today}
+                  />
+                </div>
               </div>
             </div>
           </article>

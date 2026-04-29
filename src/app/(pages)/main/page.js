@@ -4,7 +4,7 @@ import React from 'react'
 import style from '@/app/(pages)/main/main.module.scss'
 import { useState, useEffect } from "react";
 import Link from 'next/link'
-
+import { calculatePredictedSales } from '@/app/api/sales/openai/route.js'
 
 import axios from 'axios'
 
@@ -42,6 +42,20 @@ export default function main() {
   }, []);
 
 
+  /* 예상 매출액 */
+  const [salesData, setSalesData] = useState([]);
+  
+  useEffect(() => {
+    axios.get('/api/sales/db', {
+      params: { ownerId: 'qwe@email.com', storeId: '001' }
+    })
+      .then(res => setSalesData(res.data.sales))
+      .catch(err => console.error('매출 조회 실패', err))
+  }, [])
+
+  const formatted = salesData.map(s => ({ date: s.date, amount: Number(s.dailySales) }));
+  const prediction = calculatePredictedSales(formatted);
+
 
 
   async function handleAsk(item) {
@@ -49,7 +63,7 @@ export default function main() {
 
     if (!finalQuestion.trim()) return
 
-    setCurrentQuestion("질문 : "+finalQuestion)
+    setCurrentQuestion("질문 : " + finalQuestion)
     setLoading(true) // 🔥 시작
 
     try {
@@ -161,7 +175,7 @@ export default function main() {
               <p><img src='/img/icon/ic-main-sales.png' /></p>
               <div className={style.summaryText}>
                 <p>예상 매출</p>
-                <strong>1,240,000원</strong>
+                <strong>{prediction?.predictedAmount.toLocaleString()} 원</strong>
               </div>
             </div>
           </div>

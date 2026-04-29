@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import styles from './front.module.scss';
-import MenuAddForm from '@/components/sales/MenuAddForm';
-import MenuRow from '@/components/sales/MenuRow';
-// import styles from '@/app/(pages)/sales/popup/AddSalesPopup.module.scss';
 
 export default function Front({ onClose }) {
   const [menuData, setMenuData] = useState([]);
@@ -14,14 +11,72 @@ export default function Front({ onClose }) {
   const [edit, setEdit] = useState(null);
 
   // ─── 정렬 ────────────────────────────────────────────────────
+  
+  useEffect(() => {
+    axios.get('/api/menu/db', {
+      params: {
+        ownerId: 'qwe@email.com',
+        storeId: '001',
+      }
+    })
+    .then(res => setMenuData(res.data.menu))
+    .catch(err => console.error('메뉴 조회 실패', err));
+  }, []);
+  
+  /* 카테고리 배열 */
+  const categories = [...new Set(menuData.map(item => item.category))];   // new Set() : 중복을 자동으로 제거하는 자료구조
+  const [activeTab, setActiveTab] = useState('전체');
+  
+  const [search, setSearch] = useState('');
+  const [quantities, setQuantities] = useState({});
+
+  const handleQty = (id, delta) => {
+    setQuantities(prev => {
+      const next = (prev[id] ?? 0) + delta;
+      return { ...prev, [id]: next < 0 ? 0 : next };
+    });
+  };
+
+  const totalPrice = menuData.reduce((sum, item) => {
+    return sum + (quantities[item._id] ?? 0) * Number(item.price);
+  }, 0);
+
+  const handleOrder = async () => {
+    const details = menuData
+      .filter(item => (quantities[item._id] ?? 0) > 0)
+      .map(item => ({
+        name: item.name,
+        count: quantities[item._id],
+        sales: quantities[item._id] * Number(item.price),
+      }));
+
+    if (details.length === 0) return alert('주문할 메뉴를 선택해주세요.');
+
+    const now = new Date();
+    const date = now.toISOString().slice(0, 10);
+    const day = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
+
+    await axios.post('/api/sales/db', {
+      ownerId: 'qwe@email.com',
+      storeId: '001',
+      date,
+      day,
+      dailySales: totalPrice,
+      details,
+    });
+
+    setQuantities({});
+    onClose();
+  };
+
+  const [sortKey, setSortKey] = useState('name');
+  const [sortDir, setSortDir] = useState('desc');
+
   const columns = [
     { key: 'name', label: '메뉴명' },
     { key: 'status', label: '상태' },
     { key: 'price', label: '가격' },
   ];
-
-  const [sortKey, setSortKey] = useState('name');
-  const [sortDir, setSortDir] = useState('desc');
 
   const handleSort = (key) => {
     if (sortKey === key) {
@@ -32,29 +87,19 @@ export default function Front({ onClose }) {
     }
   };
 
-  const sortedMenus = [...menuData].sort((a, b) => {
+  const sortedMenus = [...menuData]
+    .filter(item => activeTab === '전체' || item.category === activeTab)    // 카테고리 탭 필터
+    .filter(item => item.name.includes(search))                            // 검색 필터
+    .sort((a, b) => {                                                      // 정렬
+    const statusOrder = { '판매중': 0, '품절': 1 };
     const cmp = sortKey === 'name'
-      ? a.name.localeCompare(b.name, 'ko')
-      : Number(a[sortKey]) - Number(b[sortKey]);
+      ? b.name.localeCompare(a.name, 'ko')
+      : sortKey === 'status'
+        ? statusOrder[a.status] - statusOrder[b.status]
+        : Number(a[sortKey]) - Number(b[sortKey]);
     return sortDir === 'asc' ? cmp : -cmp;
   });
-
-
-
-  useEffect(() => {
-    axios.get('/api/menu/db', {
-      params: {
-        ownerId: 'qwe@email.com',
-        storeId: '001',
-      }
-    })
-      .then(res => setMenuData(res.data.menu))
-      .catch(err => console.error('메뉴 조회 실패', err));
-  }, []);
-
-
-
-
+  
   return (
     <div
       className={styles.back}
@@ -74,16 +119,36 @@ export default function Front({ onClose }) {
         <div className={styles.inner}>
           <div className={styles.graphTop}>
             <div className={styles.searchAndperiod}>
-              <div>
+              <form className={styles.searchBar}>
+                <button><img src="./img/icon/ic-search.svg" alt="검색아이콘" /></button>
+                <input
+                  type="text"
+                  placeholder='메뉴명 검색'
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </form>
 
+              <div className={styles.categories}>
+                <button
+                  className={`${styles.btn} ${activeTab === '전체' ? styles.active : ''}`}
+                  onClick={() => setActiveTab('전체')}
+                >
+                  전체
+                </button>
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    className={`${styles.btn} ${activeTab === cat ? styles.active : ''}`}
+                    onClick={() => setActiveTab(cat)}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
 
-
-
-
-          {/* =========================================================================================== */}
           <div className={styles.graph}>
             <div className={styles.titleLine}>
               <div className={styles.text}>
@@ -106,18 +171,36 @@ export default function Front({ onClose }) {
             </div>
 
             <div className={styles.lines}>
-              {menuData.map((item, i) =>
+              {sortedMenus.map((item, i) =>
                 <div className={styles.oneline} key={i}>
                   <div className={styles.detail}>
                     <p>{item.name}</p>
-                    <p>{item.status}</p>
-                    <p>{item.price}</p>
+                    
+                    <p
+                      className={item.status === '품절' ? styles.soldout : styles.available}
+                    >
+                      {item.status}
+                    </p>
+                    
+                    <p>{Number(item.price).toLocaleString()} 원</p>
                   </div>
 
                   <div className={styles.pmBtn}>
-                    <p className={styles.btn}><img src="./img/icon/ic-minus.svg" alt="감소버튼" /></p>
-                    <p>0</p>
-                    <p className={styles.btn}><img src="./img/icon/ic-plus(white).svg" alt="증가버튼" /></p>
+                    <p 
+                      className={styles.btn} 
+                      onClick={() => handleQty(item._id, -1)}
+                    >
+                      <img src="./img/icon/ic-minus.svg" alt="감소버튼" />
+                    </p>
+
+                    <p className={styles.quantity}>{quantities[item._id] ?? 0}</p>
+
+                    <p 
+                      className={styles.btn} 
+                      onClick={() => handleQty(item._id, 1)}
+                    >
+                      <img src="./img/icon/ic-plus(white).svg" alt="증가버튼" />
+                    </p>
                   </div>
                 </div>
               )}
@@ -127,21 +210,15 @@ export default function Front({ onClose }) {
           <div className={styles.graphBot}>
             <p>총 금액</p>
             <p><img src="./img/icon/ic-right.svg" alt="right" /></p>
-            <p>123123</p>
+            <p>{totalPrice.toLocaleString()} 원</p>
           </div>
 
-          <div>
+          <button 
+            className={styles.order}
+            onClick={handleOrder}
+          >
             주문하기
-          </div>
-
-
-
-
-
-
-
-
-
+          </button>
         </div>
       </div>
     </div>

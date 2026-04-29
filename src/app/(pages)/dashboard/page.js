@@ -5,6 +5,7 @@ import React from 'react'
 import style from '@/app/(pages)/dashboard/dashboard.module.scss'
 import Link from 'next/link'
 import Chart from '@/components/sales/Chart'
+import { calculatePredictedSales } from '@/app/api/sales/openai/route.js'
 
 const getKoreaToday = () => {
   const now = new Date()
@@ -35,6 +36,10 @@ function Dashboard() {
       .catch(err => console.error('매출 조회 실패', err))
   }, [])
 
+  /* 예상 매출액 */
+  const formatted = salesData.map(s => ({ date: s.date, amount: Number(s.dailySales) }));
+  const prediction = calculatePredictedSales(formatted);
+
   return (
     <div className={style.dashboard}>
       <section className={style.inner}>
@@ -57,7 +62,7 @@ function Dashboard() {
               <p><img src='/img/icon/ic-main-sales.png' /></p>
               <div className={style.summaryText}>
                 <p>예상 매출</p>
-                <strong>1,240,000원</strong>
+                <strong>{prediction?.predictedAmount.toLocaleString()} 원</strong>
               </div>
             </div>
           </div>
