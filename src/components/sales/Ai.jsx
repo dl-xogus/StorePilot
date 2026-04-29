@@ -11,11 +11,8 @@ export default function SalesDashboard({ salesData }) {
     const hasFetched = useRef(false); // 이미 호출했는지 여부 (한 번만 호출하기 위해)
 
     useEffect(() => {
-        // 이미 호출했거나 salesData가 없으면 생략
-        if (hasFetched.current || !salesData || salesData.length === 0) {
-            if (!salesData || salesData.length === 0) setLoading(false);
-            return;
-        }
+        // 이미 호출했거나 salesData가 아직 비어있으면 생략 (부모 로딩 대기)
+        if (hasFetched.current || !salesData || salesData.length === 0) return;
         hasFetched.current = true; // 호출 시작 전에 true로 설정
 
         // API가 기대하는 형태로 변환: { date, dailySales } → { date, amount }

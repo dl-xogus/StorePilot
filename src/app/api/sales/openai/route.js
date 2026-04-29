@@ -58,10 +58,12 @@ export async function POST(req) {
     const result = await model.generateContent(prompt);
 
     // 4단계: AI 응답에서 JSON 추출
-    // AI가 앞뒤에 텍스트를 붙일 수 있으므로 정규식으로 JSON 부분만 찾아냄
+    // 모델이 JSON 외 텍스트를 붙일 수 있으므로 정규식으로 첫 번째 JSON 객체만 추출
     const text = result.response.text().trim();
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    const analysisResult = JSON.parse(jsonMatch[0]); // { summary, advice }
+    const jsonMatch = text.match(/\{(?:[^{}]|{[^{}]*})*\}/); // 중첩 없는 첫 번째 JSON 객체
+    const analysisResult = jsonMatch
+      ? JSON.parse(jsonMatch[0])
+      : { summary: '분석 결과를 가져오지 못했습니다.', advice: '' }; // 파싱 실패 시 fallback
 
     // 5단계: 계산값 + AI 분석 합쳐서 반환
     return NextResponse.json({ ...calculatedData, ...analysisResult });

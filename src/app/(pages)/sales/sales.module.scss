@@ -128,28 +128,6 @@
                 &:nth-of-type(2) {
                     flex-direction: column;
                     gap: 10px;
-                    overflow: auto;
-
-                    &::-webkit-scrollbar {
-                        width: 10px;
-                    }
-
-                    &::-webkit-scrollbar-track {
-                        background: transparent;
-                    }
-
-                    &::-webkit-scrollbar-thumb {
-                        background: #565656;
-                        border-radius: 999px;
-                        border: 2px solid transparent;
-                        background-clip: padding-box;
-
-                        &:hover {
-                            background: #76DE99;
-                            border: 2px solid transparent;
-                            background-clip: padding-box;
-                        }
-                    }
                 }
 
                 .AItitle {
@@ -276,4 +254,26 @@
 
 .aiText {
     color: #898F9A;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #565656;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+
+        &:hover {
+            background: #76DE99;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+    }
 }
