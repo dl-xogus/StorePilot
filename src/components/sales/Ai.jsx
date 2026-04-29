@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import TypeIt from 'typeit-react';
 
 // ─── AI 매출 분석 컴포넌트 ────────────────────────────────────────────────────
 // salesData: 부모(sales/page.jsx)에서 DB 조회 후 전달한 전체 매출 배열
@@ -34,25 +35,23 @@ export default function SalesDashboard({ salesData }) {
     if (loading) return (<p>AI 분석 중...</p>);
     if (!prediction) return (<p>매출 데이터가 없습니다.</p>);
 
+    const trendColor = prediction.trend === '상승' ? '#85D575' : '#F34C4C';
+
     // prediction 구조: { predictedAmount, trend, summary, advice, ... }
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <p style={{ fontSize: 20, fontWeight: 'bold' }}>
-                    오늘 예상 매출:
-                </p>
-                <p style={{ fontSize: 20, fontWeight: 'bold', color: '#76DE99'}}>
-                    {prediction?.predictedAmount.toLocaleString()}원
-                </p>
-            </div>
-            <p>
-                트렌드:
-                <span style={prediction.trend === '상승' ? {color: '#85D575'} : {color: '#F34C4C'}}>
-                    {` ${prediction?.trend}`}
-                </span>
-            </p>
-            <p style={{ lineHeight: '160%' }}>{prediction?.summary}</p>
-            <p style={{ lineHeight: '160%' }}>💡 {prediction?.advice}</p>
-        </div>
+        <TypeIt
+            options={{ speed: 20, html: true, cursor: false }}
+            getBeforeInit={(instance) => {
+                instance
+                    .type(`<strong style="font-size:20px">오늘 예상 매출: <span style="color:#76DE99">${prediction.predictedAmount.toLocaleString()}원</span></strong>`)
+                    .pause(200)
+                    .type(`<br/><br/>트렌드: <span style="color:${trendColor}">${prediction.trend}</span>`)
+                    .pause(200)
+                    .type(`<br/><br/>${prediction.summary}`)
+                    .pause(200)
+                    .type(`<br/><br/>💡 ${prediction.advice}`);
+                return instance;
+            }}
+        />
     );
 }

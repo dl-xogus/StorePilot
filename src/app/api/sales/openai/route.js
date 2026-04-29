@@ -52,7 +52,7 @@ export async function POST(req) {
 - 최고 매출: ${calculatedData.maxAmount.toLocaleString()}원
 - 최저 매출: ${calculatedData.minAmount.toLocaleString()}원
 
-반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 반환하세요.
+반드시 아래 형식으로만 응답하세요. 다른 텍스트 없이 아래 형식으로만 반환하세요.
 {"summary": "2-3줄 분석", "advice": "한 줄 조언"}`;
 
     const result = await model.generateContent(prompt);

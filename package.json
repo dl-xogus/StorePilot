@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.91.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@google/generative-ai": "^0.24.1",
@@ -17,7 +16,6 @@
     "@mui/material": "^9.0.0",
     "@nivo/core": "^0.99.0",
     "@nivo/line": "^0.99.0",
-    "@openrouter/sdk": "^0.12.22",
     "axios": "^1.15.2",
     "mongodb": "^7.2.0",
     "next": "16.2.4",
@@ -26,7 +24,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "sass": "^1.99.0",
-    "scss": "^0.2.4"
+    "scss": "^0.2.4",
+    "typeit-react": "^2.7.8"
   },
   "devDependencies": {
     "babel-plugin-react-compiler": "1.0.0",

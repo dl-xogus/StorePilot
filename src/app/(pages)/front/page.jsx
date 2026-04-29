@@ -185,21 +185,21 @@ export default function Front({ onClose }) {
                     <p>{Number(item.price).toLocaleString()} 원</p>
                   </div>
 
-                  <div className={styles.pmBtn}>
-                    <p 
-                      className={styles.btn} 
-                      onClick={() => handleQty(item._id, -1)}
+                  <div className={`${styles.pmBtn} ${item.status === '품절' ? styles.disabled : ''}`}>
+                    <p
+                      className={styles.btn}
+                      onClick={() => item.status !== '품절' && handleQty(item._id, -1)}
                     >
-                      <img src="./img/icon/ic-minus.svg" alt="감소버튼" />
+                      <img src={`./img/icon/ic-minus${item.status === '품절' ? '(disabled)' : ''}.svg`} alt="감소버튼" />
                     </p>
 
                     <p className={styles.quantity}>{quantities[item._id] ?? 0}</p>
 
-                    <p 
-                      className={styles.btn} 
-                      onClick={() => handleQty(item._id, 1)}
+                    <p
+                      className={styles.btn}
+                      onClick={() => item.status !== '품절' && handleQty(item._id, 1)}
                     >
-                      <img src="./img/icon/ic-plus(white).svg" alt="증가버튼" />
+                      <img src={`./img/icon/ic-plus${item.status === '품절' ? '(disabled)' : '(white)'}.svg`} alt="증가버튼" />
                     </p>
                   </div>
                 </div>
