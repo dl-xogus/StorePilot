@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 // ─── AI 매출 분석 컴포넌트 ────────────────────────────────────────────────────
@@ -8,13 +8,15 @@ import axios from 'axios';
 export default function SalesDashboard({ salesData }) {
     const [prediction, setPrediction] = useState(null); // AI 분석 결과
     const [loading, setLoading] = useState(true);
+    const hasFetched = useRef(false); // 이미 호출했는지 여부 (한 번만 호출하기 위해)
 
     useEffect(() => {
-        // salesData가 없거나 비어있으면 API 호출 생략
-        if (!salesData || salesData.length === 0) {
-            setLoading(false);
+        // 이미 호출했거나 salesData가 없으면 생략
+        if (hasFetched.current || !salesData || salesData.length === 0) {
+            if (!salesData || salesData.length === 0) setLoading(false);
             return;
         }
+        hasFetched.current = true; // 호출 시작 전에 true로 설정
 
         // API가 기대하는 형태로 변환: { date, dailySales } → { date, amount }
         // dailySales가 문자열로 올 수 있어서 Number()로 변환
@@ -30,7 +32,7 @@ export default function SalesDashboard({ salesData }) {
         }
 
         fetchPrediction();
-    }, [salesData]); // salesData가 바뀔 때마다 재분석
+    }, [salesData]);
 
     if (loading) return (<p>AI 분석 중...</p>);
     if (!prediction) return (<p>매출 데이터가 없습니다.</p>);
