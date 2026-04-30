@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './menu.module.scss'
 import axios from 'axios';
+import Ai from '@/components/menu/Ai';
 
 function Menu() {
     const [menuData, setMenuData] = useState([]);
@@ -13,10 +14,7 @@ function Menu() {
                 storeId: '001',
             }
         })
-            .then(res => {
-                setMenuData(res.data.menu);
-                console.log(res.data.menu);
-            })
+            .then(res => setMenuData(res.data.menu))
             .catch(err => console.error('menu 조회 실패', err));
     }, []);
 
@@ -201,51 +199,7 @@ function Menu() {
                 </div>
             </section>
 
-            <div className={styles.graph}>
-                <div className={styles.AItitle}>
-                    <p><img src="./img/icon/ic-AI.svg" alt="AI아이콘" /></p>
-                    <h3>AI 분석</h3>
-                </div>
-
-                <div className={styles.AllaiBox}>
-                    <div className={styles.aiBox}>
-                        <div className={styles.aiBox2_title}>
-                            <p><img src="./img/icon/menu-ai1.svg" alt="AI아이콘" /></p>
-                            <span>인기 메뉴</span>
-                        </div>
-                        <div className={styles.aiBox2_text}>
-                            <ul className={styles.aiBox2_text}>
-                                <li>메뉴명: 후라이드</li>
-                            </ul>
-                            <ul className={styles.aiText}>
-                                <li>AI 분석 내용</li>
-                                <p>
-                                    <img src="./img/icon/arrow-right.svg" alt="AI화살표" />
-                                    내용
-                                </p>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className={styles.aiBox2}>
-                        <div className={styles.aiBox2_title}>
-                            <p><img src="./img/icon/menu-ai2.svg" alt="AI아이콘" /></p>
-                            <span>판매 부진</span>
-                        </div>
-                        <div className={styles.aiBox2_text}>
-                            <ul className={styles.aiBox2_text}>
-                                <li>메뉴명: 블랙알리오</li>
-                            </ul>
-                            <ul className={styles.aiText}>
-                                <li>블랙알리오는 전체 판매 비중이 낮고 최근 주문량이 감소하는 추세입니다.</li>
-                                <p>
-                                    <img src="./img/icon/arrow-right.svg" alt="AI화살표" />
-                                    메뉴 노출을 상단으로 조정해보세요.
-                                </p>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Ai menuData={menuData}/>
 
 
 

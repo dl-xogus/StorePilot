@@ -4,6 +4,7 @@ import layout from "@/app/(pages)/layout.module.css"
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Front from "./front/page";
+import useAIStore from "@/store/aiStore";
 
 export default function RootLayout({ children }) {
     const [path,setPath] = useState()
@@ -11,8 +12,12 @@ export default function RootLayout({ children }) {
     let bln=false;
 
     const [fronOpen, setFrontOpen] = useState(false);
-    
-    useEffect(function(){        
+    const fetchAll = useAIStore(state => state.fetchAll);
+
+    // 앱 진입 시 AI 분석을 백그라운드에서 미리 호출
+    useEffect(() => { fetchAll(); }, []);
+
+    useEffect(function(){
         switch(url.substring(1)){
             case 'signup' : bln=false; break;
             case 'login' : bln=false; break;

@@ -1,4 +1,23 @@
 ============================
+[2026-04-30] 작업 기록
+============================
+
+■ Gemma AI 응답 JSON 안정화 (route.js: /api/sales/openai)
+- 문제: Gemma 모델은 responseMimeType: 'application/json' 미지원
+  → 프롬프트로만 JSON 유도 시 "..." placeholder, 코드블록(```json) 포함 등 불완전 응답이 오는 경우 있음
+- 해결:
+  1. isValid() 함수로 응답 내용 유효성 검사
+     - summary, advice 각각 5자 이상 & "..." 미포함이어야 유효
+  2. 최대 3회 재시도 루프 추가
+     - JSON 파싱 실패 또는 isValid() 실패 시 재호출
+     - 유효한 응답을 얻으면 즉시 break
+  3. 3회 모두 실패 시 fallback 메시지 반환
+  4. 코드블록 제거 로직 추가: .replace(/```json|```/g, '')
+- 핵심 교훈:
+  - Gemma는 JSON 모드 미지원 → 파싱 성공 여부만 체크하면 부족, 내용까지 검증해야 함
+  - Gemini 모델은 responseMimeType + responseSchema로 JSON 강제 가능 (Gemma는 불가)
+
+============================
 [2026-04-23] 작업 기록
 ============================
 

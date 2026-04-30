@@ -7,7 +7,7 @@ import DateSelectTab from '@/components/sales/DateSelectTab'
 import AddSalesPopup from './popup/AddSalesPopup'
 import DayWeekMonthTab from '@/components/sales/DayWeekMonthTab'
 import Chart from '@/components/sales/Chart'
-import Ai from '@/components/sales/Ai'
+import Ai from '@/components/sales/SalesCallAi'
 
 // 한국 시간(KST, UTC+9) 기준 오늘 날짜 반환
 const getKoreaToday = () => {
@@ -323,10 +323,7 @@ export default function sale() {
 
                 {/* AI 분석 */}
                 <div className={sales.aiText}>
-                  <Ai
-                    salesData={salesData}
-                    today={today}
-                  />
+                  <Ai salesData={salesData}/>
                 </div>
               </div>
             </div>

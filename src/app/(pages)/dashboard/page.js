@@ -5,7 +5,7 @@ import React from 'react'
 import style from '@/app/(pages)/dashboard/dashboard.module.scss'
 import Link from 'next/link'
 import Chart from '@/components/sales/Chart'
-import { calculatePredictedSales } from '@/app/api/sales/openai/route.js'
+import { calculatePredictedSales } from '@/app/api/ai/route.js'
 
 const getKoreaToday = () => {
   const now = new Date()
@@ -37,8 +37,7 @@ function Dashboard() {
   }, [])
 
   /* 예상 매출액 */
-  const formatted = salesData.map(s => ({ date: s.date, amount: Number(s.dailySales) }));
-  const prediction = calculatePredictedSales(formatted);
+  const prediction = calculatePredictedSales(salesData);
 
   return (
     <div className={style.dashboard}>

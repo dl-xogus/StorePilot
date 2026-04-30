@@ -4,7 +4,7 @@ import React from 'react'
 import style from '@/app/(pages)/main/main.module.scss'
 import { useState, useEffect } from "react";
 import Link from 'next/link'
-import { calculatePredictedSales } from '@/app/api/sales/openai/route.js'
+import { calculatePredictedSales } from '@/app/api/ai/route.js'
 
 import axios from 'axios'
 
@@ -43,8 +43,8 @@ export default function main() {
 
 
   /* 예상 매출액 */
-  const [salesData, setSalesData] = useState([]);
-  
+  let [salesData, setSalesData] = useState({});
+
   useEffect(() => {
     axios.get('/api/sales/db', {
       params: { ownerId: 'qwe@email.com', storeId: '001' }
@@ -53,8 +53,7 @@ export default function main() {
       .catch(err => console.error('매출 조회 실패', err))
   }, [])
 
-  const formatted = salesData.map(s => ({ date: s.date, amount: Number(s.dailySales) }));
-  const prediction = calculatePredictedSales(formatted);
+  const prediction = salesData.length > 0 ? calculatePredictedSales(salesData) : null;
 
 
 
