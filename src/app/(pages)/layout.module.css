@@ -40,10 +40,7 @@
         transform: translateX(-360px);
         transition: transform 0.3s ease;
         overflow: hidden;
-<<<<<<< HEAD
-=======
 
->>>>>>> 6a24ecf12fcf34d415315062a062640d7c6c56bb
     }
 
     .children {
@@ -68,6 +65,9 @@
         height: 100%;
         flex-shrink: 0;
         overflow-y: auto;
+        height: 100vh;
+        flex-shrink: 0;
+        overflow: hidden;
         position: relative;
     }
 
@@ -77,6 +77,8 @@
         height: 64px;
         padding: 0 20px;
         position: fixed;
+        background: #17181B;
+        position: relative;
         z-index: 20;
     }
 
@@ -93,11 +95,13 @@
         width: 100%;
         height: calc(100vh - 64px);
         /* overflow: hidden; */
+        overflow: hidden;
     }
 
     .mobileDim {
         display: block;
         position: fixed;
+        position: absolute;
         inset: 0;
         background: rgba(0, 0, 0, 0.45);
         z-index: 100;
@@ -110,6 +114,7 @@
 @media (max-width: 480px) {
     .layout {
         width: calc(100% + 280px);
+        width: calc(100vw + 280px);
         transform: translateX(-280px);
     }
 
