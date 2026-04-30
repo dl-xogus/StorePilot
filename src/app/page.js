@@ -3,8 +3,13 @@
 import FadeGroup from '@/components/FadeGroup';
 import styles from '../app/landing.module.scss'
 import Typing from '@/components/Typing';
+import { useSession } from "next-auth/react";
 
 export default function Landing() {
+
+const { data: session } = useSession();
+console.log(session);
+
 
   return (
     <>

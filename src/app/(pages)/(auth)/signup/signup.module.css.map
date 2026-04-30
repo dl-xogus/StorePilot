@@ -1,1 +1,1 @@
-{"version":3,"sources":[],"names":[],"mappings":"","file":"signup.module.css"}
+{"version":3,"sources":["signup.module.scss","../../../../styles/_variables.scss","signup.module.css"],"names":[],"mappings":"AAEA;ECDE,aAAA;EACA,OAAA;EACA,WAAA;EACA,iBAAA;EACA,cAAA;EACA,wBAAA;EDFE,sBAAA;EACA,gBAAA;AEIJ","file":"signup.module.css"}
