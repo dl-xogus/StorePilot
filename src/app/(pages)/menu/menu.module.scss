@@ -93,6 +93,12 @@
     }
 }
 
+//검색없음
+.searchNone {
+    text-align: center;
+    padding: 20px;
+}
+
 
 /* 표 */
 .section {
@@ -138,6 +144,7 @@
 
         background-color: #262729;
         flex-shrink: 0; //헤더 고정
+
 
     }
 }
@@ -188,6 +195,10 @@
     }
 }
 
+.editBtn {
+    cursor: pointer;
+}
+
 .Line {
     height: 65px;
     //gap: 160px;
@@ -199,9 +210,12 @@
 
     display: grid;
     align-items: center;
-    grid-template-columns: 90px 200px 200px 200px 180px 160px 100px;
+    grid-template-columns: 90px 200px 200px 200px 170px 160px 100px;
 
-
+    &:hover {
+        background: #2e2e2e5e;
+        border-radius: none;
+    }
 
 }
 
@@ -213,8 +227,40 @@
     padding: 5px;
     border-radius: 5px;
 }
-.inputBtn{
-    width: 45px; height: 30px;
+
+.AllinputBtn {
+    display: flex;
+    gap: 5px;
+
+    .inputBtn {
+        width: 48px;
+        height: 30px;
+        background-color: #76DE99;
+        border-radius: 10px;
+        border: none;
+    }
+
+}
+
+//드롭다운
+.Line select {
+    width: 120px;
+    background: #2a2b2d;
+    border: 1px solid #444;
+    color: #7e7f83;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.active {
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+.soldout {
+    color: #FF6161;
+    font-weight: 600;
 }
 
 
@@ -235,7 +281,7 @@
 
     .aiBox {
         width: 615px;
-        height: 190px;
+        height: 220px;
         background-color: #121214;
         border-radius: 11px;
         border: 0.5px solid rgb(118, 222, 153);
@@ -243,7 +289,7 @@
         .aiBox2_title {
             display: flex;
             gap: 10px;
-            padding: 20px;
+            padding: 20px 20px 0;
 
             span {
                 font-size: 24px;
@@ -251,8 +297,8 @@
         }
 
         .aiBox2_text {
-            padding: 0 20px 5px;
-            color: #A3A3A3;
+            padding: 5px 20px 5px;
+            color: #76DE99;
 
             .aiText {
 
@@ -260,9 +306,10 @@
                 p {
                     font-size: 16px;
                     color: #FFFF;
+                    line-height: 1.5;
                 }
 
-                padding: 20px;
+                padding: 10px 20px;
                 width: 560px;
                 //background-color: #3b443959;
                 border-radius: 11px;
@@ -272,7 +319,7 @@
 
     .aiBox2 {
         width: 615px;
-        height: 190px;
+        height: 220px;
         background-color: #121214;
         border-radius: 11px;
         border: 0.5px solid #FF6161;
@@ -280,7 +327,7 @@
         .aiBox2_title {
             display: flex;
             gap: 10px;
-            padding: 20px;
+            padding: 20px 20px 0;
 
             span {
                 font-size: 24px;
@@ -288,8 +335,8 @@
         }
 
         .aiBox2_text {
-            padding: 0 20px 5px;
-            color: #A3A3A3;
+            padding: 5px 20px 5px;
+            color: #76DE99;
 
             .aiText {
 
@@ -297,9 +344,10 @@
                 p {
                     font-size: 16px;
                     color: #FFFF;
+                    line-height: 1.5;
                 }
 
-                padding: 20px;
+                padding: 10px 20px;
                 width: 560px;
                 //background-color: #3b443959;
                 border-radius: 11px;

@@ -10,6 +10,12 @@ export default function Landing() {
     <>
 
       <section className={styles.section1}>
+        {/* 배경 그리드 */}
+  <div className={styles.grid}></div>
+
+  {/* 바닥 글로우 */}
+  <div className={styles.bottomGlow}></div>
+  
         <div className={styles.main_title}>
           <h2>Store<span>Pilot</span></h2>
           <h3>"복잡한 매장 관리, 이제 <span>로컬 AI</span>에게 맡기세요."</h3>
@@ -48,7 +54,7 @@ export default function Landing() {
               <span>매출 관리</span>
             </div>
             <p>
-              매출은 올리고, 낭비는 줄입니다. <br />
+              매출은 올리고, 낭비는 줄입니다. 
               데이터 기반 인사이트로 안정적인 매출 전략을 설계합니다.
             </p>
           </div>
@@ -68,7 +74,7 @@ export default function Landing() {
               <span>직원 관리</span>
             </div>
             <p>
-              데이터가 만드는 smarter한 매장 운영.  <br />
+              데이터가 만드는 smarter한 매장 운영.  
               근무 스케줄과 인건비를 효율적으로 관리하세요.
             </p>
           </div>
@@ -89,7 +95,7 @@ export default function Landing() {
             <div className={styles.functionTxt1}>
               <h4>AI 예측 & 비용 절감</h4>
               <p>
-                LM Studio 기반 로컬 LLM 사용으로 데이터는 안전하게, API 비용은 0원. <br />
+                LM Studio 기반 로컬 LLM 사용으로 데이터는 안전하게, API 비용은 0원. 
                 AI 기반 분석을 통해 매출과 인건비 데이터를 통합적으로 해석하고, 불필요한 비용이 발생하는 지점을 식별합니다.
                 수요 예측과 인력 최적화를 결합하여 운영 효율을 극대화하며, 데이터 기반 의사결정을 통해 지속적인 비용 절감 구조를 만들어냅니다.
               </p>
