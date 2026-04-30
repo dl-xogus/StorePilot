@@ -188,5 +188,6 @@
   /* 모바일 */
   .sidebar .inner {
     width: 280px;
+    height: 100vh;
   }
 }/*# sourceMappingURL=sidebar.module.css.map */

@@ -11,8 +11,8 @@
 
 
     section {
-
-        width: 866px;
+        width: 100%;
+        max-width: 866px;
 
 
 
@@ -134,10 +134,12 @@
                 overflow-y: scroll;
                 height: 100%;
                 overflow-y: auto;
+                overflow-x: auto;
                 padding: 57px 32px;
 
                 &::-webkit-scrollbar {
                     width: 8px;
+                    height: 8px;
                     background: transparent;
                 }
 
@@ -158,6 +160,10 @@
                     display: none;
                 }
 
+                &::-webkit-scrollbar-corner {
+                    background: transparent;
+                }
+
                 .questionPreview {
                     margin-bottom: 4%;
                 }
@@ -165,7 +171,7 @@
 
                 .answerContent {
                     // 스크롤 길이 조절
-                    height: 300px;
+                    // height: 300px;
 
                     .dots::after {
                         content: '';
@@ -192,6 +198,9 @@
 
                     pre {
                         font-size: 16px;
+                        white-space: pre-wrap;
+                        word-break: break-word;
+                        overflow-wrap: break-word;
                     }
                 }
             }
@@ -216,7 +225,7 @@
             a {
                 display: flex;
                 align-items: center;
-                
+
                 p {
                     position: relative;
                     font-size: 24px;
@@ -329,6 +338,212 @@
                 background: linear-gradient(180deg, #76DE99, #4CAF70);
                 border-radius: 12px 0 0 12px;
                 z-index: 10;
+            }
+        }
+    }
+
+}
+
+
+
+@media (max-width: 480px) {
+
+    /* 모바일 */
+
+    .main {
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        gap: 30px;
+        max-width: 100%;
+        overflow-x: hidden;
+
+        section {
+            width: 90% !important;
+
+            .inner {
+
+                .chatTop {
+
+                    >h1 {
+                        font-size: 26px;
+                    }
+
+                    .inputWrap {
+                        height: 60px;
+
+                        >button {
+                            width: 8%;
+
+                            >img {
+                                width: 100%;
+                            }
+                        }
+                    }
+
+                    .quickList {
+                        margin: 22px 0;
+
+                        .bubble {
+                            width: 260px;
+                            margin-left: 14px;
+
+                            svg {
+                                width: 100%;
+                            }
+
+                            >span {
+                                font-size: 13px;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            .answerBox {
+                height: 250px;
+
+                .scrollBox {
+                    .answerContent {
+                        >pre {
+                            line-height: 1.6;
+                            font-size: 14px;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        .summary .cardWrap::-webkit-scrollbar {
+            display: none;
+        }
+
+        .summary .summaryCard {
+            scroll-snap-align: start;
+        }
+
+        .summary {
+
+            width: 90%;
+            max-width: 90%;
+            overflow: hidden;
+
+            .summaryTitle a p {
+                font-size: 20px;
+            }
+
+            .cardWrap {
+                display: flex;
+                gap: 16px;
+
+                width: 100%;
+                max-width: 100%;
+
+                overflow-x: auto;
+                overflow-y: hidden;
+
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+
+                scrollbar-width: none;
+
+                .summaryCard {
+                    flex: 0 0 50%;
+                    max-width: 50%;
+                    scroll-snap-align: start;
+                    min-height: auto;
+                    padding: 20px 0;
+
+                    .summaryInner {
+
+                        >p {
+                            width: 19%;
+
+                            >img {
+                                width: 100%;
+                            }
+                        }
+
+                        .summaryText {
+                            >p {
+                                font-size: 14px;
+                            }
+
+                            >strong {
+                                font-size: 16px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* 태블릿 */
+
+    .main {
+        flex-direction: column;
+        width: 100%;
+        gap: 30px;
+        height: 100vh;
+        justify-content: center;
+
+        section {
+            width: 90% !important;
+
+            .answerBox {
+                height: 250px
+            }
+        }
+
+        .summary {
+
+            max-width: none;
+            width: 90%;
+
+            .summaryTitle a p {
+                font-size: 20px;
+            }
+
+            .cardWrap {
+                display: flex;
+                gap: 20px;
+                justify-content: space-between;
+
+                .summaryCard {
+                    max-width: 194px;
+                    width: 100%;
+                    padding: 20px 0;
+                    height: 100%;
+                    min-height: auto;
+
+                    .summaryInner {
+
+                        >p {
+                            width: 19%;
+
+                            >img {
+                                width: 100%;
+                            }
+                        }
+
+                        .summaryText {
+                            >p {
+                                font-size: 14px;
+                            }
+
+                            >strong {
+                                font-size: 16px;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

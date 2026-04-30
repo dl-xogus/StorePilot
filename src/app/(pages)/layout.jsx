@@ -20,18 +20,44 @@ export default function RootLayout({ children }) {
     // 앱 진입 시 AI 분석을 백그라운드에서 미리 호출
     useEffect(() => { fetchAll(); }, []);
 
-
-    useEffect(function () {
+    useEffect(() => {
         if (isMobileMenuOpen) {
-            document.body.classList.add("menu-open");
+            const scrollY = window.scrollY;
+
+            document.body.style.position = "fixed";
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.left = "0";
+            document.body.style.right = "0";
+            document.body.style.width = "100%";
+
+            document.body.dataset.scrollY = scrollY;
         } else {
-            document.body.classList.remove("menu-open");
+            const scrollY = document.body.dataset.scrollY;
+
+            document.body.style.position = "";
+            document.body.style.top = "";
+            document.body.style.left = "";
+            document.body.style.right = "";
+            document.body.style.width = "";
+
+            window.scrollTo(0, Number(scrollY || 0));
         }
 
-        return function () {
-            document.body.classList.remove("menu-open");
-        }
-    }, [isMobileMenuOpen])
+        return () => {
+            const scrollY = document.body.dataset.scrollY;
+
+            document.body.style.position = "";
+            document.body.style.top = "";
+            document.body.style.left = "";
+            document.body.style.right = "";
+            document.body.style.width = "";
+
+            if (scrollY) {
+                window.scrollTo(0, Number(scrollY));
+            }
+        };
+
+    }, [isMobileMenuOpen]);
 
     useEffect(function () {
         switch (url.substring(1)) {

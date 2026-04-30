@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .main {
   width: 1260px;
   margin: 0 auto;
@@ -8,7 +9,8 @@
   align-items: center;
 }
 .main section {
-  width: 866px;
+  width: 100%;
+  max-width: 866px;
 }
 .main section .chatTop > h1 {
   font-size: 30px;
@@ -101,10 +103,12 @@
   overflow-y: scroll;
   height: 100%;
   overflow-y: auto;
+  overflow-x: auto;
   padding: 57px 32px;
 }
 .main section .answerBox .scrollBox::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
   background: transparent;
 }
 .main section .answerBox .scrollBox::-webkit-scrollbar-track {
@@ -121,11 +125,11 @@
 .main section .answerBox .scrollBox::-webkit-scrollbar-button {
   display: none;
 }
+.main section .answerBox .scrollBox::-webkit-scrollbar-corner {
+  background: transparent;
+}
 .main section .answerBox .scrollBox .questionPreview {
   margin-bottom: 4%;
-}
-.main section .answerBox .scrollBox .answerContent {
-  height: 300px;
 }
 .main section .answerBox .scrollBox .answerContent .dots::after {
   content: "";
@@ -147,6 +151,9 @@
 }
 .main section .answerBox .scrollBox .answerContent pre {
   font-size: 16px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 .main .summary {
   width: 100%;
@@ -235,4 +242,142 @@
   background: linear-gradient(180deg, #76DE99, #4CAF70);
   border-radius: 12px 0 0 12px;
   z-index: 10;
+}
+
+@media (max-width: 480px) {
+  /* 모바일 */
+  .main {
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    gap: 30px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .main section {
+    width: 90% !important;
+  }
+  .main section .inner .chatTop > h1 {
+    font-size: 26px;
+  }
+  .main section .inner .chatTop .inputWrap {
+    height: 60px;
+  }
+  .main section .inner .chatTop .inputWrap > button {
+    width: 8%;
+  }
+  .main section .inner .chatTop .inputWrap > button > img {
+    width: 100%;
+  }
+  .main section .inner .chatTop .quickList {
+    margin: 22px 0;
+  }
+  .main section .inner .chatTop .quickList .bubble {
+    width: 260px;
+    margin-left: 14px;
+  }
+  .main section .inner .chatTop .quickList .bubble svg {
+    width: 100%;
+  }
+  .main section .inner .chatTop .quickList .bubble > span {
+    font-size: 13px;
+  }
+  .main section .answerBox {
+    height: 250px;
+  }
+  .main section .answerBox .scrollBox .answerContent > pre {
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  .main .summary .cardWrap::-webkit-scrollbar {
+    display: none;
+  }
+  .main .summary .summaryCard {
+    scroll-snap-align: start;
+  }
+  .main .summary {
+    width: 90%;
+    max-width: 90%;
+    overflow: hidden;
+  }
+  .main .summary .summaryTitle a p {
+    font-size: 20px;
+  }
+  .main .summary .cardWrap {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .main .summary .cardWrap .summaryCard {
+    flex: 0 0 50%;
+    max-width: 50%;
+    scroll-snap-align: start;
+    min-height: auto;
+    padding: 20px 0;
+  }
+  .main .summary .cardWrap .summaryCard .summaryInner > p {
+    width: 19%;
+  }
+  .main .summary .cardWrap .summaryCard .summaryInner > p > img {
+    width: 100%;
+  }
+  .main .summary .cardWrap .summaryCard .summaryInner .summaryText > p {
+    font-size: 14px;
+  }
+  .main .summary .cardWrap .summaryCard .summaryInner .summaryText > strong {
+    font-size: 16px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* 태블릿 */
+  .main {
+    flex-direction: column;
+    width: 100%;
+    gap: 30px;
+    height: 100vh;
+    justify-content: center;
+  }
+  .main section {
+    width: 90% !important;
+  }
+  .main section .answerBox {
+    height: 250px;
+  }
+  .main .summary {
+    max-width: none;
+    width: 90%;
+  }
+  .main .summary .summaryTitle a p {
+    font-size: 20px;
+  }
+  .main .summary .cardWrap {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  .main .summary .cardWrap .summaryCard {
+    max-width: 194px;
+    width: 100%;
+    padding: 20px 0;
+    height: 100%;
+    min-height: auto;
+  }
+  .main .summary .cardWrap .summaryCard .summaryInner > p {
+    width: 19%;
+  }
+  .main .summary .cardWrap .summaryCard .summaryInner > p > img {
+    width: 100%;
+  }
+  .main .summary .cardWrap .summaryCard .summaryInner .summaryText > p {
+    font-size: 14px;
+  }
+  .main .summary .cardWrap .summaryCard .summaryInner .summaryText > strong {
+    font-size: 16px;
+  }
 }/*# sourceMappingURL=main.module.css.map */
