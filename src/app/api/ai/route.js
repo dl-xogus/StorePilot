@@ -1,6 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
-import axios from 'axios';
 
 // Google AI Studio API 키로 클라이언트 초기화
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
@@ -205,7 +204,6 @@ export async function POST(req) {
       case 'schedule':
         return await schedulePrompt();
     }
-
   } catch (e) {
     console.error('[AI] 에러:', e);
     return NextResponse.json({ error: e.message }, { status: 500 });

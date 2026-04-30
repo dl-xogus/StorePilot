@@ -5,12 +5,6 @@ import styles from './front.module.scss';
 
 export default function Front({ onClose }) {
   const [menuData, setMenuData] = useState([]);
-  const [addInput, setAddInput] = useState(false);
-
-  // ─── 인라인 수정 ─────────────────────────────────────────────
-  const [edit, setEdit] = useState(null);
-
-  // ─── 정렬 ────────────────────────────────────────────────────
   
   useEffect(() => {
     axios.get('/api/menu/db', {

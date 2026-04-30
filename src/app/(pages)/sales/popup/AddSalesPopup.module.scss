@@ -478,3 +478,65 @@
         cursor: pointer;
     }
 }
+
+@media only screen and (min-width:360px) and (max-width:1660px) {
+    .popup {
+        margin: 70px 20px;
+        height: 100%;
+
+        .graph {
+            .titleLine {
+                padding: 0 50px 0 10px;
+                gap: 10px;
+
+                .sortTab {
+                    align-items: center;
+                }
+            }
+
+            .inputLine {
+                padding: 0 10px 0 33px;
+
+                .text {
+                    gap: 10px;
+
+                    .dropdown {
+                        min-width: 150px !important;
+                    }
+                }
+            }
+
+            .oneline {
+                padding: 0 10px;
+                gap: 10px;
+            }
+        }
+
+        .graphBot {
+            >div {
+                padding: 0 50px 0 33px;
+
+                .text {
+                    gap: 10px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width:360px) and (max-width:768px) {}
+
+@media only screen and (min-width:360px) and (max-width:480px) {
+    .graphTop {
+        gap: 10px;
+        .btns {
+            gap: 5px !important;
+        }
+    }
+    
+    .graphBot {
+        >div {
+            padding: 0 10px !important;
+        }
+    }
+}

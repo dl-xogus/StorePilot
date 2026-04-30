@@ -122,6 +122,17 @@
                     cursor: pointer;
                 }
             }
+
+            .settingIcon {
+
+                >span {
+                    // transition: 0.1s;
+                }
+
+                >span:hover {
+                    color: #BCBCBC;
+                }
+            }
         }
     }
 
@@ -208,5 +219,36 @@
                 }
             }
         }
+    }
+}
+
+@media (max-width: 1023px) {
+    .closeBtn {
+        display: none !important;
+    }
+
+    .sidebar {
+        width: 0;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .sidebar.open {
+        width: 360px;
+    }
+
+    .sidebar .inner {
+        width: 360px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+    /* 모바일 */
+
+    .sidebar .inner {
+
+        width: 280px;
     }
 }

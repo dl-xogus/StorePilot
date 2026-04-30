@@ -197,7 +197,7 @@ export default function sale() {
 
   return (
     <>
-      <div className={sales.sales}>
+      <div className={`${sales.sales} ${popupOpen || editItem ? sales.openPopup : ''}`}>
         <div className={sales.title}>
           <h1><span>매출</span> 관리</h1>
 
