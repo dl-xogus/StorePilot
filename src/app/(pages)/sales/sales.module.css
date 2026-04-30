@@ -9,7 +9,10 @@
 .sales {
   width: 100%;
   max-width: 1260px;
-  margin: 100px auto 0px;
+  margin: 100px auto;
+}
+.sales.openPopup {
+  overflow: hidden;
 }
 .sales .checkbox {
   -webkit-appearance: none;
@@ -38,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
 }
 .sales .title > h1 {
   font-size: 40px;
@@ -97,6 +100,7 @@
   gap: 40px;
 }
 .section .right .graphs .graph {
+  overflow: visible;
   flex: 1;
   height: auto;
   min-height: 0;
@@ -109,7 +113,7 @@
 }
 .section .right .graphs .graph:nth-of-type(2) {
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 .section .right .graphs .graph .AItitle {
   display: flex;
@@ -210,4 +214,55 @@
 
 .aiText {
   color: #898F9A;
+  overflow: auto;
+}
+.aiText::-webkit-scrollbar {
+  width: 10px;
+}
+.aiText::-webkit-scrollbar-track {
+  background: transparent;
+}
+.aiText::-webkit-scrollbar-thumb {
+  background: #565656;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.aiText::-webkit-scrollbar-thumb:hover {
+  background: #76DE99;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+@media only screen and (min-width: 360px) and (max-width: 1660px) {
+  .sales {
+    width: 90%;
+  }
+}
+@media only screen and (min-width: 360px) and (max-width: 1260px) {
+  .sales {
+    margin: 70px auto;
+  }
+  .section {
+    flex-direction: column;
+  }
+  .graphs .graph:nth-of-type(2) {
+    margin-bottom: 70px;
+  }
+}
+@media only screen and (min-width: 360px) and (max-width: 480px) {
+  .left .graph .titleLine {
+    padding: 0 50px 0 10px;
+    gap: 10px;
+  }
+  .left .graph .titleLine .sortTab {
+    align-items: center;
+  }
+  .left .graph .oneline {
+    padding: 0 10px;
+    gap: 10px;
+  }
+  .left .graph .oneline .text {
+    gap: 5px;
+  }
 }/*# sourceMappingURL=sales.module.css.map */

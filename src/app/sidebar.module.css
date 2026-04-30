@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .sidebar {
   min-width: 360px;
   transition: width 0.3s ease, padding 0.3s ease;
@@ -99,6 +100,9 @@
 .sidebar .inner .bottom > div:nth-of-type(2) > span {
   cursor: pointer;
 }
+.sidebar .inner .bottom .settingIcon > span:hover {
+  color: #BCBCBC;
+}
 .sidebar.close {
   min-width: 88px;
 }
@@ -162,4 +166,27 @@
 }
 .sidebar.close .inner .bottom > div:nth-of-type(2) {
   display: none;
+}
+
+@media (max-width: 1023px) {
+  .closeBtn {
+    display: none !important;
+  }
+  .sidebar {
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .sidebar.open {
+    width: 360px;
+  }
+  .sidebar .inner {
+    width: 360px;
+  }
+}
+@media (max-width: 480px) {
+  /* 모바일 */
+  .sidebar .inner {
+    width: 280px;
+  }
 }/*# sourceMappingURL=sidebar.module.css.map */
