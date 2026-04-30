@@ -1,7 +1,6 @@
 "use client"
 
 import Sidebar from "@/components/layout/Sidebar";
-import { usePathname } from "next/navigation";
 import layout from "@/app/(pages)/layout.module.css"
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";

@@ -5,7 +5,7 @@ import React from 'react'
 import style from '@/app/(pages)/dashboard/dashboard.module.scss'
 import Link from 'next/link'
 import Chart from '@/components/sales/Chart'
-import { calculatePredictedSales } from '@/app/api/ai/route.js'
+import useAIStore from '@/store/aiStore'
 
 const getKoreaToday = () => {
   const now = new Date()
@@ -36,8 +36,8 @@ function Dashboard() {
       .catch(err => console.error('매출 조회 실패', err))
   }, [])
 
-  /* 예상 매출액 */
-  const prediction = calculatePredictedSales(salesData);
+  /* 예상 매출액 - store에서 읽기 */
+  const { sales } = useAIStore();
 
   function getTodayFormatted() {
     const date = new Date();
@@ -74,7 +74,7 @@ function Dashboard() {
                 <p><img src='/img/icon/ic-main-sales.png' /></p>
                 <div className={style.summaryText}>
                   <p>예상 매출</p>
-                  <strong>{prediction?.predictedAmount.toLocaleString()} 원</strong>
+                  <strong>{sales?.predictedAmount.toLocaleString() ?? '-'} 원</strong>
                 </div>
               </div>
           </Link>

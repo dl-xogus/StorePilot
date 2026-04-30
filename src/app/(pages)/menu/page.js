@@ -5,16 +5,11 @@ import styles from './menu.module.scss'
 import axios from 'axios';
 import Ai from '@/components/menu/Ai';
 
-import Ai from '@/components/menu/Ai'
-
 function Menu() {
 
     const [data, setData] = useState([]);
     const [menuData, setMenuData] = useState([]);
     const [originData, setOriginData] = useState([]); // 원본
-
-    console.log(menuData);
-    
 
     const [checkedAll, setCheckedAll] = useState(false); // 전체 선택 체크박스 상태
     const [checked, setChecked] = useState([]);          // 각 행의 체크박스 상태 배열
@@ -66,7 +61,7 @@ function Menu() {
 
 
             setMenuData(dataWithCheck);
-            setData(res.data.result);
+            setData(res.data);
             setOriginData(dataWithCheck); // 원본 저장
         }
         catch (err) { console.error('menu 조회 실패', err) };
