@@ -8,12 +8,11 @@
 .container {
     display: flex;
     gap: 26px;
-    align-items: flex-start;
 }
 
 .scheduleMain {
     flex: 1;
-    max-width: 700px;
+    width: 100%;
 }
 
 
@@ -60,6 +59,7 @@
     background-color: #1F2022;
     border: 1px solid #2D2C2F;
     border-radius: 11px;
+    overflow-x: hidden;
 }
 
 
@@ -126,17 +126,17 @@
         font-weight: bold;
         cursor: pointer;
         color: #aaa;
-
         padding: 5px 10px;
-
         border-radius: 100%;
+        transition: 0.2s;
 
-    }
 
-    p:hover {
-        color: #000000;
-        font-weight: 600;
-        background-color: #76DE99;
+        &.active {
+            color: #000;
+            background-color: #76DE99;
+            font-weight: bold;
+        }
+
 
     }
 }
@@ -169,6 +169,12 @@
 
 /* ================== Day Header ================== */
 .scheduleDayHeader {
+    position: sticky;
+    top: 0; // 🔥 스크롤 내려도 붙어있음
+    z-index: 10;
+    background-color: #1F2022;
+    padding-bottom: 15px;
+
     display: flex;
     justify-content: space-between;
 
@@ -195,4 +201,39 @@
         font-size: 1.2rem;
         color: #aaa;
     }
+}
+
+
+
+
+
+/* ================== Tablet ================== */
+@media (max-width: 1024px) {
+
+    .scheduleMain {
+        flex: 1;
+        width: 100%;
+    }
+
+    .container {
+        width: 99%;
+        flex-direction: column;
+        margin: 0 auto;
+    }
+
+
+
+    .scheduleList {
+        margin: 50px 70px 0;
+    }
+
+    .scheduleNav {
+        padding: 20px 28px; 
+    }
+
+    .scheduleWeek {
+        display: flex;
+        justify-content:space-around;
+    }
+
 }

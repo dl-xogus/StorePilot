@@ -8,7 +8,7 @@
 .staffContainer {
     display: flex;
     gap: 26px;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .staffMain {
@@ -33,7 +33,7 @@
 
 }
 
-.staffTotal {
+.total {
     display: flex;
     align-items: flex-end;
     color: #766F6F;
@@ -137,6 +137,7 @@
     border-radius: 11px;
     background-color: #1F2022;
     overflow-y: auto;
+    overflow-x: auto;
 
     height: 65vh;
 
@@ -148,36 +149,20 @@
     display: none;
 }
 
+/* 🔥 태블릿 */
+@media (max-width: 1024px) {
+    .staffTable {
+        height: 65vh; // 선택 (조금 줄여도 좋음)
+    }
+}
 
-
-
-
-
-/* ================== Table Layout ================== */
-.tableHeader,
-.tableRow {
-    display: grid;
-    grid-template-columns:
-        40px
-        /* 체크박스 */
-        100px
-        /* 이름 */
-        100px
-        /* 나이 */
-        115px
-        /* 시급 */
-        100px
-        /* 파트 */
-        130px
-        /* 요일 */
-        140px
-        /* 시간 */
-        1.5fr
-        /* 전화번호 */
-        40px;
-    /* 수정 */
-    align-items: center;
-    column-gap: 20px;
+/* 🔥 모바일 */
+@media (max-width: 768px) {
+    .staffTable {
+        height: auto; // 🔥 핵심
+        max-height: none; // 혹시 남아있을 제한 제거
+        overflow: visible; // 카드형이면 스크롤 제거
+    }
 }
 
 
@@ -185,14 +170,22 @@
 
 
 
+/* ================== 공통 컬럼 ================== */
+$table-columns: 5% 9% 9% 11% 8% 11% 14% 12% 6%;
+
 
 /* ================== Table Header ================== */
 .tableHeader {
-    padding: 27px 36px;
+    display: grid;
+    grid-template-columns: $table-columns;
+    align-items: center;
+    column-gap: 20px;
+
+    padding: 23px 0 23px 36px;
     background-color: #262729;
-    color: #E8E8E8;
-    font-size: 1rem;
-    font-weight: bold;
+
+    list-style: none;
+    margin: 0;
 
     img {
         padding-left: 10px;
@@ -200,31 +193,200 @@
         vertical-align: middle;
         cursor: pointer;
     }
+
+    li {
+        color: #E8E8E8;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+}
+
+
+/* ================== Table Row ================== */
+.tableRow {
+    width: 100%;
+    display: grid;
+    grid-template-columns: $table-columns;
+    align-items: center;
+    column-gap: 20px;
+
+    padding: 27px 0 27px 36px;
+    border-bottom: 1px solid #2D2C2F;
+
+    list-style: none;
+
+    position: relative;
+
+    button {
+        background-color: #76de99;
+        border: none;
+        color: black;
+        border-radius: 9px;
+        padding: 6px 15px;
+        font-size: 14px;
+        cursor: pointer;
+
+        grid-column: 9;
+        justify-self: end;
+        white-space: nowrap;
+    }
+
+    img {
+        position: static;
+        justify-self: end;
+        cursor: pointer;
+    }
+
+
+    span {
+        font-size: 1rem;
+        color: #E8E8E8;
+        letter-spacing: 7%;
+        font-weight: lighter;
+    }
+
+
+    span:nth-of-type(6),
+    span:nth-of-type(7) {
+        letter-spacing: 10%;
+    }
+}
+
+
+/* ================== Input ================== */
+.tableRow span input {
+    width: 100%;
+    height: 32px;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    background-color: transparent;
+    border: 1px solid #898F9A;
+    color: #E8E8E8;
+}
+
+.timeInput::-webkit-calendar-picker-indicator {
+    filter: invert(60%) sepia(10%) saturate(200%) hue-rotate(180deg);
+}
+
+
+.tableBody {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 
 
 
 
+/* ================== 태블릿 ================== */
+@media (max-width: 1023px) {
 
-
-/* ================== Table Row ================== */
-.tableRow {
-    padding: 35px 0 25px 36px;
-    border-bottom: 1px solid #2D2C2F;
-    font-size: 1rem;
-    color: #E8E8E8;
-    font-size: 1rem;
-
-    p:nth-of-type(2) {
-        color: #898F9A;
+    .staffTable {
+        height: auto;
+        overflow: visible;
+        border: none;
+        background: none;
     }
 
-    p:nth-of-type(7) {
-        color: #898F9A;
+    .tableHeader {
+        display: none;
     }
 
-    img {
-        cursor: pointer;
+    .tableRow {
+        display: block;
+        padding: 16px;
+        margin-bottom: 15px;
+
+        background-color: #262729;
+        border-radius: 10px;
+        border: 1px solid #2D2C2F;
+    }
+
+    .tableRow span {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .tableRow span::before {
+        content: attr(data-label);
+        color: #888;
+        font-size: 12px;
+    }
+
+    /* 🔥 수정 아이콘 위치 변경 */
+    .tableRow img {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 18px;
+        opacity: 1;
+    }
+
+    .tableRow button {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    span:nth-of-type(1) {
+        margin-top: 10px;
+    }
+}
+
+/* ================== 모바일 ================== */
+@media (max-width: 768px) {
+
+    .staffTable {
+        height: auto;
+        border: none;
+        background: none;
+    }
+
+    .tableHeader {
+        display: none;
+    }
+
+    .tableRow {
+        display: block;
+        padding: 16px;
+        margin-bottom: 15px;
+
+        background-color: #262729;
+        border-radius: 10px;
+        border: 1px solid #2D2C2F;
+    }
+
+    .tableRow span {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .tableRow span::before {
+        content: attr(data-label);
+        color: #888;
+        font-size: 12px;
+    }
+
+    /* 🔥 수정 아이콘 위치 변경 */
+    .tableRow img {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 18px;
+        opacity: 1;
+    }
+
+    .tableRow button {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    span:nth-of-type(1) {
+        margin-top: 10px;
     }
 }

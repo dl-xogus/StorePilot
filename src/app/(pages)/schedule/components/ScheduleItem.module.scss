@@ -1,7 +1,18 @@
 /* ================== Schedule Item ================== */
 .scheduleItem {
     display: flex;
-    margin: 45px 0;
+    margin: 40px 0;
+}
+
+.card,
+.line,
+.scheduleItemContent,
+.scheduleItemGroup,
+.scheduleItemRow1,
+.scheduleItemRow2 {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 
@@ -42,17 +53,9 @@
 /* ================== Card ================== */
 .card {
     background-color: #24272C;
-    position: relative;
     width: 100%;
     border-radius: 11px;
     margin-left: 15px;
-
-    img {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        cursor: pointer;
-    }
 }
 
 
@@ -84,31 +87,55 @@
     align-items: center;
 }
 
-.scheduleItemRow1 {
-    margin-bottom: 20px;
 
+/* ================== Typography ================== */
+
+.scheduleItemRow1,
+.scheduleItemRow2 {
     b {
         color: #aaa;
         font-size: 1rem;
         font-weight: normal;
     }
 
-    p {
-        font-weight: 600;
+    span {
+
         font-size: 1rem;
     }
 }
 
-.scheduleItemRow2 {
 
-    b {
-        color: #aaa;
-        font-size: 1rem;
-        font-weight: normal;
-    }
+.scheduleItemRow1 {
+    margin-bottom: 20px;
+}
 
-    p {
-        font-weight: 600;
-        font-size: 1rem;
-    }
+
+
+
+/* ================== Mobile ================== */
+@media (max-width: 768px) {
+
+  .scheduleItem {
+    margin: 20px 0;
+  }
+
+  .card {
+    margin-left: 10px;
+  }
+
+  .line {
+    margin-left: 15px;
+  }
+
+  .scheduleItemContent {
+    padding-left: 15px;
+  }
+
+  /* 🔥 grid 구조 변경 (핵심) */
+  .scheduleItemRow1,
+  .scheduleItemRow2 {
+    grid-template-columns: 70px 1fr;
+    row-gap: 8px;
+  }
+
 }

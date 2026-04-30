@@ -1,35 +1,44 @@
 import styles from './ScheduleItem.module.scss';
 
-function ScheduleItem() {
+function ScheduleItem({ emp, index, onSelect, selected }) {
+
   return (
     <div className={styles.scheduleItem}>
-      <input type="checkbox" className={styles.checkbox} />
 
-      <div className={styles.card}>
-        <img src='./img/icon/ic_schedul-edit.svg' alt='수정' />
+      <input
+        type="checkbox"
+        className={styles.checkbox}
+        checked={selected.includes(index)}
+        onChange={() => onSelect(index)}
+      />
 
-        <div className={styles.line}>
-          <div className={styles.scheduleItemContent}>
+      <ul className={styles.card}>
 
-            <div className={styles.scheduleItemGroup}>
-              <div className={styles.scheduleItemRow1}>
-                <b>이름</b>
-                <p>김민수</p>
-                <b>파트</b>
-                <p>홀1</p>
-              </div>
+        <li className={styles.line}>
+          <ul className={styles.scheduleItemContent}>
 
-              <div className={styles.scheduleItemRow2}>
-                <b>근무시간</b>
-                <p>10 : 00 ~ 16 : 00</p>
-                <b>전화번호</b>
-                <p>010-1234-5678</p>
-              </div>
-            </div>
+            <li className={styles.scheduleItemGroup}>
 
-          </div>
-        </div>
-      </div>
+              <ul className={styles.scheduleItemRow1}>
+                <li><b>이름</b></li>
+                <li><span>{emp.name}</span></li>
+                <li><b>파트</b></li>
+                <li><span>{emp.part}</span></li>
+              </ul>
+
+              <ul className={styles.scheduleItemRow2}>
+                <li><b>근무시간</b></li>
+                <li><span>{emp.startTime} ~ {emp.endTime}</span></li>
+                <li><b>전화번호</b></li>
+                <li><span>{emp.phone}</span></li>
+              </ul>
+
+            </li>
+
+          </ul>
+        </li>
+
+      </ul>
     </div>
   );
 }
