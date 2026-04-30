@@ -60,3 +60,20 @@
     font-style: normal;
     font-display: swap;
 }
+
+
+/* 모바일 사이드바 열때 */
+
+
+@media (max-width: 1023px) {
+    body.menu-open {
+        overflow: hidden;
+        height: 100vh;
+        touch-action: none;
+    }
+
+}
+
+body {
+    overflow-x: hidden;
+}

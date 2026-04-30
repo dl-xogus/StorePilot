@@ -3,8 +3,8 @@
     transition: width 0.3s ease, padding 0.3s ease;
     overflow: hidden;
     z-index: 100;
-    
-    
+
+
     .inner {
         background-color: #26272A;
         padding: 0 25px;
@@ -21,13 +21,13 @@
             align-items: center;
 
             // 로고 링크
-            > a {
+            >a {
                 display: block;
                 transition: width 0.2s ease, opacity 0.2s ease;
             }
 
             // 로고 텍스트는 a 안의 p로 정확히 지정
-            > a p {
+            >a p {
                 font-family: 'KBLJump';
                 font-weight: 800;
                 font-size: 16px;
@@ -46,7 +46,7 @@
                 align-items: center;
                 justify-content: center;
                 flex-shrink: 0;
-   
+
 
 
             }
@@ -116,9 +116,21 @@
                     padding-left: 14px;
                 }
             }
-            >div:nth-of-type(2){
-                >span{
+
+            >div:nth-of-type(2) {
+                >span {
                     cursor: pointer;
+                }
+            }
+
+            .settingIcon {
+
+                >span {
+                    // transition: 0.1s;
+                }
+
+                >span:hover {
+                    color: #BCBCBC;
                 }
             }
         }
@@ -126,86 +138,118 @@
 
 
     &.close {
-    min-width: 88px;
-    
-    .inner {
-        width: 88px !important;
-        padding: 0 12px;
-        background-color: #26272A;
-        .logo {
-            padding: 18px 0;
-            justify-content: center;
-            gap: 0;
+        min-width: 88px;
 
-            // 로고 링크 자체 숨김
-            > a {
-                width: 0;
-                opacity: 0;
-                overflow: hidden;
-                pointer-events: none;
+        .inner {
+            width: 88px !important;
+            padding: 0 12px;
+            background-color: #26272A;
+
+            .logo {
+                padding: 18px 0;
+                justify-content: center;
+                gap: 0;
+
+                // 로고 링크 자체 숨김
+                >a {
+                    width: 0;
+                    opacity: 0;
+                    overflow: hidden;
+                    pointer-events: none;
+                }
+
+                // 로고 텍스트도 숨김
+                >a p {
+                    width: 0;
+                    opacity: 0;
+                    overflow: hidden;
+                    pointer-events: none;
+                }
+
+                // 닫기 버튼은 남기기
+                .closeBtn {
+                    margin: 0 auto;
+                }
             }
 
-            // 로고 텍스트도 숨김
-            > a p {
-                width: 0;
-                opacity: 0;
-                overflow: hidden;
-                pointer-events: none;
+            nav {
+                margin-top: 4px;
             }
 
-            // 닫기 버튼은 남기기
-            .closeBtn {
-                margin: 0 auto;
-            }
-        }
+            .menuItem {
+                justify-content: center;
+                padding: 12px 0;
+                height: 50px;
 
-        nav {
-            margin-top: 4px;
-        }
+                .icon {
+                    padding-right: 0;
 
-        .menuItem {
-            justify-content: center;
-            padding: 12px 0;
-            height: 50px;
+                }
 
-            .icon {
-                padding-right: 0;
-
-            }
-
-            .text {
-                width: 0;
-                opacity: 0;
-                overflow: hidden;
-                pointer-events: none;
-            }
-        }
-
-        .line {
-            width: 60%;
-            margin: 10px auto;
-        }
-
-        .bottom {
-            justify-content: center;
-            padding: 14px 0;
-            margin-bottom: 18px;
-
-            .user {
                 .text {
                     width: 0;
                     opacity: 0;
                     overflow: hidden;
                     pointer-events: none;
-                    padding-left: 0;
                 }
             }
 
-            > div:nth-of-type(2) {
-                display: none;
+            .line {
+                width: 60%;
+                margin: 10px auto;
+            }
+
+            .bottom {
+                justify-content: center;
+                padding: 14px 0;
+                margin-bottom: 18px;
+
+                .user {
+                    .text {
+                        width: 0;
+                        opacity: 0;
+                        overflow: hidden;
+                        pointer-events: none;
+                        padding-left: 0;
+                    }
+                }
+
+                >div:nth-of-type(2) {
+                    display: none;
+                }
             }
         }
     }
 }
+
+@media (max-width: 1023px) {
+    .closeBtn {
+        display: none !important;
+    }
+
+    .sidebar {
+        width: 0;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .sidebar.open {
+        width: 360px;
+    }
+
+    .sidebar .inner {
+        width: 360px;
+    }
+
 }
 
+
+@media (max-width: 480px) {
+    /* 모바일 */
+
+    .sidebar .inner {
+
+        width: 280px;
+        height: 100vh;
+    }
+}

@@ -17,7 +17,7 @@ export default function main() {
 
 
   const quickQuestions = [
-    "이번 주 인건비 얼마나 나가?",
+    "이번 달 인건비 얼마나 나가?",
     "이번 주 매출 지난주 대비 얼마나 차이나?",
     "오늘 매출 예상 얼마야?",
     "현재 재고 부족한 항목 있어?",
@@ -50,7 +50,7 @@ export default function main() {
     if (!finalQuestion.trim()) return
 
     setCurrentQuestion("질문 : "+finalQuestion)
-    setLoading(true) // 🔥 시작
+    setLoading(true) // 시작
 
     try {
       const res = await axios.post('/api/chat/openai', {
@@ -65,7 +65,7 @@ export default function main() {
       console.error('❌ 챗봇 호출 실패:', err)
       setAnswer('호출 실패')
     } finally {
-      setLoading(false) // 🔥 끝
+      setLoading(false) // 끝
     }
   }
 
