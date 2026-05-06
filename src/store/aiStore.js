@@ -32,6 +32,8 @@ const useAIStore = create((set, get) => ({
     //   .then(res => set({ stock: res.data, loading: { ...get().loading, stock: false } }))
     //   .catch(() => set({ loading: { ...get().loading, stock: false } }));
   },
+  
+  user: null,
 }));
 
 export default useAIStore;

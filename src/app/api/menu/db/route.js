@@ -2,14 +2,16 @@ import { NextResponse } from 'next/server'
 import { getMenus } from '@/lib/db/menu'
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { getServerSession } from 'next-auth';
+import { authOption } from '../../auth/[...nextauth]/route';
 
 /* 메뉴 목록 조회 */
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const ownerId = searchParams.get('ownerId');
-  const storeId = searchParams.get('storeId');
+  const session = await getServerSession(authOption)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const ownerId = session.user.email
 
-  const menu = await getMenus(ownerId, storeId);
+  const menu = await getMenus(ownerId);
 
   return NextResponse.json({ menu: menu || [] });
 };
@@ -19,7 +21,6 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-
 
     const { ownerId, name, price, category, status } = body;
 
@@ -43,7 +44,7 @@ export async function POST(request) {
           }
         }
       },
-      { upsert: true } // 문서 없으면 생성
+      { upsert: true }
     );
 
     console.log("insert 성공:", result);
@@ -67,10 +68,8 @@ export async function DELETE(request) {
     const db = client.db('store_pilot');
     const col = db.collection('menu');
 
-    
-
     const result = await col.updateOne(
-      { ownerId},
+      { ownerId },
       {
         $pull: {
           menu: {
@@ -97,20 +96,18 @@ export async function PUT(request) {
     const body = await request.json();
     const { ownerId, menu } = body;
 
-    
-
     const client = await clientPromise;
     const db = client.db('store_pilot');
     const col = db.collection('menu');
 
-    const menu_obtid = menu.map(obj=>{
+    const menu_obtid = menu.map(obj => {
       obj._id = new ObjectId(obj._id);
       return obj;
     })
 
     const result = await col.updateOne(
-      {"ownerId": ownerId},
-      { $set: {"menu":menu_obtid}}
+      { "ownerId": ownerId },
+      { $set: { "menu": menu_obtid } }
     );
 
     return NextResponse.json({ success: true });

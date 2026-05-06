@@ -292,6 +292,12 @@
         margin: 70px auto;
     }
 
+    .left {
+        .graph {
+            flex: auto !important;
+        }
+    }
+
     .section {
         flex-direction: column;
     }
@@ -304,10 +310,14 @@
 }
 
 @media only screen and (min-width:360px) and (max-width:480px) {
+    .sales .title h1 {
+        font-size: 30px;
+    }
+    
     .left {
         .graph {
             .titleLine {
-                padding: 0 50px 0 10px;
+                padding: 0 60px 0 10px;
                 gap: 10px;
 
                 .sortTab {

@@ -1,5 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth'
+import { authOption } from '@/app/api/auth/[...nextauth]/route'
 
 // Google AI Studio API 키로 클라이언트 초기화
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
@@ -33,7 +35,11 @@ export const calculatePredictedSales = (salesData) => {
 const salesPrompt = async () => {
   // 서버 안에서 상대경로 axios 호출 불가 → DB 함수 직접 import해서 사용
   const { getSales } = await import('@/lib/db/sales');
-  const salesData = await getSales('qwe@email.com', '001');
+
+  const session = await getServerSession(authOption)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const ownerId = session.user.email
+  const salesData = await getSales(ownerId);
 
   /* 1단계: 직접 통계 계산 (AI 호출 전) */
   const calculatedData = calculatePredictedSales(salesData);
@@ -184,10 +190,32 @@ advice에는 한 줄 조언
 };
 
 /* 재고 프롬프트 */
-const stockPrompt = async () => {};
+const stockPrompt = async () => { };
 
 /* 근무표 프롬프트 */
-const schedulePrompt = async () => {};
+const schedulePrompt = async () => {
+  // 서버 안에서 상대경로 axios 호출 불가 → DB 함수 직접 import해서 사용
+  const { getSales } = await import('@/lib/db/sales');
+  const salesData = await getSales('qwe@email.com', '001');
+
+  /* 1단계: 직접 통계 계산 (AI 호출 전) */
+  const calculatedData = calculatePredictedSales(salesData);
+
+  /* 2단계: Gemma 4 31B 모델 준비 */
+  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+
+  /* 3단계: 계산된 통계를 프롬프트에 담아 AI에게 분석 요청 */
+  /* JSON 형식으로만 응답하도록 강제 */
+  const prompt = `다음은 매장의 매출 통계입니다.
+- 예상 매출액: ${calculatedData.predictedAmount.toLocaleString()}원
+- 트렌드: ${calculatedData.trend}
+- 최근 7일 평균: ${calculatedData.recentAverage.toLocaleString()}원
+- 최고 매출: ${calculatedData.maxAmount.toLocaleString()}원
+- 최저 매출: ${calculatedData.minAmount.toLocaleString()}원
+
+반드시 아래 JSON형식으로만 응답하세요. 다른 텍스트 없이 아래 형식으로만 반환하세요. 아래 형식 안에 분석과 조언을 넣으세요. 분석과 조언은 20자 이상으로 대답하세요.
+{"summary": "2-3줄 분석", "advice": "한 줄 조언"}`;
+};
 
 /* AI 호출 */
 export async function POST(req) {

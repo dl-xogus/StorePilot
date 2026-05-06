@@ -14,13 +14,20 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
   const [menuData, setMenuData] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/menu/db', {
-      params: {
-        ownerId: 'qwe@email.com',
-        storeId: '001',
-      }
-    })
-      .then(res => setMenuData(res.data.menu))
+    axios.get('/api/menu/db')
+      .then(res => {
+        const menu = res.data.menu;
+        setMenuData(menu);
+        if (isEdit) {
+          setAddMenus(
+            (editItem?.details ?? []).map(item => {
+              const found = menu.find(m => m.name === item.name);
+              const price = found ? Number(found.price.toString().replace(/,/g, '')) : 0;
+              return { ...item, sales: price * Number(item.count) };
+            })
+          );
+        }
+      })
       .catch(err => console.error('메뉴 조회 실패', err));
   }, []);
 
@@ -160,8 +167,6 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
     const days = ['일', '월', '화', '수', '목', '금', '토'];
     const day = days[new Date(year, month, date).getDay()];
     const payload = {
-      ownerId: 'qwe@email.com',
-      storeId: '001',
       date: fmt(new Date(year, month, date)),
       day,
       dailySales: totalSales,

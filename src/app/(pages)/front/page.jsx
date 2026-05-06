@@ -1,18 +1,32 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 import styles from './front.module.scss';
 
 export default function Front({ onClose }) {
   const [menuData, setMenuData] = useState([]);
+
+  const catRef = useRef(null);
+  const dragState = useRef({ isDragging: false, startX: 0, scrollLeft: 0 });
+
+  const onMouseDown = (e) => {
+    dragState.current = { isDragging: true, startX: e.clientX, scrollLeft: catRef.current.scrollLeft };
+    catRef.current.style.cursor = 'grabbing';
+  };
+  const onMouseMove = (e) => {
+    if (!dragState.current.isDragging) return;
+    catRef.current.scrollLeft = dragState.current.scrollLeft - (e.clientX - dragState.current.startX);
+  };
+  const onMouseUp = (e) => {
+    dragState.current.isDragging = false;
+    catRef.current.style.cursor = 'grab';
+  };
+  const onClickCapture = (e) => {
+    if (Math.abs(e.clientX - dragState.current.startX) > 5) e.stopPropagation();
+  };
   
   useEffect(() => {
-    axios.get('/api/menu/db', {
-      params: {
-        ownerId: 'qwe@email.com',
-        storeId: '001',
-      }
-    })
+    axios.get('/api/menu/db')
     .then(res => setMenuData(res.data.menu))
     .catch(err => console.error('메뉴 조회 실패', err));
   }, []);
@@ -51,8 +65,6 @@ export default function Front({ onClose }) {
     const day = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
 
     await axios.post('/api/sales/db', {
-      ownerId: 'qwe@email.com',
-      storeId: '001',
       date,
       day,
       dailySales: totalPrice,
@@ -60,6 +72,7 @@ export default function Front({ onClose }) {
     });
 
     setQuantities({});
+    window.dispatchEvent(new CustomEvent('sales-updated'));
     onClose();
   };
 
@@ -123,7 +136,15 @@ export default function Front({ onClose }) {
                 />
               </form>
 
-              <div className={styles.categories}>
+              <div
+                className={styles.categories}
+                ref={catRef}
+                onMouseDown={onMouseDown}
+                onMouseMove={onMouseMove}
+                onMouseUp={onMouseUp}
+                onMouseLeave={onMouseUp}
+                onClickCapture={onClickCapture}
+              >
                 <button
                   className={`${styles.btn} ${activeTab === '전체' ? styles.active : ''}`}
                   onClick={() => setActiveTab('전체')}

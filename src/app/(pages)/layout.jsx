@@ -6,19 +6,31 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Front from "./front/page";
 import useAIStore from "@/store/aiStore";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 // import Front from "@/components/경로/Front";
 
 export default function RootLayout({ children }) {
+    
     const [path, setPath] = useState()
     const url = usePathname();
     let bln = false;
-
+    
     const [fronOpen, setFrontOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const fetchAll = useAIStore(state => state.fetchAll);
+    
+    /* 세션 없으면 /login 페이지로, 공개페이지라면 /login페이지로 돌아가지 않음 */
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const publicPaths = ['/login', '/signup', '/welcome', '/onboarding'];
+    const isPublic = publicPaths.some(p => url.startsWith(p));              // 공개 페이지
 
-    // 앱 진입 시 AI 분석을 백그라운드에서 미리 호출
-    useEffect(() => { fetchAll(); }, []);
+    useEffect(() => {
+        if (status === 'loading') return;
+        if (!session && !isPublic) router.push('/login');
+    }, [session, status, isPublic]);
+
 
     useEffect(() => {
         if (isMobileMenuOpen) {
@@ -70,6 +82,12 @@ export default function RootLayout({ children }) {
         setPath(bln)
         setIsMobileMenuOpen(false)
     }, [url])
+
+    /* 앱 진입 시 AI 분석을 백그라운드에서 미리 호출 */
+    useEffect(() => { fetchAll(); }, []);
+
+    /* 세션 확인 중 + 보호된 페이지면 아무것도 렌더하지 않음 (깜빡임 방지) */
+    if (status === 'loading' && !isPublic) return null;
 
     return (
         <div className={`${layout.layout} ${isMobileMenuOpen ? layout.mobileOpen : ""}`}>

@@ -9,9 +9,31 @@
     overflow: auto;
     display: flex;
     justify-content: center;
+
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #565656;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+
+        &:hover {
+            background: #76DE99;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+    }
 }
 
 .popup {
+    z-index: 999999;
     margin-top: 50px;
     width: 740px;
     height: 820px;
@@ -70,6 +92,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            overflow: hidden;
+            flex: 1;
 
             .searchBar {
                 width: 190px;
@@ -89,7 +113,7 @@
                     padding: 0;
                     cursor: pointer;
                 }
-                
+
                 >input {
                     width: 100%;
                     background-color: transparent;
@@ -103,8 +127,20 @@
             .categories {
                 display: flex;
                 gap: 10px;
-                
+                overflow-x: auto;
+                overflow-y: hidden;
+                flex-wrap: nowrap;
+                flex: 1;
+                min-width: 0;
+
+
+                &::-webkit-scrollbar {
+                    height: 0;
+                }
+
                 .btn {
+                    white-space: nowrap;
+                    flex-shrink: 0;
                     height: 33px;
                     background-color: rgba($color: #5E5E5E, $alpha: 0.21);
                     border: 1px solid rgba($color: #868686, $alpha: 0.46);
@@ -114,7 +150,7 @@
                     font-size: 16px;
                     line-height: 33px;
                     cursor: pointer;
-                    
+
                     &.active {
                         background-color: rgba($color: #98FFAE, $alpha: 0.26);
                         border: 1px solid #76DE99;
@@ -271,7 +307,7 @@
 
                 &.disabled {
                     color: rgba($color: #e8e8e8, $alpha: 0.1);
-                    
+
                     .btn {
                         cursor: default;
 
@@ -312,15 +348,23 @@
 @media only screen and (min-width:360px) and (max-width:1660px) {
     .popup {
         margin: 70px 20px;
-        height: 100%;
-        
     }
 }
 
-@media only screen and (min-width:360px) and (max-width:1260px) {
+@media only screen and (min-width:360px) and (max-width:1260px) {}
 
+@media only screen and (min-width:360px) and (max-width:768px) {
+    .popup {
+        width: 100%;
+
+        .categories {
+            cursor: grab;
+        }
+
+        .searchBar {
+            display: none !important;
+        }
+    }
 }
 
-@media only screen and (min-width:360px) and (max-width:480px) {
-    
-}
+@media only screen and (min-width:360px) and (max-width:480px) {}

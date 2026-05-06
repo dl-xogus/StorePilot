@@ -1,39 +1,27 @@
 import { NextResponse } from 'next/server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import { toolDescriptions, runTool } from '@/lib/ai/tools'
 
-const LM_URL = 'http://localhost:1234/v1/chat/completions'
-const MODEL = 'google/gemma-4-e4b'
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY)
 
 async function callLLM(messages, temperature = 0.3) {
-  const response = await fetch(LM_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages,
-      temperature
-    })
+  const model = genAI.getGenerativeModel({
+    model: 'gemma-4-31b-it',
+    generationConfig: { temperature }
   })
 
-  const data = await response.json()
+  const systemMsg = messages.find(m => m.role === 'system')?.content ?? ''
+  const userMsg = messages.find(m => m.role === 'user')?.content ?? ''
 
-  if (!response.ok) {
-    throw new Error(data.error?.message || JSON.stringify(data))
-  }
-
-  return data.choices?.[0]?.message?.content || ''
+  const result = await model.generateContent(`${systemMsg}\n\n${userMsg}`)
+  return result.response.text()
 }
 
 function safeJsonParse(text) {
   try {
-    const cleaned = text
-      .replace(/```json/g, '')
-      .replace(/```/g, '')
-      .trim()
-
-    return JSON.parse(cleaned)
+    const cleaned = text.replace(/```json|```/g, '').trim()
+    const match = cleaned.match(/\{(?:[^{}]|\{[^{}]*\})*\}/)
+    return match ? JSON.parse(match[0]) : null
   } catch (error) {
     return null
   }
@@ -259,9 +247,12 @@ ${JSON.stringify(toolResult, null, 2)}
       0.3
     )
 
+    const lastIdx = finalAnswer.lastIndexOf('[설명]')
+    const cleanAnswer = lastIdx !== -1 ? finalAnswer.slice(lastIdx) : finalAnswer
+
     return NextResponse.json({
       success: true,
-      answer: finalAnswer
+      answer: cleanAnswer
     })
   } catch (error) {
     console.error('chat route error:', error)

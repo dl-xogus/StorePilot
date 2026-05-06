@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import styles from './login.module.scss';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
-import axios from 'axios';
 
 const page = () => {
   const router = useRouter();
@@ -24,8 +23,8 @@ const page = () => {
     setSubmitting(true);
     setErrorMsg('');
     try {
-      const { data } = await axios.post('/api/login', { email, password });
-      if (data?.ok) {
+      const result = await signIn('credentials', { email, password, redirect: false });
+      if (result?.ok) {
         router.push('/main');
       } else {
         setErrorMsg('이메일 또는 비밀번호가 올바르지 않습니다');
