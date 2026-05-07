@@ -5,6 +5,10 @@ import { authOption } from '@/app/api/auth/[...nextauth]/route'
 
 // Google AI Studio API 키로 클라이언트 초기화
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+console.log(
+  'API KEY:',
+  process.env.GOOGLE_AI_API_KEY
+);
 
 /* 예상매출액 계산 */
 export const calculatePredictedSales = (salesData) => {
@@ -194,27 +198,200 @@ const stockPrompt = async () => { };
 
 /* 근무표 프롬프트 */
 const schedulePrompt = async () => {
-  // 서버 안에서 상대경로 axios 호출 불가 → DB 함수 직접 import해서 사용
+
+  // 직원 데이터 가져오기
+  const { getEmployee } = await import('@/lib/db/employee');
+
+  // 매출 데이터 가져오기
   const { getSales } = await import('@/lib/db/sales');
-  const salesData = await getSales('qwe@email.com', '001');
 
-  /* 1단계: 직접 통계 계산 (AI 호출 전) */
-  const calculatedData = calculatePredictedSales(salesData);
+  const employeeData =
+    await getEmployee('qwe@email.com', '001') || [];
 
-  /* 2단계: Gemma 4 31B 모델 준비 */
+
+
+  const salesData =
+    await getSales('qwe@email.com', '001') || [];
+
+
+
+
+  /* =========================
+      1단계: 직접 통계 계산
+  ========================= */
+
+  const calcHours = (time) => {
+
+    if (!time) return 0;
+
+    const [start, end] = time.split('-');
+
+    const toMin = (t) => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    };
+
+    let diff = toMin(end) - toMin(start);
+
+    // 🔥 야간 근무 처리
+    if (diff < 0) {
+      diff += 24 * 60;
+    }
+
+    return diff / 60;
+  };
+
+
+  let totalHours = 0;
+  let totalPay = 0;
+
+  employeeData.forEach(emp => {
+
+    const hours = calcHours(emp.time);
+
+    const pay = hours * (emp.hourlyWage || 0);
+
+    totalHours += hours;
+    totalPay += pay;
+  });
+
+
+  // 🔥 총 매출 계산
+  const totalSales = (salesData || []).reduce((acc, cur) => {
+    return acc + Number(cur.dailySales || 0);
+  }, 0);
+
+
+  // 🔥 인건비율
+  const laborCostPercent =
+    totalSales > 0
+      ? ((totalPay / totalSales) * 100).toFixed(1)
+      : 0;
+
+
+  const calculatedData = {
+    totalEmployees: employeeData.length,
+    totalHours: Math.round(totalHours),
+    totalPay: Math.round(totalPay),
+    totalSales: Math.round(totalSales),
+    laborCostPercent
+  };
+
+
+  /* =========================
+      2단계: AI 모델 준비
+  ========================= */
+
   const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
-  /* 3단계: 계산된 통계를 프롬프트에 담아 AI에게 분석 요청 */
-  /* JSON 형식으로만 응답하도록 강제 */
-  const prompt = `다음은 매장의 매출 통계입니다.
-- 예상 매출액: ${calculatedData.predictedAmount.toLocaleString()}원
-- 트렌드: ${calculatedData.trend}
-- 최근 7일 평균: ${calculatedData.recentAverage.toLocaleString()}원
-- 최고 매출: ${calculatedData.maxAmount.toLocaleString()}원
-- 최저 매출: ${calculatedData.minAmount.toLocaleString()}원
+  /* =========================
+      3단계: AI 프롬프트
+  ========================= */
 
-반드시 아래 JSON형식으로만 응답하세요. 다른 텍스트 없이 아래 형식으로만 반환하세요. 아래 형식 안에 분석과 조언을 넣으세요. 분석과 조언은 20자 이상으로 대답하세요.
-{"summary": "2-3줄 분석", "advice": "한 줄 조언"}`;
+  const prompt = `다음은 매장의 근무표 및 인건비 통계입니다.
+
+- 총 직원 수: ${calculatedData.totalEmployees}명
+- 총 근무시간: ${calculatedData.totalHours}시간
+- 총 인건비: ${calculatedData.totalPay.toLocaleString()}원
+- 총 매출: ${calculatedData.totalSales.toLocaleString()}원
+- 인건비율: ${calculatedData.laborCostPercent}%
+
+현재 근무 운영 상태와 인건비 효율성을 분석하세요.
+
+어려운 단어 없이 쉽게 설명하세요.
+딱딱한 표현은 사용하지 마세요.
+
+summary는 짧은 한 줄로 작성하세요.
+advice도 짧은 한 줄로 작성하세요.
+
+예시:
+{
+  "summary": "현재 인건비는 조금 높은 편입니다.",
+  "advice": "직원 근무 시간을 조금 조정해보세요."
+}
+`;
+
+
+  /* =========================
+      4단계: 응답 유효성 검사
+  ========================= */
+
+  const isValid = (parsed) => {
+
+    const s = parsed?.summary ?? '';
+    const a = parsed?.advice ?? '';
+
+    return (
+      s.length > 20 &&
+      a.length > 20 &&
+      !s.includes('...') &&
+      !a.includes('...')
+    );
+  };
+
+
+  /* =========================
+      5단계: 최대 3회 재시도
+  ========================= */
+
+  let analysisResult = null;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+
+    const result = await model.generateContent(prompt);
+
+    const text = result.response
+      .text()
+      .replace(/```json|```/g, '')
+      .trim();
+
+    const jsonMatch =
+      text.match(/\{(?:[^{}]|{[^{}]*})*\}/);
+
+    if (jsonMatch) {
+
+      try {
+
+        const parsed = JSON.parse(jsonMatch[0]);
+
+        if (isValid(parsed)) {
+
+          analysisResult = parsed;
+          break;
+        }
+
+      } catch {
+        console.log(
+          'JSON 파싱 실패',
+          attempt + 1,
+          '/3 번째 반복중'
+        );
+      }
+    }
+  }
+
+
+  /* =========================
+      6단계: fallback
+  ========================= */
+
+  if (!analysisResult) {
+
+    analysisResult = {
+      summary: '근무표 분석 결과를 가져오지 못했습니다.',
+      advice: ''
+    };
+  }
+
+
+  /* =========================
+      7단계: 최종 반환
+  ========================= */
+
+  return NextResponse.json({
+    ...calculatedData,
+    ...analysisResult
+  });
 };
 
 /* AI 호출 */

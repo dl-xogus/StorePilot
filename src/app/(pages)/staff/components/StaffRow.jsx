@@ -39,14 +39,43 @@ function StaffRow({ emp, index, onUpdate, onSelect, selected }) {
 
   // input 값 변경 처리
   const handleChange = (e) => {
+
     const { name, value } = e.target;
 
+    // 🔥 시급
     if (name === "hourlyWage") {
+
       const onlyNumber = value.replace(/[^0-9]/g, '');
-      setEditData(prev => ({ ...prev, [name]: onlyNumber }));
-    } else {
-      setEditData(prev => ({ ...prev, [name]: value }));
+
+      setEditData(prev => ({
+        ...prev,
+        [name]: onlyNumber
+      }));
+
+      return;
     }
+
+    // 근무요일
+    if (name === "days") {
+
+      // 월화수목금토일 + / 만 허용
+      let cleaned = value.replace(/[^월화수목금토일/]/g, '');
+
+      // // 중복 제거
+      cleaned = cleaned.replace(/\/+/g, '/');
+
+      setEditData(prev => ({
+        ...prev,
+        days: cleaned
+      }));
+
+      return;
+    }
+
+    setEditData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
 
@@ -82,9 +111,26 @@ function StaffRow({ emp, index, onUpdate, onSelect, selected }) {
         <>
           <span><input name="name" placeholder="이름" value={editData.name} onChange={handleChange} /></span>
           <span><input name="age" placeholder="나이" value={editData.age} onChange={handleChange} /></span>
-          <span><input name="hourlyWage" placeholder="시급" value={editData.hourlyWage} onChange={handleChange} /></span>
+          <span>
+            <input
+              name="hourlyWage"
+              placeholder="시급"
+              value={
+                editData.hourlyWage
+                  ? Number(editData.hourlyWage).toLocaleString() + '원'
+                  : ''
+              }
+              onChange={handleChange}
+            /></span>
           <span><input name="part" placeholder="파트" value={editData.part} onChange={handleChange} style={{ color: getPartColor(emp.part) }} /></span>
-          <span><input name="days" placeholder="요일" value={editData.days} onChange={handleChange} /></span>
+          <span>
+            <input
+              name="days"
+              placeholder="예: 월/화/수"
+              value={editData.days}
+              onChange={handleChange}
+            />
+          </span>
 
           <span>
             <input

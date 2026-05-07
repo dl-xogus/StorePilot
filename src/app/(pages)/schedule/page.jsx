@@ -140,11 +140,8 @@ function Schedule() {
 
   // 직원 필터
   const filteredEmployees = employees.filter(emp => {
-    if (!emp.days) return false;
 
-    if (emp.days.includes('주말')) {
-      return selectedDay === '토' || selectedDay === '일';
-    }
+    if (!emp.days) return false;
 
     return emp.days.includes(selectedDay);
   });
@@ -182,18 +179,18 @@ function Schedule() {
                 </b>
               </div>
 
-              <div className={styles.scheduleNavDate}>
+              {/* <div className={styles.scheduleNavDate}>
                 <img src='./img/icon/ic_schedul-calendar.svg' />
                 <p>
                   {formatDate(weekDates[0])} - {formatDate(weekDates[6])}
                 </p>
-              </div>
+              </div> */}
 
             </div>
 
             {/* 요일 */}
             <div className={styles.scheduleWeek}>
-              {['일', '월', '화', '수', '목', '금', '토'].map((day, i) => {
+              {['월', '화', '수', '목', '금', '토', '일'].map((day, i) => {
                 const date = weekDates[i];
 
                 return (
@@ -220,7 +217,7 @@ function Schedule() {
                   <p>
                     {
                       weekDates[
-                        ['일', '월', '화', '수', '목', '금', '토'].indexOf(selectedDay)
+                        ['월', '화', '수', '목', '금', '토', '일'].indexOf(selectedDay)
                       ]?.getDate()
                     }일
                   </p>

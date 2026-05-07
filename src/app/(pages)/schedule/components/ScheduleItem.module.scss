@@ -1,7 +1,7 @@
 /* ================== Schedule Item ================== */
 .scheduleItem {
     display: flex;
-    margin: 40px 0;
+    margin: 35px 0 50px;
 }
 
 .card,
@@ -115,27 +115,38 @@
 /* ================== Mobile ================== */
 @media (max-width: 768px) {
 
-  .scheduleItem {
-    margin: 20px 0;
-  }
+    .scheduleItem {
+        margin: 20px 0 45px;
+    }
 
-  .card {
-    margin-left: 10px;
-  }
+    .card {
+        margin-left: 10px;
+    }
 
-  .line {
-    margin-left: 15px;
-  }
+    .line {
+        margin-left: 20px;
+    }
 
-  .scheduleItemContent {
-    padding-left: 15px;
-  }
+    .scheduleItemContent {
+        padding-left: 15px;
+    }
 
-  /* 🔥 grid 구조 변경 (핵심) */
-  .scheduleItemRow1,
-  .scheduleItemRow2 {
-    grid-template-columns: 70px 1fr;
-    row-gap: 8px;
-  }
+    .scheduleItemRow1,
+    .scheduleItemRow2 {
+        grid-template-columns: 100px 1fr;
+        row-gap: 15px;
+
+        b {
+            font-size: 16px;
+        }
+
+        span {
+            font-size: 16px;
+        }
+    }
+
+    .scheduleItemRow1 {
+        margin-bottom: 15px;
+    }
 
 }

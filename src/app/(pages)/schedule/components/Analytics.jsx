@@ -1,11 +1,35 @@
 'use client';
-
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import styles from './Analytics.module.scss';
-import { useState } from 'react';
 
 function Analytics({ employees = [] }) {
 
   const [payType, setPayType] = useState('day');
+  const [aiResult, setAiResult] = useState(null);
+
+
+  useEffect(() => {
+
+    const fetchAI = async () => {
+
+      try {
+
+        const res = await axios.post('/api/ai', {
+          keyword: 'schedule'
+        });
+
+        setAiResult(res.data);
+
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchAI();
+
+  }, []);
+
 
   // 근무 요일 수
   const getWorkDays = (emp) => {
@@ -18,6 +42,7 @@ function Analytics({ employees = [] }) {
 
   // 시간 계산
   const calcHours = (emp) => {
+
     if (!emp.time) return 0;
 
     const [start, end] = emp.time.split('-');
@@ -27,7 +52,14 @@ function Analytics({ employees = [] }) {
       return h * 60 + m;
     };
 
-    return (toMin(end) - toMin(start)) / 60;
+    let diff = toMin(end) - toMin(start);
+
+    // 🔥 야간 근무 처리
+    if (diff < 0) {
+      diff += 24 * 60;
+    }
+
+    return diff / 60;
   };
 
   // 급여 계산
@@ -57,24 +89,24 @@ function Analytics({ employees = [] }) {
       {/* AI 영역 */}
       <div className={styles.analyticsAi}>
         <div className={styles.analyticsHeader}>
-          <img src='./img/icon/ic-AI.svg' />
-          <h2>AI 분석</h2>
+          <div className={styles.headerLeft}>
+            <img src='./img/icon/ic-AI.svg' />
+            <h2>AI 분석</h2>
+          </div>
         </div>
 
         <div className={styles.analyticsList}>
           <ul>
             <li>
-              <span>AI 분석 내용1</span>
-              <span>AI 추천 내용1</span>
+              <span>
+                {aiResult?.summary || 'AI가 근무표를 분석 중입니다.'}
+              </span>
+
+              <span>
+                 {aiResult?.advice || '. . .'}
+              </span>
             </li>
-            <li>
-              <span>AI 분석 내용2</span>
-              <span>AI 추천 내용2</span>
-            </li>
-            <li>
-              <span>AI 분석 내용3</span>
-              <span>AI 추천 내용3</span>
-            </li>
+
           </ul>
         </div>
       </div>
@@ -82,8 +114,10 @@ function Analytics({ employees = [] }) {
       {/* 직원별 인건비 */}
       <div className={styles.employee}>
         <div className={styles.analyticsHeader}>
-          <img src='./img/icon/ic_schedul-analytics.svg' />
-          <h2>직원별 인건비 분석</h2>
+          <div className={styles.headerLeft}>
+            <img src='./img/icon/ic_schedul-analytics.svg' />
+            <h2>직원별 인건비 분석</h2>
+          </div>
 
           <div className={styles.btn}>
             <button
@@ -113,7 +147,7 @@ function Analytics({ employees = [] }) {
           {employees.map((emp, i) => (
             <li key={i} className={styles.employeeItem}>
               <span>{emp.name}</span>
-              <span>근무 시간 : {emp.startTime} ~ {emp.endTime}</span>
+              <span>근무 시간 {emp.time}</span>
               <span className={styles.payDetail}>
                 {Math.round(calcHours(emp))}시간 × {emp.hourlyWage?.toLocaleString()}원 =
                 {' '}

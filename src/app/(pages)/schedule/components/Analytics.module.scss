@@ -8,11 +8,10 @@
 
 .analyticsAi {
     background-color: #1F2022;
-    border: 1px solid #2D2C2F;
     padding: 20px 20px 0;
     border-radius: 11px;
     width: 100%;
-    height: 265px;
+    height: auto;
     margin-bottom: 20px;
 }
 
@@ -26,14 +25,15 @@
 .analyticsList {
 
     ul {
-        margin: 20px 15px 0;
+        margin: 20px 15px 7px;
     }
 
     li {
-        margin-bottom: 20px;
+        margin-bottom: 0px;
     }
 
     span {
+        line-height: 30px;
         font-size: 16px;
         display: block;
     }
@@ -60,16 +60,17 @@
 /* ================== Employee ================== */
 .employee {
     background-color: #1F2022;
-    border: 1px solid #2D2C2F;
     padding: 20px 20px 0;
     border-top-left-radius: 11px;
     border-top-right-radius: 11px;
     width: 100%;
+    max-width: 1400px;
 }
 
 .analyticsHeader {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
     h2 {
         font-size: 20px;
@@ -77,9 +78,15 @@
     }
 }
 
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 6px; 
+}
+
 .employeeList {
-    margin: 20px 15px 0;
-    height: 27vh;
+    margin: 22px 15px 0;
+    height: 38vh;
     overflow-y: auto;
 
     scrollbar-width: none;
@@ -88,10 +95,10 @@
 
 .employeeItem {
     background-color: #25272A;
-    padding: 13px 30px;
+    padding: 10px 25px;
     border-radius: 7px;
-    margin-bottom: 22px;
-    border: 1px solid rgba(118, 222, 153, 0.3);
+    margin-bottom: 25px;
+    border-left: 4px solid #76DE99;
     backdrop-filter: blur(6px);
 
     span {
@@ -102,7 +109,7 @@
     }
 
     span:nth-of-type(1) {
-        font-weight: bold;
+        
     }
 
     span:nth-of-type(2) {
@@ -116,6 +123,10 @@
     }
 
 
+}
+
+.employeeItem:hover{
+    background-color: #292929;
 }
 
 
@@ -134,7 +145,7 @@
     gap: 10px;
     padding: 5px;
     display: flex;
-    margin-left: 115px;
+
 
     button {
         cursor: pointer;
@@ -168,43 +179,68 @@
     display: flex;
     justify-content: space-between;
     border-top: 1px solid #2D2C2F;
+    align-items: center;
 
     span {
         font-size: 18px;
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: bold;
     }
 }
 
 
 /* ================== Tablet ================== */
-@media (max-width: 1024px) {
+@media (max-width: 1420px) {
 
     .analytics {
         width: 100%;
         margin-top: 0;
     }
 
-    .btn {
-        margin-left: 630px;
+    .analyticsAi {
+        margin-bottom: 40px;
+    }
+
+    .analyticsList span {
+        font-size: 16px;
+        line-height: 20px;
+        word-break: break-word;
+    }
+
+    .employeeList {
+        height: 19vh;
+        overflow-y: auto;
     }
 
     .employeeItem {
         display: flex;
-        gap: 50px;
-        padding: 20px;
-        border: 1px solid rgba(118, 222, 153, 0.3);
-        backdrop-filter: blur(6px);
-        border: 1px solid rgba(118, 222, 153, 0.2);
-        box-shadow: 0 0 8px rgba(118, 222, 153, 0.4);
+        align-items: center;
+        gap: 30px;
+        padding: 15px;
+        border-radius: 7px;
+
+        span {
+            font-size: 16px;
+            line-height: 24px;
+            word-break: break-word;
+            display: inline-block;
+            vertical-align: baseline;
+        }
 
         span:nth-of-type(1) {
             background-color: #8d98ac;
             border-radius: 50px;
-            padding: 0 20px;
+            padding: 2px 16px;
             color: #000;
             font-weight: bold;
+            white-space: nowrap;
         }
     }
+
 }
+
+
 
 
 /* ================== Mobile ================== */
@@ -212,23 +248,102 @@
 
     .analytics {
         width: 100%;
-        margin-top: 20px;
     }
 
+    .analyticsAi {
+        padding: 16px;
+    }
+
+    .analyticsHeader {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+    }
+
+    .analyticsList ul {
+        padding: 0;
+    }
+
+    .analyticsList li {
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column; 
+        gap: 2px;
+    }
+
+    .analyticsList span {
+        font-size: 15px;
+        line-height: 20px;
+        word-break: break-word;
+    }
+
+    .analyticsList span:nth-of-type(1) {
+        color: #aaa;
+    }
+
+    .analyticsList span:nth-of-type(2) {
+        color: #76DE99;
+        font-weight: 500;
+    }
+
+
+
     .employeeList {
-        height: auto;
+        margin: 20px 8px 0;
+        height: 17vh;
+        overflow-y: auto;
     }
 
     .employeeItem {
-        padding: 10px 15px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 6px;
+
+        display: flex;
+        gap: 10px;
+
+        span {
+            font-size: 15px;
+            line-height: 22px;
+            word-break: break-word;
+        }
+
+        span:nth-of-type(1) {
+            display: inline-block;
+            width: fit-content;
+            padding: 2px 12px;
+            white-space: nowrap;
+        }
     }
 
     .employeeTotal {
-        padding: 10px 15px;
+        padding: 10px 20px;
+
+        span {
+            font-size: 16px;
+            display: inline-block;
+            vertical-align: middle;
+        }
     }
 
-    .btn {
-        margin-left: 380px;
+}
+
+
+/* ================== max-width: 1400px ================== */
+@media (max-width: 1400px) {
+
+    .container {
+        flex-direction: column;  
+        gap: 30px;
+    }
+
+    .scheduleMain {
+        width: 100%;
+    }
+
+    .analytics {
+        width: 100%;
     }
 
 }
