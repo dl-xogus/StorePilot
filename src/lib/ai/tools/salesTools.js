@@ -5,8 +5,7 @@ import { getMenus } from '@/lib/db/menu'
 
 // 오늘 날짜를 YYYY-MM-DD 형태로 반환
 function getToday() {
-  const today = new Date()
-  return today.toISOString().slice(0, 10)
+  return formatDate(new Date())
 }
 
 // 오늘 날짜와 일치하는 매출을 찾아 숫자로 반환
@@ -28,7 +27,7 @@ function getThisWeekRange() {
   const end = new Date(start)
   end.setDate(start.getDate() + 6)
 
-  const format = (d) => d.toISOString().slice(0, 10)
+  const format = (d) => formatDate(d)
 
   return {
     startDate: format(start),
@@ -50,7 +49,7 @@ function getLastWeekRange() {
   const lastWeekSaturday = new Date(thisWeekSunday)
   lastWeekSaturday.setDate(thisWeekSunday.getDate() - 1)
 
-  const format = (d) => d.toISOString().slice(0, 10)
+  const format = (d) => formatDate(d)
 
   return {
     startDate: format(lastWeekSunday),
@@ -60,7 +59,7 @@ function getLastWeekRange() {
 
 // period 값에 따라 조회할 날짜 범위를 반환
 function getDateRangeByPeriod(period, sales = []) {
-  const format = (d) => d.toISOString().slice(0, 10)
+  const format = (d) => formatDate(d)
 
   if (period === 'today') {
     const today = getToday()
@@ -131,12 +130,19 @@ function getMaxSalesDay(sales) {
 
 // 특정 날짜 범위(startDate ~ endDate)의 총 매출 계산
 function getSalesTotalByRange(sales, startDate, endDate) {
-  return sales
-    .filter(item => item.date >= startDate && item.date <= endDate)
-    .reduce((sum, item) => {
-      const dailySales = Number(String(item.dailySales).replaceAll(',', '')) || 0
-      return sum + dailySales
-    }, 0)
+
+  const filtered = sales.filter(item =>
+    item.date >= startDate && item.date <= endDate
+  )
+
+  return filtered.reduce((sum, item) => {
+    const dailySales =
+      Number(String(item.dailySales).replaceAll(',', '')) || 0
+
+    console.log(item.date, dailySales)
+
+    return sum + dailySales
+  }, 0)
 }
 
 
@@ -215,6 +221,14 @@ function getSalesTotalResponse(sales, period, type) {
   }
 }
 
+
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
 
 
 // ---------------------------------------------------------------------------

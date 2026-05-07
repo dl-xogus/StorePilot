@@ -6,6 +6,10 @@ import style from '@/app/(pages)/dashboard/dashboard.module.scss'
 import Link from 'next/link'
 import Chart from '@/components/sales/Chart'
 import useAIStore from '@/store/aiStore'
+import {
+  getTodayWorkingEmployees,
+  getTodayLaborCost
+} from '@/lib/utils/employeeCalc'
 
 const getKoreaToday = () => {
   const now = new Date()
@@ -20,8 +24,26 @@ const getWeekOfMonth = (date) => {
 
 function Dashboard() {
   const [salesData, setSalesData] = useState([])
+  const [employees, setEmployees] = useState([])
 
   const today = getKoreaToday()
+
+  const todayWorkingEmployees = getTodayWorkingEmployees(employees, today)
+  const todayLaborCost = getTodayLaborCost(employees, today)
+
+  const hallCount = todayWorkingEmployees.filter(
+    employee => employee.part === '홀'
+  ).length
+
+  const kitchenCount = todayWorkingEmployees.filter(
+    employee => employee.part === '주방'
+  ).length
+
+  const managerCount = todayWorkingEmployees.filter(
+    employee => employee.part === '매니저'
+  ).length
+
+
   const selected = {
     year: `${today.getFullYear()}년`,
     month: `${today.getMonth() + 1}월`,
@@ -34,6 +56,18 @@ function Dashboard() {
     })
       .then(res => setSalesData(res.data.sales))
       .catch(err => console.error('매출 조회 실패', err))
+  }, [])
+
+  useEffect(() => {
+    axios.get('/api/employee/db', {
+      params: {
+        ownerId: 'qwe@email.com'
+      }
+    })
+      .then(res => {
+        setEmployees(res.data.employees || [])
+      })
+      .catch(err => console.error('직원 조회 실패', err))
   }, [])
 
   /* 예상 매출액 - store에서 읽기 */
@@ -70,13 +104,13 @@ function Dashboard() {
         <div className={style.cardWrap}>
 
           <Link href="/sales" className={style.summaryCard}>
-              <div className={style.summaryInner}>
-                <p><img src='/img/icon/ic-main-sales.png' /></p>
-                <div className={style.summaryText}>
-                  <p>예상 매출</p>
-                  <strong>{sales?.predictedAmount.toLocaleString() ?? '-'} 원</strong>
-                </div>
+            <div className={style.summaryInner}>
+              <p><img src='/img/icon/ic-main-sales.png' /></p>
+              <div className={style.summaryText}>
+                <p>예상 매출</p>
+                <strong>{sales?.predictedAmount.toLocaleString() ?? '-'} 원</strong>
               </div>
+            </div>
           </Link>
 
           <Link href="/schedule" className={style.summaryCard}>
@@ -84,7 +118,7 @@ function Dashboard() {
               <p><img src='/img/icon/ic-main-staff.png' /></p>
               <div className={style.summaryText}>
                 <p>예상 인건비</p>
-                <strong>380,000원</strong>
+                <strong>{todayLaborCost.toLocaleString()}원</strong>
               </div>
             </div>
           </Link>
@@ -98,7 +132,7 @@ function Dashboard() {
               </div>
             </div>
           </Link>
-          
+
           <Link href="/stock" className={`${style.summaryCard} ${style.danger}`}>
             <div className={`${style.summaryInner} ${style.danger}`}>
               <p><img src='/img/icon/ic-dashboard-danger.png' /></p>
@@ -124,14 +158,16 @@ function Dashboard() {
           <article className={style.infoCard}>
             <Link href="/schedule">
               <div className={style.cardTitle}>
-                <h3>오늘 추천 근무 인원</h3>
+                <h3>오늘 근무 인원</h3>
                 <span><img src="/img/icon/ic-dashboard-right-arrow.png" /></span>
               </div>
 
-            <ul>
-              <li>홀 2명</li>
-              <li>현재 배정 3명</li>
-            </ul>
+              <ul>
+                {hallCount > 0 && <li>홀 {hallCount}명</li>}
+                {kitchenCount > 0 && <li>주방 {kitchenCount}명</li>}
+                {managerCount > 0 && <li>매니저 {managerCount}명</li>}
+                <li>현재 배정 {todayWorkingEmployees.length}명</li>
+              </ul>
             </Link>
           </article>
 
@@ -142,10 +178,10 @@ function Dashboard() {
                 <span><img src="/img/icon/ic-dashboard-right-arrow.png" /></span>
               </div>
 
-            <ul>
-              <li>닭 20마리</li>
-              <li>무 2개</li>
-            </ul>
+              <ul>
+                <li>닭 20마리</li>
+                <li>무 2개</li>
+              </ul>
             </Link>
           </article>
 
@@ -156,17 +192,17 @@ function Dashboard() {
                 <span><img src="/img/icon/ic-dashboard-right-arrow.png" /></span>
               </div>
 
-            <ul>
-              <li>양배추 1개</li>
-              <li>마요네즈 1개</li>
-            </ul>
+              <ul>
+                <li>양배추 1개</li>
+                <li>마요네즈 1개</li>
+              </ul>
             </Link>
-            
+
           </article>
         </section>
 
 
-        <section className={style.aiBox}>
+        {/* <section className={style.aiBox}>
           <div className={style.aiTitle}>
             <img src="/img/icon/ic-AI.svg" alt="아이콘" />
             <h2>
@@ -177,7 +213,7 @@ function Dashboard() {
             <p>오늘 저녁 인력 배치가 가능합니다</p>
             <p>치킨, 콜라 재고 주의</p>
           </div>
-        </section>
+        </section> */}
 
       </section>
     </div>
