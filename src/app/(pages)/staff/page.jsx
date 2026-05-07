@@ -75,32 +75,73 @@ function Staff() {
     // input
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if (name === 'hourlyWage') {
+
+            const onlyNumber = value.replace(/[^0-9]/g, '');
+
+            setForm(prev => ({
+                ...prev,
+                hourlyWage: onlyNumber
+            }));
+
+            return;
+        }
+        if (name === 'days') {
+
+            // 월화수목금토일 + / 만 허용
+            let cleaned = value.replace(/[^월화수목금토일/]/g, '');
+
+            // // 중복 제거
+            cleaned = cleaned.replace(/\/+/g, '/');
+
+            setForm(prev => ({
+                ...prev,
+                days: cleaned
+            }));
+
+            return;
+        }
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
     // POST
     const handleSubmit = async () => {
+
         const formatted = {
             ownerId: session.email,
+
             employees: {
                 ...form,
+
+                // 마지막 / 제거
+                days: form.days
+                    .replace(/\//g, '')
+                    .split('')
+                    .join('/'),
+
                 time: `${form.startTime}-${form.endTime}`,
+
                 age: Number(form.age),
-                hourlyWage: form.hourlyWage === '' ? null : Number(form.hourlyWage)
+
+                hourlyWage:
+                    form.hourlyWage === ''
+                        ? null
+                        : Number(form.hourlyWage)
             }
         };
 
         const res = await axios.post("/api/employee/db", formatted);
 
-
         if (res.status == 200) {
+
             getEmployee();
 
-
             setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             }, 50);
-
 
             setForm({
                 name: '',
@@ -302,7 +343,16 @@ function Staff() {
                                     </span>
 
                                     <span>
-                                        <input placeholder="시급" name="hourlyWage" value={form.hourlyWage} onChange={handleChange} />
+                                        <input
+                                            placeholder="시급"
+                                            name="hourlyWage"
+                                            value={
+                                                form.hourlyWage
+                                                    ? Number(form.hourlyWage).toLocaleString() + '원'
+                                                    : ''
+                                            }
+                                            onChange={handleChange}
+                                        />
                                     </span>
 
                                     <span>
@@ -310,7 +360,7 @@ function Staff() {
                                     </span>
 
                                     <span>
-                                        <input placeholder="근무요일" name="days" value={form.days} onChange={handleChange} />
+                                        <input placeholder="예: 월/화/수" name="days" value={form.days} onChange={handleChange} />
                                     </span>
 
                                     <span>

@@ -23,9 +23,9 @@ const useAIStore = create((set, get) => ({
       .catch(() => set({ loading: { ...get().loading, menu: false } }));
 
     /* 근무표 AI 호출 */     // 근무표 AI 프롬프트 만들면 주석 풀기
-    // axios.post('/api/ai', { keyword: 'schedule' })
-    //   .then(res => set({ schedule: res.data, loading: { ...get().loading, schedule: false } }))
-    //   .catch(() => set({ loading: { ...get().loading, schedule: false } }));
+    axios.post('/api/ai', { keyword: 'schedule' })
+      .then(res => set({ schedule: res.data, loading: { ...get().loading, schedule: false } }))
+      .catch(() => set({ loading: { ...get().loading, schedule: false } }));
 
     /* 재고 관리 AI 호출 */   // 재고 관리 AI 프롬프트 만들면 주석 풀기
     // axios.post('/api/ai', { keyword: 'stock' })
