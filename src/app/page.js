@@ -34,7 +34,7 @@ export default function Landing() {
         </div>
 
         <div className={styles.buttons}>
-          <button className={styles.primary} onClick={() => router.push("/(auth)/login")}>시작하기</button>
+          <button className={styles.primary} onClick={() => router.push("/login")}>시작하기</button>
           <button className={styles.secondary}
             onClick={() => {
               document.getElementById("detail")?.scrollIntoView({

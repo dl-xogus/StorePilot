@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
@@ -15,7 +15,7 @@ const handleSocialSignup = (provider) => {
   signIn(provider, { callbackUrl: '/welcome' });
 };
 
-const page = () => {
+const SignupContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
@@ -270,6 +270,14 @@ const page = () => {
 
     </div>
   )
+}
+
+const page = () => {
+  return (
+    <Suspense fallback={null}>
+      <SignupContent />
+    </Suspense>
+  );
 }
 
 export default page

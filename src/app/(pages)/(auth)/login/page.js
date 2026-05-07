@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './login.module.scss';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ const handleSocialLogin = (provider) => {
   signIn(provider, { callbackUrl: '/main' });
 };
 
-const page = () => {
+const LoginContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
@@ -158,5 +158,13 @@ const page = () => {
   )
 }
 
+
+const page = () => {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
+  );
+}
 
 export default page
