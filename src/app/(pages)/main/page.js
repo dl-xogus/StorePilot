@@ -5,6 +5,8 @@ import style from '@/app/(pages)/main/main.module.scss'
 import { useState, useEffect } from "react";
 import Link from 'next/link'
 import useAIStore from '@/store/aiStore'
+import { getTodayLaborCost } from '@/lib/utils/employeeCalc'
+
 
 import axios from 'axios'
 
@@ -45,6 +47,27 @@ export default function main() {
   /* 예상 매출액 - store에서 읽기 */
   const { sales } = useAIStore();
 
+  // 인건비
+  const [employees, setEmployees] = useState([])
+
+  const today = new Date()
+
+  useEffect(() => {
+    axios.get('/api/employee/db', {
+      params: {
+        ownerId: 'qwe@email.com'
+      }
+    })
+      .then(res => {
+        setEmployees(res.data.employees || [])
+      })
+      .catch(err => {
+        console.error('직원 조회 실패', err)
+      })
+  }, [])
+
+  const todayLaborCost = getTodayLaborCost(employees, today)
+
 
 
   async function handleAsk(item) {
@@ -52,7 +75,7 @@ export default function main() {
 
     if (!finalQuestion.trim()) return
 
-    setCurrentQuestion("질문 : "+finalQuestion)
+    setCurrentQuestion("질문 : " + finalQuestion)
     setLoading(true) // 시작
 
     try {
@@ -174,7 +197,7 @@ export default function main() {
               <p><img src='/img/icon/ic-main-staff.png' /></p>
               <div className={style.summaryText}>
                 <p>예상 인건비</p>
-                <strong>380,000원</strong>
+                <strong>{todayLaborCost.toLocaleString()}원</strong>
               </div>
             </div>
           </div>
