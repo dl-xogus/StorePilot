@@ -557,11 +557,11 @@ function Menu() {
                                             </>
                                         ) : (
                                             <>
-                                                <p>{item.name}</p>
-                                                <p>{formatNumber(item.price)}</p>
-                                                <p>{item.sales }</p>
-                                                <p>{item.category}</p>
-                                                <p className={getStatusClass(item.status)}>{item.status}</p>
+                                                <p data-label="메뉴명">{item.name}</p>
+                                                <p data-label="가격">{formatNumber(item.price)}</p>
+                                                <p data-label="판매량">{item.sales }</p>
+                                                <p data-label="카테고리">{item.category}</p>
+                                                <p data-label="상태" className={getStatusClass(item.status)}>{item.status}</p>
                                                 <p className={styles.editBtn} onClick={() => handleEditClick(item, i)}  >
                                                     <img src="./img/icon/ic-edit.svg" alt="수정아이콘" />
                                                 </p>
@@ -578,17 +578,7 @@ function Menu() {
 
 
 
-
-
-
             <Ai />
-
-
-
-
-
-
-            
 
 
 

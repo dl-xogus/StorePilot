@@ -117,6 +117,8 @@
    text-align: center;
    justify-content: center;
    gap: 25px;
+   position: relative;
+  z-index: 10;
 
    .primary {
       width: 125px;
@@ -127,11 +129,11 @@
       font-family: 'PyeojinGothic';
       font-size: 17px;
       border: none;
+      &:hover {
+         background: linear-gradient(135deg, #0bbe4d, #30c265);
+      }
    }
 
-   .primary:hover {
-      background: linear-gradient(135deg, #0bbe4d, #30c265);
-   }
 
    .secondary {
       width: 125px;
@@ -142,12 +144,12 @@
       border: 1px solid rgb(177, 177, 177);
       color: white;
       background-color: rgba(255, 255, 255, 0);
-   }
-
-   .secondary:hover {
-      border: 1px solid rgb(78, 199, 118);
+      &:hover {
+         border: 1px solid rgb(78, 199, 118);
+      }
    }
 }
+
 
 
 
@@ -480,7 +482,7 @@
 
 
 
-/* ========== 반응형 ========== */
+/* ================= 반응형 ==================== */
 
 /* 태블릿 */
 @media (max-width: 1024px) {
@@ -560,18 +562,19 @@
 
 }
 
-@media (min-width: 1025px) and (max-width: 1369px) {
+@media (max-width: 1366px) {
 
    .section3 {
 
       .function1 {
+         
          .Ai_Img {
-            width: 420px;
-            height: 200px;
+            width: 100%;
+            max-width: 420px;
          }
-
-         //flex-direction: column;
+                 
          .functionTxt1 {
+            width: 100%;
             max-width: 438px;
 
             >h4 {
@@ -585,8 +588,12 @@
 
          }
       }
+      .Aichat_Img {
+   
+    
+    width: 230px;
    }
-
+   }
 
    .sec2 {
       padding: 20px;
@@ -675,6 +682,14 @@
       .function1>div {
          width: 100%;
       }
+
+      .Aichat_Img {
+    width: 50%;
+   }
+
+   .sales_Img {
+      display: none;
+   }
 
    }
 
@@ -776,34 +791,31 @@
    }
 
 
-   /* ===== section2 ===== */
+   /* ===== section2 핵심기능카드 ===== */
    .section2 h4 {
       font-size: 24px;
       padding: 50px 10px;
    }
 
+   
+
+   // 핵심 기능 카드
    .sec2 {
-      padding: 10px;
-
-      .card_box {
-         width: 100%;
-         height: auto;
-         padding: 15px;
-
-         >p {
-            font-size: 12px;
-         }
-      }
+      padding: 20px;
+      flex-wrap: wrap;
 
       .card_title {
+         padding: 10px 0 20px;
+
          >span {
-            font-size: 16px;
+            font-size: 18px;
          }
 
          >img {
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
          }
+
       }
    }
 
