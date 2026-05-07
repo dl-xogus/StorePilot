@@ -355,3 +355,443 @@
         }
     }
 }
+
+
+/* 태블릿 */
+@media (max-width: 1024px) {
+    .section {
+        height: 350px;
+    }
+
+    .menu {
+        width: 90%;
+        margin: 70px auto;
+        //margin: 0 70px 0px 70px;
+        margin-bottom: 0;
+
+        .main_title {
+            font-size: 30px;
+        }
+    }
+
+    .titleLine,
+    .Line {
+        padding: 0 20px;
+        font-size: 14px;
+
+        /* 컬럼 축소 */
+        grid-template-columns:
+            60px
+            /* 체크 */
+            1fr
+            /* 이름 */
+            1fr
+            /* 값1 */
+            1fr
+            /* 값2 */
+            1fr 120px 60px;
+    }
+
+    .Line input {
+        width: 100px;
+        font-size: 12px;
+    }
+
+    .Line select {
+        width: 100px;
+        font-size: 12px;
+    }
+
+    .inputBtn:nth-last-of-type(2) {
+        width: 30px;
+        height: 30px;
+
+        /* 텍스트 숨기기 */
+        font-size: 0;
+
+        /* 아이콘 넣기 */
+        background: #76DE99 url('/img/icon/input_check.svg') no-repeat center / 16px;
+
+        /* 가운데 정렬 보정 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .inputBtn:nth-last-of-type(1) {
+        width: 30px;
+        height: 30px;
+
+        /* 텍스트 숨기기 */
+        font-size: 0;
+
+        /* 아이콘 넣기 */
+        background: #ff6b6b url('/img/icon/delete_solid.svg') no-repeat center /12px;
+
+        /* 가운데 정렬 보정 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .AllaiBox {
+        .aiBox {
+            width: 100%;
+            height: auto;
+
+            .aiBox2_title span {
+                font-size: 20px;
+            }
+
+            .aiText {
+                border-radius: 11px;
+                padding: 0;
+                width: 100%;
+            }
+
+            .aiBox2_text {
+                .aiText {
+                    width: 100%;
+
+                    li,
+                    p {
+                        font-size: 14px;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+        .aiBox2 {
+            width: 100%;
+            height: auto;
+
+            .aiBox2_title span {
+                font-size: 20px;
+            }
+
+            .aiText2 {
+                border-radius: 11px;
+                padding: 0;
+                width: 100%;
+            }
+
+            .aiBox2_text {
+                .aiText {
+                    width: 100%;
+
+                    li,
+                    p {
+                        font-size: 14px;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/* 모바일 */
+@media (max-width: 768px) {
+
+    .section {
+        height: 500px;
+    }
+
+    .menu {
+        width: 90%;
+        margin: 50px auto;
+        //margin: 0 70px 0px 70px;
+        margin-bottom: 0;
+
+        .main_title {
+            font-size: 30px;
+        }
+    }
+
+
+    .titleLine,
+    .Line {
+        font-size: 14px;
+
+        /* 컬럼 축소 */
+        grid-template-columns:
+            60px
+            /* 체크 */
+            1fr
+            /* 이름 */
+            1fr
+            /* 값1 */
+            1fr
+            /* 값2 */
+            1fr 90px 40px;
+    }
+
+
+    /* 내부 요소 정렬 */
+    .Line>div {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+    }
+
+    /* input / select */
+    .Line input,
+    .Line select {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    /* 버튼 영역 */
+    .AllinputBtn {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    /* 아이콘 버튼 유지 */
+    .inputBtn {
+        width: 30px;
+        height: 30px;
+        font-size: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .inputBtn:nth-last-of-type(2) {
+        background: #76DE99 url('/img/icon/input_check.svg') no-repeat center / 16px;
+    }
+
+    .inputBtn:nth-last-of-type(1) {
+        background: #ff6b6b url('/img/icon/delete_solid.svg') no-repeat center / 12px;
+    }
+
+
+    /*  AI 영역 (세로 정렬) */
+    .AllaiBox {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+
+        .aiBox,
+        .aiBox2 {
+            width: 100%;
+            height: auto;
+        }
+
+        .aiBox2_title span {
+            font-size: 18px;
+        }
+
+        .aiText,
+        .aiText2 {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .aiBox2_text {
+
+            .aiText,
+            .aiText2 {
+
+                li,
+                p {
+                    font-size: 13px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+}
+
+
+
+/* 기본 (PC에서는 숨김) */
+.Line p::before {
+    display: none;
+}
+
+/* 초소형 모바일 */
+@media (max-width: 480px) {
+
+    /* 스크롤 영역은 그대로 */
+    .section {
+        height: 500px;
+        // overflow-y: visible;
+    }
+
+    /* 헤더 숨김 */
+    .section .titleLine {
+        display: none;
+    }
+
+    .searchtxt {
+        display: flex;
+        flex-direction: column;
+
+        .search {
+            width: 165px;
+            height: 30px;
+        }
+    }
+
+    /* 기존 grid → 카드형 변환 */
+    .Line {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        height: auto;
+        padding: 15px;
+        margin: 10px;
+
+        background: #262729;
+        border: 1px solid #2D2C2F;
+        border-radius: 12px;
+        position: relative;
+        padding-top: 45px;
+        line-height: 1.5;
+
+
+    }
+
+    .Line p {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+
+        &:hover {
+            background: #2e2e2e5e;
+            border-radius: none;
+        }
+    }
+
+    /* 체크박스 (input 직접 지정) */
+    .Line input[type="checkbox"] {
+        position: absolute;
+        top: 10px;
+        left: 15px;
+    }
+
+    /*  수정 버튼 (마지막 p) */
+    .Line p:last-of-type {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+
+        display: flex;
+        align-items: center;
+    }
+
+    /*  data-label 표시 */
+    .Line p::before {
+        content: attr(data-label);
+        display: block;
+        color: #aaa;
+        font-size: 12px;
+    }
+
+    /* 각 컬럼을 한 줄씩 보이게 */
+    .Line>* {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    /* 마지막 줄 여백 제거 */
+    .Line>*:last-child {
+        margin-bottom: 0;
+    }
+
+    /*  첫 줄 (체크 + 이름) */
+    .Line>*:nth-child(1) {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    /*  input */
+    .Line input {
+        width: 55%;
+        font-size: 12px;
+    }
+
+    /*  버튼 영역 */
+    .AllinputBtn {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    /*  버튼 → 아이콘 */
+    .inputBtn {
+        width: 30px;
+        height: 30px;
+        font-size: 0;
+        border-radius: 8px;
+        border: none;
+    }
+
+    .checkbox,
+    .editBtn {
+        order: -1;
+        display: flex;
+        justify-content: flex-end;
+
+    }
+
+    .inputBtn:nth-child(1) {
+        background: #76DE99 url('/img/icon/input_check.svg') no-repeat center / 16px;
+    }
+
+    .inputBtn:nth-child(2) {
+        background: #ff6b6b url('/img/icon/delete_solid.svg') no-repeat center / 14px;
+    }
+
+
+    /*  AI 영역 (세로 정렬) */
+    .AllaiBox {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+
+        .aiBox,
+        .aiBox2 {
+            width: 100%;
+        }
+
+        .aiBox2_title {
+            >span {
+                font-size: 15px;
+            }
+
+            >img {
+                width: 15px;
+                height: 15px;
+            }
+        }
+
+        .aiBox2_text {
+
+            .aiText,
+            .aiText2 {
+
+                li,
+                p {
+                    width: 100%;
+                    font-size: 13px !important;
+                }
+            }
+        }
+    }
+
+
+}
