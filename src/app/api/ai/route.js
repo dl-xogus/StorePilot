@@ -36,7 +36,7 @@ export const calculatePredictedSales = (salesData) => {
 };
 
 /* 매출 프롬프트 */
-const salesPrompt = async (ownerId) => {
+const salesPrompt = async () => {
   // 서버 안에서 상대경로 axios 호출 불가 → DB 함수 직접 import해서 사용
   const { getSales } = await import('@/lib/db/sales');
 
@@ -105,10 +105,14 @@ const salesPrompt = async (ownerId) => {
 };
 
 /* 메뉴 프롬프트 */
-const menuPrompt = async (ownerId) => {
+const menuPrompt = async () => {
   // 서버 안에서 상대경로 axios 호출 불가 → DB 함수 직접 import해서 사용
   const { getMenus } = await import('@/lib/db/menu');
-  const menuData = await getMenus(ownerId, '001');
+
+  const session = await getServerSession(authOption)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const ownerId = session.user.email
+  const menuData = await getMenus(ownerId);
 
   const data = menuData.map(s => ({ name: s.name, sales: s.sales }));
 

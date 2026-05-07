@@ -66,10 +66,6 @@ export const authOption = {
     })
   ],
   
-  pages: {
-    signIn: '/login',
-  },
-
   callbacks: {
     // 소셜 로그인: 쿠키로 전달된 의도(login/signup)에 따라 분기
     async signIn({ user, account }) {

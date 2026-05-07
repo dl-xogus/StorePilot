@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
-
 import styles from './front.module.scss';
 
 export default function Front({ onClose }) {

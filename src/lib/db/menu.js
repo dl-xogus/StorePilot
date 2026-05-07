@@ -1,6 +1,6 @@
 import clientPromise from '@/lib/mongodb'
 
-export async function getMenus(ownerId, storeId) {
+export async function getMenus(ownerId) {
     const client = await clientPromise;
     const db = client.db('store_pilot');
 
