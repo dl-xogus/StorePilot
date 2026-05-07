@@ -1,8 +1,11 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import axios from 'axios';
 import styles from './storeInfo.module.scss';
+import DaumPostcode from 'react-daum-postcode';
 
 const INDUSTRIES = [
   { key: 'restaurant', label: '요식업', icon: '/img/icon/ic-restaurant.svg' },
@@ -12,18 +15,101 @@ const INDUSTRIES = [
 
 const Page = () => {
   const router = useRouter();
+  const { data: session } = useSession();
   const [storeName, setStoreName] = useState('');
-  const [industry, setIndustry] = useState('restaurant');
+  const [industry, setIndustry] = useState('');
   const [customIndustry, setCustomIndustry] = useState('');
   const [address, setAddress] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
+  const [showPostcode, setShowPostcode] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e) => {
+  const [storeNameError, setStoreNameError] = useState(false);
+  const [industryError, setIndustryError] = useState(false);
+  const [addressError, setAddressError] = useState(false);
+  const [storeNameShake, setStoreNameShake] = useState(false);
+  const [industryShake, setIndustryShake] = useState(false);
+  const [addressShake, setAddressShake] = useState(false);
+
+  const storeNameRef = useRef(null);
+
+  const triggerShake = (setter) => {
+    setter(false);
+    requestAnimationFrame(() => setter(true));
+  };
+
+  const handleAddressComplete = (data) => {
+    setAddress(data.address);
+    setDetailAddress('');
+    setAddressError(false);
+    setShowPostcode(false);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('storePilot.industry', industry);
-      localStorage.setItem('storePilot.customIndustry', customIndustry);
+    if (submitting) return;
+
+    const storeNameEmpty = !storeName.trim();
+    const addressEmpty = !address.trim();
+    const industryEmpty = !industry;
+
+    if (storeNameEmpty || addressEmpty || industryEmpty) {
+      if (storeNameEmpty) {
+        setStoreNameError(true);
+        triggerShake(setStoreNameShake);
+      }
+      if (industryEmpty) {
+        setIndustryError(true);
+        triggerShake(setIndustryShake);
+      }
+      if (addressEmpty) {
+        setAddressError(true);
+        triggerShake(setAddressShake);
+      }
+      if (storeNameEmpty) storeNameRef.current?.focus();
+      return;
     }
-    router.push('/onboarding/store-setting');
+
+    const ownerEmail =
+      session?.user?.email ??
+      (typeof window !== 'undefined'
+        ? localStorage.getItem('storePilot.email')
+        : null);
+
+    if (!ownerEmail) {
+      setErrorMsg('로그인 정보를 찾을 수 없어요. 다시 로그인해주세요.');
+      return;
+    }
+
+    setSubmitting(true);
+    setErrorMsg('');
+    try {
+      const { data } = await axios.post('/api/store', {
+        ownerEmail,
+        storeName,
+        industry,
+        customIndustry,
+        address,
+        detailAddress,
+      });
+
+      if (!data?.ok) {
+        setErrorMsg(data?.error ?? '저장에 실패했어요. 잠시 후 다시 시도해주세요.');
+        setSubmitting(false);
+        return;
+      }
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('storePilot.industry', industry);
+        localStorage.setItem('storePilot.customIndustry', customIndustry);
+      }
+      router.push('/onboarding/store-setting');
+    } catch (err) {
+      console.error(err);
+      setErrorMsg('저장 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -61,22 +147,36 @@ const Page = () => {
         <div className={styles.box}>
           <span className={styles.boxLabel}>매장 이름</span>
           <input
+            ref={storeNameRef}
             type="text"
-            className={styles.boxText}
+            className={`${styles.boxText} ${storeNameError ? styles.boxTextError : ''} ${storeNameShake ? styles.shake : ''}`}
             value={storeName}
-            onChange={(e) => setStoreName(e.target.value)}
+            onChange={(e) => {
+              setStoreName(e.target.value);
+              if (storeNameError) setStoreNameError(false);
+            }}
+            onAnimationEnd={() => setStoreNameShake(false)}
           />
+          {storeNameError && (
+            <p className={styles.errorText}>⚠ 매장 이름을 입력해주세요</p>
+          )}
         </div>
 
         <div className={styles.box}>
           <span className={styles.boxLabel}>업종</span>
-          <div className={styles.industries}>
+          <div
+            className={`${styles.industries} ${industryShake ? styles.shake : ''}`}
+            onAnimationEnd={() => setIndustryShake(false)}
+          >
             {INDUSTRIES.map((item) => (
               <button
                 type="button"
                 key={item.key}
                 className={`${styles.industryCard} ${industry === item.key ? styles.active : ''}`}
-                onClick={() => setIndustry(item.key)}
+                onClick={() => {
+                  setIndustry(item.key);
+                  if (industryError) setIndustryError(false);
+                }}
               >
                 <span
                   className={styles.industryIcon}
@@ -86,6 +186,9 @@ const Page = () => {
               </button>
             ))}
           </div>
+          {industryError && (
+            <p className={styles.errorText}>⚠ 매장 업종을 선택해주세요</p>
+          )}
           <div className={`${styles.customIndustryWrapper} ${industry === 'other' ? styles.open : ''}`}>
             <input
               type="text"
@@ -100,22 +203,60 @@ const Page = () => {
 
         <div className={styles.box}>
           <span className={styles.boxLabel}>주소</span>
-          <div className={styles.addressInput}>
+          <div className={`${styles.addressInput} ${addressShake ? styles.shake : ''}`}
+            onAnimationEnd={() => setAddressShake(false)}
+          >
             <span className={styles.addressIcon} />
             <input
               type="text"
-              className={styles.boxText}
+              className={`${styles.boxText} ${addressError ? styles.boxTextError : ''}`}
               placeholder="주소를 입력하세요"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              readOnly
+              onClick={() => setShowPostcode(true)}
+            />
+            <button
+              type="button"
+              className={styles.searchBtn}
+              onClick={() => setShowPostcode(true)}
+            >
+              주소 찾기
+            </button>
+          </div>
+          {addressError && (
+            <p className={styles.errorText}>⚠ 주소를 입력해주세요</p>
+          )}
+          <div className={`${styles.detailAddressWrapper} ${address ? styles.open : ''}`}>
+            <input
+              type="text"
+              className={styles.boxText}
+              placeholder="상세주소를 입력하세요 (예: 3층 302호)"
+              value={detailAddress}
+              onChange={(e) => setDetailAddress(e.target.value)}
+              tabIndex={address ? 0 : -1}
             />
           </div>
         </div>
 
-        <button type="submit" className={styles.nextBtn}>
-          다 음
+        {errorMsg && <p className={styles.errorText}>{errorMsg}</p>}
+
+        <button type="submit" className={styles.nextBtn} disabled={submitting}>
+          {submitting ? '저장 중...' : '다 음'}
         </button>
       </form>
+
+      {showPostcode && (
+        <div className={styles.postcodeOverlay} onClick={() => setShowPostcode(false)}>
+          <div className={styles.postcodeModal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.postcodeHeader}>
+              <h3>주소 검색</h3>
+              <button type="button" onClick={() => setShowPostcode(false)}>✕</button>
+            </div>
+            <DaumPostcode onComplete={handleAddressComplete} />
+          </div>
+        </div>
+      )}
+
 
     </div>
   )

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
 
 import styles from './AddSalesPopup.module.scss';
@@ -10,19 +11,24 @@ import SalesSummary from '@/components/sales/SalesSummary';
 export default function AddSalesPopup({ onClose, salesData, today, onSave, activeTab, editItem }) {
   const isEdit = !!editItem;
 
+  const { data: session } = useSession();
+  const ownerId = session?.user?.email
+    ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
+
   // ─── 메뉴 목록 (API) ────────────────────────────────────────
   const [menuData, setMenuData] = useState([]);
 
   useEffect(() => {
+    if (!ownerId) return;
     axios.get('/api/menu/db', {
       params: {
-        ownerId: 'qwe@email.com',
+        ownerId,
         storeId: '001',
       }
     })
       .then(res => setMenuData(res.data.menu))
       .catch(err => console.error('메뉴 조회 실패', err));
-  }, []);
+  }, [ownerId]);
 
   // ─── 추가된 메뉴 목록 ────────────────────────────────────────
   const [addMenus, setAddMenus] = useState(editItem?.details ?? []);
@@ -160,7 +166,7 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
     const days = ['일', '월', '화', '수', '목', '금', '토'];
     const day = days[new Date(year, month, date).getDay()];
     const payload = {
-      ownerId: 'qwe@email.com',
+      ownerId,
       storeId: '001',
       date: fmt(new Date(year, month, date)),
       day,

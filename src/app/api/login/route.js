@@ -8,7 +8,7 @@ export async function POST(request) {
     .collection('account')
     .findOne({ id: body.email });
 
-  if (account && account.password === body.password) {
+  if (account && account.password && account.password === body.password) {
     return Response.json({ ok: true, name: account.name ?? '' });
   }
   return Response.json({ ok: false });

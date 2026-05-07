@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import axios from 'axios'
 
 import sales from './sales.module.scss'
@@ -29,6 +30,10 @@ const getWeekOfMonth = (date) => {
 }
 
 export default function sale() {
+  const { data: session } = useSession();
+  const ownerId = session?.user?.email
+    ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
+
   const [salesData, setSalesData] = useState([]);             // API에서 받아온 전체 매출 데이터
   const [checkedAll, setCheckedAll] = useState(false);        // 전체 선택 체크박스 상태
   const [checked, setChecked] = useState([]);                 // 각 행의 체크박스 상태 배열
@@ -58,9 +63,10 @@ export default function sale() {
   };
 
   const fetchSales = () => {
+    if (!ownerId) return;
     axios.get('/api/sales/db', {
       params: {
-        ownerId: 'qwe@email.com', // 추후 세션값으로 교체
+        ownerId,
         storeId: '001',
       }
     })
@@ -71,7 +77,7 @@ export default function sale() {
       .catch(err => console.error('매출 조회 실패', err));
   };
 
-  useEffect(() => { fetchSales(); }, []);
+  useEffect(() => { fetchSales(); }, [ownerId]);
 
   // activeTab + selected 기준으로 salesData 필터링
   // - 월별: 선택한 연도의 데이터만 표시
@@ -132,7 +138,7 @@ export default function sale() {
 
     await axios.delete('/api/sales/db', {
       params: {
-        ownerId: 'qwe@email.com',
+        ownerId,
         storeId: '001',
         dates: datesToDelete.join(','),
       }

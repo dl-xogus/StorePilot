@@ -75,6 +75,11 @@
   height: 20px;
 }
 
+.searchNone {
+  text-align: center;
+  padding: 20px;
+}
+
 /* 표 */
 .section {
   flex: 1;
@@ -159,6 +164,10 @@
   border-radius: 3px;
 }
 
+.editBtn {
+  cursor: pointer;
+}
+
 .Line {
   height: 65px;
   border-bottom: 1px solid #2D2C2F;
@@ -167,7 +176,11 @@
   font-weight: 400;
   display: grid;
   align-items: center;
-  grid-template-columns: 90px 200px 200px 200px 180px 160px 100px;
+  grid-template-columns: 90px 200px 200px 200px 170px 160px 100px;
+}
+.Line:hover {
+  background: rgba(46, 46, 46, 0.368627451);
+  border-radius: none;
 }
 
 .Line input {
@@ -179,9 +192,36 @@
   border-radius: 5px;
 }
 
-.inputBtn {
-  width: 45px;
+.AllinputBtn {
+  display: flex;
+  gap: 5px;
+}
+.AllinputBtn .inputBtn {
+  width: 48px;
   height: 30px;
+  background-color: #76DE99;
+  border-radius: 10px;
+  border: none;
+}
+
+.Line select {
+  width: 120px;
+  background: #2a2b2d;
+  border: 1px solid #444;
+  color: #7e7f83;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.active {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.soldout {
+  color: #FF6161;
+  font-weight: 600;
 }
 
 /* ai 분석*/
@@ -198,7 +238,7 @@
 }
 .AllaiBox .aiBox {
   width: 615px;
-  height: 190px;
+  height: 220px;
   background-color: #121214;
   border-radius: 11px;
   border: 0.5px solid rgb(118, 222, 153);
@@ -206,28 +246,29 @@
 .AllaiBox .aiBox .aiBox2_title {
   display: flex;
   gap: 10px;
-  padding: 20px;
+  padding: 20px 20px 0;
 }
 .AllaiBox .aiBox .aiBox2_title span {
   font-size: 24px;
 }
 .AllaiBox .aiBox .aiBox2_text {
-  padding: 0 20px 5px;
-  color: #A3A3A3;
+  padding: 5px 20px 5px;
+  color: #76DE99;
 }
 .AllaiBox .aiBox .aiBox2_text .aiText li,
 .AllaiBox .aiBox .aiBox2_text .aiText p {
   font-size: 16px;
   color: white;
+  line-height: 1.5;
 }
 .AllaiBox .aiBox .aiBox2_text .aiText {
-  padding: 20px;
+  padding: 10px 20px;
   width: 560px;
   border-radius: 11px;
 }
 .AllaiBox .aiBox2 {
   width: 615px;
-  height: 190px;
+  height: 220px;
   background-color: #121214;
   border-radius: 11px;
   border: 0.5px solid #FF6161;
@@ -235,22 +276,23 @@
 .AllaiBox .aiBox2 .aiBox2_title {
   display: flex;
   gap: 10px;
-  padding: 20px;
+  padding: 20px 20px 0;
 }
 .AllaiBox .aiBox2 .aiBox2_title span {
   font-size: 24px;
 }
 .AllaiBox .aiBox2 .aiBox2_text {
-  padding: 0 20px 5px;
-  color: #A3A3A3;
+  padding: 5px 20px 5px;
+  color: #76DE99;
 }
 .AllaiBox .aiBox2 .aiBox2_text .aiText li,
 .AllaiBox .aiBox2 .aiBox2_text .aiText p {
   font-size: 16px;
   color: white;
+  line-height: 1.5;
 }
 .AllaiBox .aiBox2 .aiBox2_text .aiText {
-  padding: 20px;
+  padding: 10px 20px;
   width: 560px;
   border-radius: 11px;
 }/*# sourceMappingURL=menu.module.css.map */

@@ -1,36 +1,69 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './login.module.scss';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import axios from 'axios';
 
+const ERROR_MESSAGES = {
+  NotRegistered: '가입되지 않은 이메일입니다. 하단의 회원가입을 진행해주세요',
+};
+
+const handleSocialLogin = (provider) => {
+  document.cookie = 'auth_intent=login; path=/; max-age=300; SameSite=Lax';
+  signIn(provider, { callbackUrl: '/main' });
+};
+
 const page = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
+  useEffect(() => {
+    const errorCode = searchParams.get('error');
+    if (errorCode && ERROR_MESSAGES[errorCode]) {
+      setErrorMsg(ERROR_MESSAGES[errorCode]);
+    }
+  }, [searchParams]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
+    
+    // 빈 칸 체크
     if (!email.trim() || !password) {
       setErrorMsg('이메일과 비밀번호를 입력해주세요');
       return;
     }
+    
     setSubmitting(true);
     setErrorMsg('');
+    
     try {
-      const { data } = await axios.post('/api/login', { email, password });
-      if (data?.ok) {
-        router.push('/main');
+      // NextAuth의 signIn 사용
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: email,
+        password: password,
+      });
+      
+      if (result.error) {
+        // 로그인 실패
+        setErrorMsg(result.error);
       } else {
-        setErrorMsg('이메일 또는 비밀번호가 올바르지 않습니다');
+        // 로그인 성공
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('storePilot.email', email);
+        }
+        router.push('/main');
       }
-    } catch (err) {
+      
+    } catch (error) {
       setErrorMsg('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해주세요');
     } finally {
       setSubmitting(false);
@@ -61,7 +94,10 @@ const page = () => {
               className={styles.boxText}
               placeholder="이메일을 입력하세요"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errorMsg) setErrorMsg('');
+              }}
             />
           </div>
 
@@ -73,7 +109,10 @@ const page = () => {
                 className={styles.boxText}
                 placeholder="비밀번호를 입력하세요"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errorMsg) setErrorMsg('');
+                }}
               />
               <img
                 src={showPassword ? '/img/icon/eye_off.svg' : '/img/icon/eye.svg'}
@@ -83,7 +122,9 @@ const page = () => {
             </div>
           </div>
 
-          {errorMsg && <p className={styles.errorText}>{errorMsg}</p>}
+          {errorMsg && (
+            <p className={styles.errorText}>⚠ {errorMsg}</p>
+          )}
         </div>
 
         <button type="submit" className={styles.loginBtn} disabled={submitting}>
@@ -99,10 +140,10 @@ const page = () => {
 
 
       <div className={styles.socialLoginBtn}>
-        <div className={styles.kakao} onClick={() => signIn('kakao', { callbackUrl: '/main' })}>
-          <img src="/img/loginbtn/kakao_login_btn.png" alt="카카오 로그인" />
+        <div className={styles.google} onClick={() => handleSocialLogin('google')}>
+          <img src="/img/loginbtn/google_login_btn.png" alt="구글 로그인" />
         </div>
-        <div className={styles.naver} onClick={() => signIn('naver', { callbackUrl: '/main' })}>
+        <div className={styles.naver} onClick={() => handleSocialLogin('naver')}>
           <img src="/img/loginbtn/naver_login_btn.png" alt="네이버 로그인" />
         </div>
       </div>

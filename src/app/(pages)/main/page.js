@@ -4,11 +4,16 @@ import React from 'react'
 import style from '@/app/(pages)/main/main.module.scss'
 import { useState, useEffect } from "react";
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import useAIStore from '@/store/aiStore'
 
 import axios from 'axios'
 
 export default function main() {
+
+  const { data: session } = useSession();
+  const ownerId = session?.user?.email
+    ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
 
   const [input, setInput] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState("");
@@ -58,7 +63,7 @@ export default function main() {
     try {
       const res = await axios.post('/api/chat/openai', {
         question: finalQuestion,
-        ownerId: 'qwe@email.com',
+        ownerId,
         storeId: '001'
       })
 

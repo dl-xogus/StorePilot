@@ -4,23 +4,27 @@ import styles from './schedule.module.scss';
 import ScheduleItem from './components/ScheduleItem';
 import Analytics from './components/Analytics';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
 
 function Schedule() {
+
+  const { data: session } = useSession();
+  const ownerId = session?.user?.email
+    ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
 
   const [employees, setEmployees] = useState([]);
   const [selectedDay, setSelectedDay] = useState('');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selected, setSelected] = useState([]);
 
-  const session = { email: 'qwe@email.com' };
-
   // 직원 가져오기
   useEffect(() => {
+    if (!ownerId) return;
     const getEmployee = async () => {
       const res = await axios.get('/api/employee/db', {
         params: {
-          ownerId: session.email,
+          ownerId,
           storeId: '001',
         }
       });
@@ -29,7 +33,7 @@ function Schedule() {
     };
 
     getEmployee();
-  }, []);
+  }, [ownerId]);
 
   //체크 선택
   const handleSelect = (index) => {
@@ -50,7 +54,7 @@ function Schedule() {
       method: 'put',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        ownerId: session.email,
+        ownerId,
         employees: deleteData
       })
     });
@@ -76,7 +80,7 @@ function Schedule() {
     const res = await fetch('/api/employee/db', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ownerId: session.email, employees: editData, type: 'update' })
+      body: JSON.stringify({ ownerId, employees: editData, type: 'update' })
     });
 
     const data = await res.json();

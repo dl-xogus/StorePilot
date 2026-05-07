@@ -1,7 +1,9 @@
 'use client';
 import { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import axios from 'axios';
 import styles from './storeSetting.module.scss';
 
 const TABS = [
@@ -21,9 +23,6 @@ const CATEGORIES = {
   cafe: ['커피', '논커피', '브런치', '세트', '디저트', '기타'],
   other: ['상품', '서비스', '기타'],
 };
-
-// TODO: LLM 연동 후 이 값을 실제 추천으로 교체
-const AI_RECOMMENDED_CATEGORY = '디저트';
 
 const PARTS = ['홀', '주방', '배달', '카운터', '기타'];
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
@@ -47,6 +46,10 @@ const TIME_OPTIONS = (() => {
 
 const Page = () => {
   const router = useRouter();
+  const { data: session } = useSession();
+  const getOwnerId = () =>
+    session?.user?.email ??
+    (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
   const [tab, setTab] = useState('menu');
   const tabsRef = useRef(null);
   const [indicator, setIndicator] = useState({ left: 0, width: 0, opacity: 0 });
@@ -69,6 +72,8 @@ const Page = () => {
   const [customCategoryDraft, setCustomCategoryDraft] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [aiCategories, setAiCategories] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const [isAddingStaff, setIsAddingStaff] = useState(false);
   const [staffItems, setStaffItems] = useState([]);
@@ -119,7 +124,7 @@ const Page = () => {
     : INDUSTRIES[industryKey].label;
   const industryIcon = INDUSTRIES[industryKey].icon;
   const categoryOptions = CATEGORIES[industryKey];
-  const showAiBadge = categoryOptions.includes(AI_RECOMMENDED_CATEGORY) && category !== AI_RECOMMENDED_CATEGORY;
+  const optionsToShow = aiCategories ?? categoryOptions;
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -190,7 +195,7 @@ const Page = () => {
     clearError(setStockErrors, 'expirationDate');
   };
 
-  const handleAddStock = () => {
+  const handleAddStock = async () => {
     const errors = {};
     if (productName.trim() === '') errors.productName = '상품명을 입력해주세요.';
     if (quantity.trim() === '') errors.quantity = '수량을 입력해주세요.';
@@ -204,16 +209,52 @@ const Page = () => {
       return;
     }
 
-    setStockErrors({});
-    setStockItems((prev) => [...prev, { productName, quantity, expirationDate }]);
-    setProductName('');
-    setQuantity('');
-    setExpirationDate('');
-    setIsAddingStock(false);
+    const ownerId = getOwnerId();
+    if (!ownerId) {
+      alert('로그인 정보를 찾을 수 없어요. 다시 로그인해주세요.');
+      return;
+    }
+
+    try {
+      const { data } = await axios.post('/api/stock', {
+        ownerId,
+        productName,
+        quantity,
+        expirationDate,
+      });
+      if (!data?.success) throw new Error(data?.error ?? 'unknown');
+
+      setStockErrors({});
+      setStockItems((prev) => [...prev, { id: data.id, productName, quantity, expirationDate }]);
+      setProductName('');
+      setQuantity('');
+      setExpirationDate('');
+      setIsAddingStock(false);
+    } catch (err) {
+      console.error(err);
+      alert('재고 저장 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+    }
   };
 
-  const handleDeleteStock = (index) => {
-    setStockItems((prev) => prev.filter((_, i) => i !== index));
+  const handleDeleteStock = async (index) => {
+    const target = stockItems[index];
+    if (!target) return;
+    const ownerId = getOwnerId();
+    if (!ownerId) {
+      alert('로그인 정보를 찾을 수 없어요. 다시 로그인해주세요.');
+      return;
+    }
+    try {
+      if (target.id) {
+        await axios.delete('/api/stock', {
+          data: { ownerId, ids: [target.id] },
+        });
+      }
+      setStockItems((prev) => prev.filter((_, i) => i !== index));
+    } catch (err) {
+      console.error(err);
+      alert('재고 삭제 중 오류가 발생했어요.');
+    }
   };
 
   const handlePriceChange = (e) => {
@@ -247,13 +288,43 @@ const Page = () => {
     clearError(setMenuErrors, 'category');
   };
 
-  const handleApplyAiCategory = () => {
-    setCategory(AI_RECOMMENDED_CATEGORY);
-    setIsAddingCustomCategory(false);
-    clearError(setMenuErrors, 'category');
+  const handleApplyAiCategory = async () => {
+    if (aiLoading) return;
+
+    const ownerId = getOwnerId();
+    if (!ownerId) {
+      alert('로그인 정보를 찾을 수 없어요. 다시 로그인해주세요.');
+      return;
+    }
+
+    setAiLoading(true);
+    try {
+      const { data } = await axios.post('/api/ai', {
+        keyword: 'category',
+        ownerId,
+        industry: industryKey,
+      });
+      if (!Array.isArray(data?.categories) || data.categories.length === 0) {
+        throw new Error('invalid response');
+      }
+      setAiCategories(data.categories);
+      setIsAddingCustomCategory(false);
+      setDropdownOpen(true);
+      clearError(setMenuErrors, 'category');
+    } catch (err) {
+      console.error(err);
+      alert('AI 추천을 가져오지 못했어요. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setAiLoading(false);
+    }
   };
 
-  const handleAddMenu = () => {
+  const handleResetAiCategory = () => {
+    setAiCategories(null);
+    setCategory('');
+  };
+
+  const handleAddMenu = async () => {
     const errors = {};
     if (menuName.trim() === '') errors.menuName = '메뉴명을 입력해주세요.';
     if (price.trim() === '') errors.price = '가격을 입력해주세요.';
@@ -270,18 +341,55 @@ const Page = () => {
       return;
     }
 
-    setMenuErrors({});
-    setMenuItems((prev) => [...prev, { menuName, price, category }]);
-    setMenuName('');
-    setPrice('');
-    setCategory('');
-    setIsAddingCustomCategory(false);
-    setCustomCategoryDraft('');
-    setIsAddingMenu(false);
+    const ownerId = getOwnerId();
+    if (!ownerId) {
+      alert('로그인 정보를 찾을 수 없어요. 다시 로그인해주세요.');
+      return;
+    }
+
+    try {
+      const { data } = await axios.post('/api/menu/db', {
+        ownerId,
+        name: menuName,
+        price: Number(price),
+        category,
+        status: 'active',
+      });
+      if (!data?.success) throw new Error(data?.error ?? 'unknown');
+
+      setMenuErrors({});
+      setMenuItems((prev) => [...prev, { id: data.id, menuName, price, category }]);
+      setMenuName('');
+      setPrice('');
+      setCategory('');
+      setIsAddingCustomCategory(false);
+      setCustomCategoryDraft('');
+      setIsAddingMenu(false);
+    } catch (err) {
+      console.error(err);
+      alert('메뉴 저장 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+    }
   };
 
-  const handleDeleteMenu = (index) => {
-    setMenuItems((prev) => prev.filter((_, i) => i !== index));
+  const handleDeleteMenu = async (index) => {
+    const target = menuItems[index];
+    if (!target) return;
+    const ownerId = getOwnerId();
+    if (!ownerId) {
+      alert('로그인 정보를 찾을 수 없어요. 다시 로그인해주세요.');
+      return;
+    }
+    try {
+      if (target.id) {
+        await axios.delete('/api/menu/db', {
+          data: { ownerId, ids: [target.id] },
+        });
+      }
+      setMenuItems((prev) => prev.filter((_, i) => i !== index));
+    } catch (err) {
+      console.error(err);
+      alert('메뉴 삭제 중 오류가 발생했어요.');
+    }
   };
 
   const formatPrice = (p) => {
@@ -352,7 +460,7 @@ const Page = () => {
     setOpenTimeDropdown(null);
   };
 
-  const handleAddStaff = () => {
+  const handleAddStaff = async () => {
     const errors = {};
     if (staffName.trim() === '') errors.staffName = '이름을 입력해주세요.';
     if (staffAge.trim() === '') errors.staffAge = '나이를 입력해주세요.';
@@ -374,33 +482,64 @@ const Page = () => {
       return;
     }
 
-    setStaffErrors({});
-    setStaffItems((prev) => [
-      ...prev,
-      {
-        name: staffName,
-        age: staffAge,
-        parts: staffParts,
-        days: staffDays,
-        startTime,
-        endTime,
-        hourlyWage,
-        phone,
-      },
-    ]);
-    setStaffName('');
-    setStaffAge('');
-    setStaffParts([]);
-    setStaffDays([]);
-    setStartTime('');
-    setEndTime('');
-    setHourlyWage('');
-    setPhone('');
-    setIsAddingStaff(false);
+    const ownerId = getOwnerId();
+    if (!ownerId) {
+      alert('로그인 정보를 찾을 수 없어요. 다시 로그인해주세요.');
+      return;
+    }
+
+    const newStaff = {
+      name: staffName,
+      age: staffAge,
+      parts: staffParts,
+      days: staffDays,
+      startTime,
+      endTime,
+      hourlyWage,
+      phone,
+    };
+
+    try {
+      const { data } = await axios.post('/api/employee/db', {
+        ownerId,
+        employees: newStaff,
+      });
+      if (data?.state !== '성공') throw new Error('save failed');
+
+      setStaffErrors({});
+      setStaffItems((prev) => [...prev, newStaff]);
+      setStaffName('');
+      setStaffAge('');
+      setStaffParts([]);
+      setStaffDays([]);
+      setStartTime('');
+      setEndTime('');
+      setHourlyWage('');
+      setPhone('');
+      setIsAddingStaff(false);
+    } catch (err) {
+      console.error(err);
+      alert('직원 저장 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+    }
   };
 
-  const handleDeleteStaff = (index) => {
-    setStaffItems((prev) => prev.filter((_, i) => i !== index));
+  const handleDeleteStaff = async (index) => {
+    const ownerId = getOwnerId();
+    if (!ownerId) {
+      alert('로그인 정보를 찾을 수 없어요. 다시 로그인해주세요.');
+      return;
+    }
+    const next = staffItems.filter((_, i) => i !== index);
+    try {
+      await axios.put('/api/employee/db', {
+        ownerId,
+        employees: next,
+      });
+      setStaffItems(next);
+    } catch (err) {
+      console.error(err);
+      alert('직원 삭제 중 오류가 발생했어요.');
+    }
   };
 
   useLayoutEffect(() => {
@@ -545,14 +684,31 @@ const Page = () => {
             <div className={styles.formField}>
               <div className={styles.categoryHeader}>
                 <label className={styles.fieldLabel}>카테고리</label>
-                {showAiBadge && (
+                {aiLoading ? (
                   <div className={styles.aiBadge}>
                     <span className={styles.aiBadgeText}>
                       <span className={styles.aiBadgeIcon}>★</span>
-                      ai 카테고리 추천 : {AI_RECOMMENDED_CATEGORY}
+                      AI가 추천 중...
+                    </span>
+                  </div>
+                ) : aiCategories === null ? (
+                  <div className={styles.aiBadge}>
+                    <span className={styles.aiBadgeText}>
+                      <span className={styles.aiBadgeIcon}>★</span>
+                      AI에게 카테고리 추천받기
                     </span>
                     <button type="button" className={styles.aiApplyBtn} onClick={handleApplyAiCategory}>
                       적용
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.aiBadge}>
+                    <span className={styles.aiBadgeText}>
+                      <span className={styles.aiBadgeIcon}>★</span>
+                      AI 추천 카테고리예요
+                    </span>
+                    <button type="button" className={styles.aiApplyBtn} onClick={handleResetAiCategory}>
+                      기본으로 돌아가기
                     </button>
                   </div>
                 )}
@@ -591,7 +747,7 @@ const Page = () => {
                   </button>
                   {dropdownOpen && (
                     <ul className={styles.dropdownMenu}>
-                      {categoryOptions.map((cat) => (
+                      {optionsToShow.map((cat) => (
                         <li
                           key={cat}
                           className={`${styles.dropdownItem} ${category === cat ? styles.dropdownItemSelected : ''}`}

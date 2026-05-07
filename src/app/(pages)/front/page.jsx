@@ -1,21 +1,27 @@
 ﻿import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
 
 import styles from './front.module.scss';
 
 export default function Front({ onClose }) {
+  const { data: session } = useSession();
+  const ownerId = session?.user?.email
+    ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
+
   const [menuData, setMenuData] = useState([]);
-  
+
   useEffect(() => {
+    if (!ownerId) return;
     axios.get('/api/menu/db', {
       params: {
-        ownerId: 'qwe@email.com',
+        ownerId,
         storeId: '001',
       }
     })
     .then(res => setMenuData(res.data.menu))
     .catch(err => console.error('메뉴 조회 실패', err));
-  }, []);
+  }, [ownerId]);
   
   /* 카테고리 배열 */
   const categories = [...new Set(menuData.map(item => item.category))];   // new Set() : 중복을 자동으로 제거하는 자료구조
@@ -51,7 +57,7 @@ export default function Front({ onClose }) {
     const day = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
 
     await axios.post('/api/sales/db', {
-      ownerId: 'qwe@email.com',
+      ownerId,
       storeId: '001',
       date,
       day,

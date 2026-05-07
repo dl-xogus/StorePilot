@@ -1,15 +1,23 @@
 'use client';
-import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import styles from './signup.module.scss'
 import axios from 'axios'
 
+const ERROR_MESSAGES = {
+  AlreadyRegistered: '이미 가입된 이메일입니다. 로그인을 진행해주세요',
+};
 
+const handleSocialSignup = (provider) => {
+  document.cookie = 'auth_intent=signup; path=/; max-age=300; SameSite=Lax';
+  signIn(provider, { callbackUrl: '/welcome' });
+};
 
 const page = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -20,6 +28,14 @@ const page = () => {
   const [nameShake, setNameShake] = useState(false);
   const [emailShake, setEmailShake] = useState(false);
   const [passwordShake, setPasswordShake] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const errorCode = searchParams.get('error');
+    if (errorCode && ERROR_MESSAGES[errorCode]) {
+      setErrorMessage(ERROR_MESSAGES[errorCode]);
+    }
+  }, [searchParams]);
 
   const nameRef = useRef(null);
   const emailRef = useRef(null);
@@ -30,9 +46,24 @@ const page = () => {
     requestAnimationFrame(() => setter(true));
   };
 
+  const validateEmail = (value) => {
+    if (!value.trim()) return '이메일을 입력해주세요';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) return '올바른 이메일 형식이 아닙니다';
+    return null;
+  };
+
+  const validatePassword = (value) => {
+    if (!value.trim()) return '비밀번호를 입력해주세요';
+    if (value.length < 8) return '비밀번호는 8자 이상이어야 합니다';
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
 
+    // 1. 빈 칸 검증
     const nameEmpty = name.trim().length === 0;
     const emailEmpty = email.trim().length === 0;
     const passwordEmpty = password.length === 0;
@@ -56,8 +87,57 @@ const page = () => {
       return;
     }
 
-    await axios.post('/api/user', { name, email, password });
-    router.push(`/welcome?name=${encodeURIComponent(name)}`);
+    // 2. 이메일 형식 검증
+    const emailValidation = validateEmail(email);
+    if (emailValidation) {
+      setEmailError(true);
+      triggerShake(setEmailShake);
+      setErrorMessage(emailValidation);
+      emailRef.current?.focus();
+      return;
+    }
+
+    // 3. 비밀번호 길이 검증
+    const passwordValidation = validatePassword(password);
+    if (passwordValidation) {
+      setPasswordError(true);
+      triggerShake(setPasswordShake);
+      setErrorMessage(passwordValidation);
+      passwordRef.current?.focus();
+      return;
+    }
+
+    try {
+      // 4. 회원가입 API 호출
+      const response = await axios.post('/api/auth/signup', {
+        name,
+        email,
+        password
+      });
+
+      // 5. 성공 → localStorage 저장 후 welcome 페이지로
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('storePilot.email', email);
+      }
+      router.push(`/welcome?name=${encodeURIComponent(name)}`);
+
+    } catch (error) {
+      // 6. 실패 처리
+      if (error.response) {
+        // 서버에서 에러 응답 온 경우
+        const errorMsg = error.response.data.error;
+        setErrorMessage(errorMsg);
+        
+        if (errorMsg.includes('이메일')) {
+          setEmailError(true);
+          triggerShake(setEmailShake);
+          emailRef.current?.focus();
+        }
+      } else {
+        // 네트워크 에러 등
+        setErrorMessage('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
+    }
   };
 
   return (
@@ -91,10 +171,10 @@ const page = () => {
       </div>
 
       <div className={styles.socialSignupBtn}>
-        <div className={styles.kakao} onClick={() => signIn('kakao', { callbackUrl: '/' })}>
-          <img src="/img/loginbtn/kakao_signUp.png" alt="카카오 회원가입" />
+        <div className={styles.google} onClick={() => handleSocialSignup('google')}>
+          <img src="/img/loginbtn/google_signUP.png" alt="구글 회원가입" />
         </div>
-        <div className={styles.naver} onClick={() => signIn('naver', { callbackUrl: '/' })}>
+        <div className={styles.naver} onClick={() => handleSocialSignup('naver')}>
           <img src="/img/loginbtn/naver_signUp.png" alt="네이버 회원가입" />
         </div>
       </div>
@@ -106,6 +186,12 @@ const page = () => {
       </div>
 
       <form className={styles.signupForm} onSubmit={handleSubmit} noValidate>
+
+        {errorMessage && (
+          <div className={styles.errorBox}>
+            <p className={styles.errorText}>⚠ {errorMessage}</p>
+          </div>
+        )}
 
         <div className={styles.inputGroup}>
           <div className={styles.box}>
@@ -120,6 +206,7 @@ const page = () => {
               onChange={(e) => {
                 setName(e.target.value);
                 if (nameError) setNameError(false);
+                if (errorMessage) setErrorMessage('');
               }}
               onAnimationEnd={() => setNameShake(false)}
             />
@@ -137,6 +224,7 @@ const page = () => {
               onChange={(e) => {
                 setEmail(e.target.value);
                 if (emailError) setEmailError(false);
+                if (errorMessage) setErrorMessage('');
               }}
               onAnimationEnd={() => setEmailShake(false)}
             />
@@ -152,11 +240,12 @@ const page = () => {
                 ref={passwordRef}
                 type={showPassword ? 'text' : 'password'}
                 className={`${styles.boxText} ${passwordError ? styles.boxTextError : ''}`}
-                placeholder="비밀번호를 입력하세요"
+                placeholder="비밀번호를 입력하세요 (8자 이상)"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   if (passwordError) setPasswordError(false);
+                  if (errorMessage) setErrorMessage('');
                 }}
                 name="password"
               />

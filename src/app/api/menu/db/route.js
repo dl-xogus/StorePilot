@@ -29,12 +29,13 @@ export async function POST(request) {
     const db = client.db('store_pilot');
     const col = db.collection('menu');
 
+    const newId = new ObjectId();
     const result = await col.updateOne(
       { ownerId },
       {
         $push: {
           menu: {
-            _id: new ObjectId(),
+            _id: newId,
             name,
             price,
             category,
@@ -48,7 +49,7 @@ export async function POST(request) {
 
     console.log("insert 성공:", result);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, id: newId.toString() });
 
   } catch (err) {
     console.error(err);
