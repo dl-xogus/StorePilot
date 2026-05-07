@@ -1,11 +1,14 @@
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { getStock } from '@/lib/db/stock';
+import { getServerSession } from 'next-auth';
+import { authOption } from '../../auth/[...nextauth]/route';
 
 /* 재고 목록 조회 */
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const ownerId = searchParams.get('ownerId');
+  const session = await getServerSession(authOption)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const ownerId = session.user.email
 
   const stocks = await getStock(ownerId);
   return Response.json({ stocks });

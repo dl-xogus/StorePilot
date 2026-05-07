@@ -9,6 +9,7 @@
     overflow: auto;
     display: flex;
     justify-content: center;
+    z-index: 500;
 
     &::-webkit-scrollbar {
         width: 10px;

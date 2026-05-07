@@ -91,15 +91,9 @@ function Staff() {
         }
         if (name === 'days') {
 
-            // 월화수목금토일 + / 만 허용
-            let cleaned = value.replace(/[^월화수목금토일/]/g, '');
-
-            // // 중복 제거
-            cleaned = cleaned.replace(/\/+/g, '/');
-
             setForm(prev => ({
                 ...prev,
-                days: cleaned
+                days: value
             }));
 
             return;

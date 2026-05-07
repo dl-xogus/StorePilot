@@ -32,9 +32,9 @@ export default function MenuAddForm({ menuData, onAdd }) {
         <div>
           {/* 메뉴 선택 드롭다운 */}
           <div className={`${period.period} ${styles.period}`}>
-            <div className={`${period.periodItem} ${styles.periodItem}`}>
+            <div className={`${period.periodItem}`}>
               <div
-                className={`${period.periodBtn} ${styles.periodBtn}`}
+                className={`${period.periodBtn} ${openDropdown && styles.periodBtnOpen}`}
                 onClick={() => setOpenDropdown(v => !v)}
               >
                 {selected}
