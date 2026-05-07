@@ -76,7 +76,7 @@
     .storeInfoForm {
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 20px;
 
         .box {
             display: flex;
@@ -108,6 +108,11 @@
                 &::placeholder {
                     color: $grey3;
                 }
+            }
+
+            .boxTextError,
+            .boxTextError:focus {
+                border-color: #E55C5C;
             }
 
             .industries {
@@ -198,6 +203,32 @@
                     padding-left: 46px;
                 }
             }
+
+            .detailAddressWrapper {
+                overflow: hidden;
+                max-height: 0;
+                opacity: 0;
+                margin-top: 0;
+                transform: translateY(-4px);
+                transition:
+                    max-height 0.3s ease,
+                    opacity 0.2s ease,
+                    margin-top 0.3s ease,
+                    transform 0.3s ease;
+
+                &.open {
+                    max-height: 80px;
+                    opacity: 1;
+                    margin-top: 12px;
+                    transform: translateY(0);
+                }
+            }
+        }
+
+        .errorText {
+            color: #ff5b5b;
+            font-size: 14px;
+            margin: 0;
         }
 
         .nextBtn {
@@ -210,7 +241,115 @@
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
+            transition: opacity 0.2s;
+
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        }
+
+        .shake {
+            animation: shake 0.35s ease-in-out both;
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            25% {
+                transform: translateY(-3px);
+            }
+
+            75% {
+                transform: translateY(3px);
+            }
+        }
+    }
+
+    // 주소 입력란 옆 버튼
+    .addressInput {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        .boxText {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .searchBtn {
+            padding: 14px 20px;
+            background: $point;
+            color: $box;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+            height: 60px;
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
+
+    // 팝업 배경
+    .postcodeOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    // 팝업 창
+    .postcodeModal {
+        background: $box;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 600px;
+        overflow: hidden;
+    }
+
+    // 팝업 헤더
+    .postcodeHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid $box-border;
+
+        h3 {
+            margin: 0;
+            font-size: 18px;
+            color: $white;
+        }
+
+        button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: $grey1;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            line-height: 1;
+
+            &:hover {
+                color: $white;
+            }
         }
     }
 }

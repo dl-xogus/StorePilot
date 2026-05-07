@@ -36,7 +36,7 @@ export const calculatePredictedSales = (salesData) => {
 };
 
 /* 매출 프롬프트 */
-const salesPrompt = async () => {
+const salesPrompt = async (ownerId) => {
   // 서버 안에서 상대경로 axios 호출 불가 → DB 함수 직접 import해서 사용
   const { getSales } = await import('@/lib/db/sales');
 
@@ -105,10 +105,10 @@ const salesPrompt = async () => {
 };
 
 /* 메뉴 프롬프트 */
-const menuPrompt = async () => {
+const menuPrompt = async (ownerId) => {
   // 서버 안에서 상대경로 axios 호출 불가 → DB 함수 직접 import해서 사용
   const { getMenus } = await import('@/lib/db/menu');
-  const menuData = await getMenus('qwe@email.com', '001');
+  const menuData = await getMenus(ownerId, '001');
 
   const data = menuData.map(s => ({ name: s.name, sales: s.sales }));
 
@@ -394,20 +394,93 @@ advice도 짧은 한 줄로 작성하세요.
   });
 };
 
+/* 카테고리 추천 프롬프트 */
+const categoryPrompt = async (industry) => {
+  // 업종 라벨 매핑 (클라이언트의 industry key → 한국어 라벨)
+  const industryLabels = {
+    restaurant: '요식업',
+    cafe: '카페',
+    other: '기타',
+  };
+  const industryLabel = industryLabels[industry] ?? '기타';
+
+  // Gemma 모델 준비
+  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+
+  // 업종에 어울리는 메뉴 카테고리 6개 추천 요청
+  const prompt = `당신은 매장 운영 컨설턴트입니다.
+  아래 입력한 업종에 기반하여 가장 적절하고 보편적인 상품 및 서비스 카테고리 6개를 추천해주세요.
+ 업종 : "${industryLabel}"
+
+조건:
+- 각 카테고리는 2~6글자 한국어
+- 중복되거나 의미가 겹치는 항목 금지
+- 너무 세부적이지 않고 보편적인 분류로
+- 마지막 항목은 반드시 "기타"
+
+반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 아래 형식으로만 반환하세요.
+{"categories": ["카테고리1", "카테고리2", "카테고리3", "카테고리4", "카테고리5", "기타"]}`;
+
+  /* 4단계: AI 응답 유효성 검사 - 카테고리 배열 구조 체크 */
+  const isValid = (parsed) => {
+    const arr = parsed?.categories;
+    if (!Array.isArray(arr)) return false;
+    if (arr.length < 3 || arr.length > 10) return false;
+    return arr.every((c) => typeof c === 'string' && c.trim().length > 0 && c.length <= 10);
+  };
+
+  /* 4-1단계: 최대 3회 재시도 (menuPrompt와 동일 패턴) */
+  let analysisResult = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const result = await model.generateContent(prompt);
+    /* 코드블록 제거 후 JSON 블록 모두 추출해 순서대로 파싱 시도 */
+    const text = result.response.text().replace(/```json|```/g, '').trim();
+    const jsonMatches = [...text.matchAll(/\{(?:[^{}]|\{[^{}]*\})*\}/g)];
+    for (const match of jsonMatches) {
+      try {
+        const parsed = JSON.parse(match[0]);
+        if (isValid(parsed)) { analysisResult = parsed; break; }
+      } catch { /* 파싱 실패 시 다음 블록으로 */ }
+    }
+    if (!analysisResult && attempt < 2) {
+      console.log('유효한 JSON 없음, 재시도', attempt + 1, '/3');
+    }
+  }
+
+  /* 3회 모두 실패한 경우 fallback - 업종별 기본 카테고리 */
+  if (!analysisResult) {
+    const fallback = {
+      restaurant: ['메인', '사이드', '음료', '세트', '디저트', '기타'],
+      cafe: ['커피', '논커피', '브런치', '세트', '디저트', '기타'],
+      other: ['상품', '서비스', '기타'],
+    };
+    analysisResult = { categories: fallback[industry] ?? fallback.other };
+  }
+
+  /* 5단계: 결과 반환 */
+  return NextResponse.json(analysisResult);
+};
+
 /* AI 호출 */
 export async function POST(req) {
   try {
-    const { keyword } = await req.json();
+    const { keyword, ownerId, industry } = await req.json();
+
+    if (!ownerId) {
+      return NextResponse.json({ error: 'ownerId가 필요합니다.' }, { status: 400 });
+    }
 
     switch (keyword) {
       case 'sales':
-        return await salesPrompt();
+        return await salesPrompt(ownerId);
       case 'menu':
-        return await menuPrompt();
-      case 'stock':
-        return await stockPrompt();
+        return await menuPrompt(ownerId);
       case 'schedule':
-        return await schedulePrompt();
+        return await schedulePrompt(ownerId);
+      case 'stock':
+        return await stockPrompt(ownerId);
+      case 'category':
+        return await categoryPrompt(industry);
     }
   } catch (e) {
     console.error('[AI] 에러:', e);

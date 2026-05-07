@@ -4,6 +4,7 @@ import axios from 'axios'
 import React from 'react'
 import style from '@/app/(pages)/dashboard/dashboard.module.scss'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import Chart from '@/components/sales/Chart'
 import useAIStore from '@/store/aiStore'
 import {
@@ -23,6 +24,10 @@ const getWeekOfMonth = (date) => {
 
 
 function Dashboard() {
+  const { data: session } = useSession();
+  const ownerId = session?.user?.email
+    ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
+
   const [salesData, setSalesData] = useState([])
   const [employees, setEmployees] = useState([])
 
@@ -51,12 +56,13 @@ function Dashboard() {
   }
 
   useEffect(() => {
+    if (!ownerId) return;
     axios.get('/api/sales/db', {
-      params: { ownerId: 'qwe@email.com', storeId: '001' }
+      params: { ownerId, storeId: '001' }
     })
       .then(res => setSalesData(res.data.sales))
       .catch(err => console.error('매출 조회 실패', err))
-  }, [])
+  }, [ownerId])
 
   useEffect(() => {
     axios.get('/api/employee/db', {

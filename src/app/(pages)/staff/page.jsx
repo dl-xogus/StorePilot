@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import React from 'react';
 import styles from './staff.module.scss';
@@ -12,6 +13,10 @@ import StaffRow from './components/StaffRow';
 
 
 function Staff() {
+
+    const { data: session } = useSession();
+    const ownerId = session?.user?.email
+        ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
 
     const [employees, setEmployees] = useState([]);
     const [showForm, setShowForm] = useState(false);
@@ -34,14 +39,12 @@ function Staff() {
         phone: ''
     });
 
-    const session = { email: 'qwe@email.com' };
-
-
     // 직원 가져오기
     async function getEmployee() {
+        if (!ownerId) return;
         const res = await axios.get('/api/employee/db', {
             params: {
-                ownerId: session.email, // 추후 세션값으로 교체
+                ownerId,
                 storeId: '001',
             }
         })
@@ -51,7 +54,7 @@ function Staff() {
 
     useEffect(() => {
         getEmployee();
-    }, []);
+    }, [ownerId]);
 
 
     // 정렬 아이콘
@@ -171,7 +174,7 @@ function Staff() {
         const res = await fetch('/api/employee/db', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ownerId: session.email, employees: editData, type: 'update' })
+            body: JSON.stringify({ ownerId, employees: editData, type: 'update' })
         });
 
         const data = await res.json();
@@ -225,7 +228,7 @@ function Staff() {
         await fetch('/api/employee/db', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ownerId: session.email, employees: deleteData })
+            body: JSON.stringify({ ownerId, employees: deleteData })
         });
 
         setEmployees(deleteData);

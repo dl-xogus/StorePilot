@@ -1,11 +1,16 @@
 
 "use client"
 import React, { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
 import styles from './menu.module.scss'
 import axios from 'axios';
 import Ai from '@/components/menu/Ai';
 
 function Menu() {
+
+    const { data: session } = useSession();
+    const ownerId = session?.user?.email
+        ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
 
     const [data, setData] = useState([]);
     const [menuData, setMenuData] = useState([]);
@@ -17,8 +22,6 @@ function Menu() {
     // 수정하기
     const [editingId, setEditingId] = useState(null);
     const [editItem, setEditItem] = useState({});
-
-    const session = { email: 'qwe@email.com' };
 
     // 컬럼 정렬 (오름차순, 내림차순)
     const [sortKey, setSortKey] = useState(''); // 어떤 컬럼인지
@@ -34,14 +37,15 @@ function Menu() {
 
 
     useEffect(() => {
+        if (!ownerId) return;
         fetchMenu();
-    }, []);
+    }, [ownerId]);
 
     const fetchMenu = async () => {
         try {
             const res = await axios.get('/api/menu/db', {
                 params: {
-                    ownerId: session.email, // 추후 세션값으로 교체
+                    ownerId,
                     storeId: '001',
                 }
             });
@@ -104,7 +108,7 @@ function Menu() {
         try {
             await axios.post('/api/menu/db', {
                 ...newItem,
-                ownerId: 'qwe@email.com',
+                ownerId,
                 storeId: '001',
                 //price: Number(newItem.price)
             });
@@ -154,7 +158,7 @@ function Menu() {
         try {
             await axios.delete('/api/menu/db', {
                 data: {
-                    ownerId: session.email,
+                    ownerId,
                     ids: selectedIds
                 }
             });
@@ -199,7 +203,7 @@ function Menu() {
         try {
             await axios.put('/api/menu/db', {
                 menu: editMenu,
-                ownerId: session.email,
+                ownerId,
                 price: Number(newItem.price)
             });
 

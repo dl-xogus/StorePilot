@@ -4,6 +4,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import layout from "@/app/(pages)/layout.module.css"
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Front from "./front/page";
 import useAIStore from "@/store/aiStore";
 import { useSession } from "next-auth/react";
@@ -15,7 +16,11 @@ export default function RootLayout({ children }) {
     const [path, setPath] = useState()
     const url = usePathname();
     let bln = false;
-    
+
+    const { data: session } = useSession();
+    const ownerId = session?.user?.email
+        ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
+
     const [fronOpen, setFrontOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const fetchAll = useAIStore(state => state.fetchAll);
@@ -31,6 +36,8 @@ export default function RootLayout({ children }) {
         if (!session && !isPublic) router.push('/login');
     }, [session, status, isPublic]);
 
+    // 앱 진입 시 AI 분석을 백그라운드에서 미리 호출
+    useEffect(() => { fetchAll(ownerId); }, [ownerId]);
 
     useEffect(() => {
         if (isMobileMenuOpen) {
@@ -72,12 +79,8 @@ export default function RootLayout({ children }) {
     }, [isMobileMenuOpen]);
 
     useEffect(function () {
-        switch (url.substring(1)) {
-            case 'signup': bln = false; break;
-            case 'login': bln = false; break;
-            case 'onboarding': bln = false; break;
-            default: bln = true;
-        }
+        const hiddenPaths = ['/signup', '/login', '/onboarding', '/welcome'];
+        bln = !hiddenPaths.some((p) => url === p || url.startsWith(p + '/'));
 
         setPath(bln)
         setIsMobileMenuOpen(false)

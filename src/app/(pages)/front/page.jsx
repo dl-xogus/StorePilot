@@ -1,9 +1,13 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 import styles from './front.module.scss';
 
 export default function Front({ onClose }) {
+  const { data: session } = useSession();
+  const ownerId = session?.user?.email
+    ?? (typeof window !== 'undefined' ? localStorage.getItem('storePilot.email') : null);
+
   const [menuData, setMenuData] = useState([]);
 
   const catRef = useRef(null);
@@ -24,17 +28,17 @@ export default function Front({ onClose }) {
   const onClickCapture = (e) => {
     if (Math.abs(e.clientX - dragState.current.startX) > 5) e.stopPropagation();
   };
-  
+
   useEffect(() => {
     axios.get('/api/menu/db')
-    .then(res => setMenuData(res.data.menu))
-    .catch(err => console.error('메뉴 조회 실패', err));
-  }, []);
-  
+      .then(res => setMenuData(res.data.menu))
+      .catch(err => console.error('메뉴 조회 실패', err));
+  }, [ownerId]);
+
   /* 카테고리 배열 */
   const categories = [...new Set(menuData.map(item => item.category))];   // new Set() : 중복을 자동으로 제거하는 자료구조
   const [activeTab, setActiveTab] = useState('전체');
-  
+
   const [search, setSearch] = useState('');
   const [quantities, setQuantities] = useState({});
 
@@ -98,15 +102,15 @@ export default function Front({ onClose }) {
     .filter(item => activeTab === '전체' || item.category === activeTab)    // 카테고리 탭 필터
     .filter(item => item.name.includes(search))                            // 검색 필터
     .sort((a, b) => {                                                      // 정렬
-    const statusOrder = { '판매중': 0, '품절': 1 };
-    const cmp = sortKey === 'name'
-      ? b.name.localeCompare(a.name, 'ko')
-      : sortKey === 'status'
-        ? statusOrder[a.status] - statusOrder[b.status]
-        : Number(a[sortKey]) - Number(b[sortKey]);
-    return sortDir === 'asc' ? cmp : -cmp;
-  });
-  
+      const statusOrder = { '판매중': 0, '품절': 1 };
+      const cmp = sortKey === 'name'
+        ? b.name.localeCompare(a.name, 'ko')
+        : sortKey === 'status'
+          ? statusOrder[a.status] - statusOrder[b.status]
+          : Number(a[sortKey]) - Number(b[sortKey]);
+      return sortDir === 'asc' ? cmp : -cmp;
+    });
+
   return (
     <div
       className={styles.back}
@@ -190,13 +194,13 @@ export default function Front({ onClose }) {
                 <div className={styles.oneline} key={i}>
                   <div className={styles.detail}>
                     <p>{item.name}</p>
-                    
+
                     <p
                       className={item.status === '품절' ? styles.soldout : styles.available}
                     >
                       {item.status}
                     </p>
-                    
+
                     <p>{Number(item.price).toLocaleString()} 원</p>
                   </div>
 
@@ -228,7 +232,7 @@ export default function Front({ onClose }) {
             <p>{totalPrice.toLocaleString()} 원</p>
           </div>
 
-          <button 
+          <button
             className={styles.order}
             onClick={handleOrder}
           >
