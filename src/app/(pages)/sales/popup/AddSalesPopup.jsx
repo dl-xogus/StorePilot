@@ -215,10 +215,7 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
 
   // ─── JSX ─────────────────────────────────────────────────────
   return (
-    <div
-      className={styles.back}
-      onClick={e => e.target === e.currentTarget && onClose()}
-    >
+    <div className={styles.back}>
       <div className={styles.popup}>
 
         {/* 타이틀 */}
