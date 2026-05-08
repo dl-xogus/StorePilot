@@ -31,7 +31,7 @@ function Schedule() {
         },
       });
       setEmployees(res.data.employees);
-      
+
     };
 
     getEmployee();
@@ -60,11 +60,26 @@ function Schedule() {
     );
   };
 
+  /* 테스트 계정은 매출 삭제 불가 */
+  const [account, setAccount] = useState({});
+  const testAccount = 'qwe@email.com';
+  useEffect(() => {
+    axios.get("/api/setting")
+      .then(res => setAccount(res.data.account))
+      .catch(err => {
+        console.error("계정 정보 조회 실패", err);
+      });
+  }, []);
+
+
   // DELETE 선택
   const handleDeleteSelected = async () => {
     const deleteData = employees.filter((_, i) => {
       return !selected.includes(i);
     });
+
+    /* 테스트 계정은 매출 삭제 불가 */
+    if (account?.id === testAccount) return alert("테스트 계정은 근무표 정보를 삭제할 수 없습니다.");
 
     await fetch("/api/employee/db", {
       method: "put",
@@ -257,12 +272,12 @@ function Schedule() {
                 <img
                   src="./img/icon/ic_schedule-bin.svg"
                   onClick={handleDeleteSelected}
-                  />
+                />
               </div>
-                  {/* 👉 해당 요일에 직원 없을 때 */}
-                  {filteredEmployees.length === 0 && (
-                    <p className={styles.empty}>근무하는 직원이 없어요</p>
-                  )}
+              {/* 👉 해당 요일에 직원 없을 때 */}
+              {filteredEmployees.length === 0 && (
+                <p className={styles.empty}>근무하는 직원이 없어요</p>
+              )}
 
               {filteredEmployees.map((emp) => {
                 const originalIndex = employees.indexOf(emp);

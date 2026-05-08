@@ -210,12 +210,26 @@ function Staff() {
     }
   };
 
+  /* 테스트 계정은 매출 삭제 불가 */
+  const [account, setAccount] = useState({});
+  const testAccount = 'qwe@email.com';
+  useEffect(() => {
+    axios.get("/api/setting")
+      .then(res => setAccount(res.data.account))
+      .catch(err => {
+        console.error("계정 정보 조회 실패", err);
+      });
+  }, []);
+
   // DELETE
   const handleDeleteSelected = async () => {
     // const deleteData = sortedEmployees.filter((obj, i) => {
     const deleteData = employees.filter((obj, i) => {
       return !selected.includes(i);
     });
+
+    /* 테스트 계정은 매출 삭제 불가 */
+    if (account?.id === testAccount) return alert("테스트 계정은 직원 정보를 삭제할 수 없습니다.");
 
     await fetch("/api/employee/db", {
       method: "put",

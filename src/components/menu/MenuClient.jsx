@@ -156,6 +156,17 @@ function Menu() {
         }
     };
 
+    /* 테스트 계정은 매출 삭제 불가 */
+    const [account, setAccount] = useState({});
+    const testAccount = 'qwe@email.com';
+    useEffect(() => {
+        axios.get("/api/setting")
+            .then(res => setAccount(res.data.account))
+            .catch(err => {
+                console.error("계정 정보 조회 실패", err);
+            });
+    }, []);
+
     // 삭제 함수
     const handleDelete = async () => {
         const selectedIds = menuData
@@ -170,6 +181,9 @@ function Menu() {
         // 삭제 확인
         const isConfirm = confirm(`선택한 ${selectedIds.length}개의 메뉴를 삭제하시겠습니까?`);
         if (!isConfirm) return;
+
+        /* 테스트 계정은 매출 삭제 불가 */
+        if (account?.id === testAccount) return alert("테스트 계정은 메뉴를 삭제할 수 없습니다.");
 
         try {
             await axios.delete('/api/menu/db', {
@@ -319,16 +333,16 @@ function Menu() {
 
     const tableRef = useRef(null);
 
-const handleOpenAdd = () => {
-    setIsAdding(true);
+    const handleOpenAdd = () => {
+        setIsAdding(true);
 
-    setTimeout(() => {
-        tableRef.current?.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    }, 100);
-};
+        setTimeout(() => {
+            tableRef.current?.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }, 100);
+    };
 
 
 
