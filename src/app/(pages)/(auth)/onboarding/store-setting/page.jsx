@@ -88,6 +88,10 @@ const Page = () => {
   const [openTimeDropdown, setOpenTimeDropdown] = useState(null); // 'start' | 'end' | null
   const timeDropdownRef = useRef(null);
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [hasTriedComplete, setHasTriedComplete] = useState(false);
+  const [pulseTab, setPulseTab] = useState(null);
+
   const [stockErrors, setStockErrors] = useState({});
   const [menuErrors, setMenuErrors] = useState({});
   const [staffErrors, setStaffErrors] = useState({});
@@ -125,6 +129,10 @@ const Page = () => {
   const industryIcon = INDUSTRIES[industryKey].icon;
   const categoryOptions = CATEGORIES[industryKey];
   const optionsToShow = aiCategories ?? categoryOptions;
+
+  const tabs = TABS.map((t) =>
+    t.key === 'menu' && industryKey === 'other' ? { ...t, label: '상품' } : t
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -288,6 +296,11 @@ const Page = () => {
     clearError(setMenuErrors, 'category');
   };
 
+  const handleResetAiCategory = () => {
+    setAiCategories(null);
+    setCategory('');
+  };
+
   const handleApplyAiCategory = async () => {
     if (aiLoading) return;
 
@@ -303,6 +316,7 @@ const Page = () => {
         keyword: 'category',
         ownerId,
         industry: industryKey,
+        customIndustry,
       });
       if (!Array.isArray(data?.categories) || data.categories.length === 0) {
         throw new Error('invalid response');
@@ -319,14 +333,9 @@ const Page = () => {
     }
   };
 
-  const handleResetAiCategory = () => {
-    setAiCategories(null);
-    setCategory('');
-  };
-
   const handleAddMenu = async () => {
     const errors = {};
-    if (menuName.trim() === '') errors.menuName = '메뉴명을 입력해주세요.';
+    if (menuName.trim() === '') errors.menuName = '상품명을 입력해주세요.';
     if (price.trim() === '') errors.price = '가격을 입력해주세요.';
     if (category.trim() === '') errors.category = '카테고리를 선택해주세요.';
 
@@ -554,7 +563,52 @@ const Page = () => {
     }
   }, [tab]);
 
+  useEffect(() => {
+    const recalcIndicator = () => {
+      if (!tabsRef.current) return;
+      const activeBtn = tabsRef.current.querySelector('[data-active="true"]');
+      if (activeBtn) {
+        setIndicator({
+          left: activeBtn.offsetLeft,
+          width: activeBtn.offsetWidth,
+          opacity: 1,
+        });
+      }
+    };
+    window.addEventListener('resize', recalcIndicator);
+    return () => window.removeEventListener('resize', recalcIndicator);
+  }, []);
+
+  const missingTabs = (() => {
+    const arr = [];
+    if (menuItems.length === 0) arr.push('menu');
+    if (stockItems.length === 0) arr.push('stock');
+    if (staffItems.length === 0) arr.push('staff');
+    return arr;
+  })();
+  const missingLabels = missingTabs.map((k) => tabs.find((t) => t.key === k)?.label ?? k);
+  const hasAnyItem = missingTabs.length < 3;
+
   const handleComplete = () => {
+    if (missingTabs.length === 0) {
+      router.push('/dashboard');
+      return;
+    }
+    setHasTriedComplete(true);
+    setShowConfirmModal(true);
+  };
+
+  const handleGoToMissingTab = () => {
+    const first = missingTabs[0];
+    setShowConfirmModal(false);
+    if (!first) return;
+    setTab(first);
+    setPulseTab(first);
+    setTimeout(() => setPulseTab(null), 1300);
+  };
+
+  const handleSkipAndComplete = () => {
+    setShowConfirmModal(false);
     router.push('/dashboard');
   };
 
@@ -590,14 +644,14 @@ const Page = () => {
 
       <div className={styles.tabs} ref={tabsRef}>
         <span
-          className={styles.tabIndicator}
+          className={`${styles.tabIndicator} ${pulseTab ? styles.tabIndicatorPulse : ''}`}
           style={{
             left: `${indicator.left}px`,
             width: `${indicator.width}px`,
             opacity: indicator.opacity,
           }}
         />
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <button
             type="button"
             key={t.key}
@@ -610,6 +664,9 @@ const Page = () => {
               style={{ '--icon': `url(${t.icon})` }}
             />
             <span className={styles.tabLabel}>{t.label}</span>
+            {hasTriedComplete && missingTabs.includes(t.key) && (
+              <span className={styles.tabBadge} aria-label="미입력" />
+            )}
           </button>
         ))}
       </div>
@@ -652,12 +709,12 @@ const Page = () => {
             </div>
 
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>메뉴명</label>
+              <label className={styles.fieldLabel}>상품</label>
               <input
                 ref={menuNameRef}
                 type="text"
                 className={`${styles.fieldInput} ${menuErrors.menuName ? styles.fieldInputError : ''}`}
-                placeholder="메뉴명을 입력해주세요."
+                placeholder="상품명을 입력해주세요."
                 value={menuName}
                 onChange={(e) => {
                   setMenuName(e.target.value);
@@ -668,7 +725,7 @@ const Page = () => {
             </div>
 
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>가격</label>
+              <label className={styles.fieldLabel}>가격(원)</label>
               <input
                 ref={menuPriceRef}
                 type="text"
@@ -682,37 +739,55 @@ const Page = () => {
             </div>
 
             <div className={styles.formField}>
-              <div className={styles.categoryHeader}>
-                <label className={styles.fieldLabel}>카테고리</label>
-                {aiLoading ? (
-                  <div className={styles.aiBadge}>
-                    <span className={styles.aiBadgeText}>
-                      <span className={styles.aiBadgeIcon}>★</span>
-                      AI가 추천 중...
-                    </span>
-                  </div>
-                ) : aiCategories === null ? (
-                  <div className={styles.aiBadge}>
-                    <span className={styles.aiBadgeText}>
-                      <span className={styles.aiBadgeIcon}>★</span>
-                      AI에게 카테고리 추천받기
-                    </span>
-                    <button type="button" className={styles.aiApplyBtn} onClick={handleApplyAiCategory}>
-                      적용
+              <label className={styles.fieldLabel}>카테고리</label>
+
+              {industryKey === 'other' && !isAddingCustomCategory && (
+                aiCategories === null ? (
+                  <div className={`${styles.aiHelperHint} ${(dropdownOpen || aiLoading) ? styles.aiHelperHintOpen : ''}`}>
+                    <div className={styles.aiHelperLeft}>
+                      <div className={styles.aiHelperHead}>
+                        <span className={styles.aiHelperIcon}>★</span>
+                        <p className={styles.aiHelperTitle}>
+                          사장님 매장에 맞는 카테고리, 처음부터 짜기 막막하시죠?
+                        </p>
+                      </div>
+                      <p className={styles.aiHelperDesc}>
+                        <strong>‘{customIndustry || industryLabel}’</strong> 업종에 어울리는 분류를 AI가 추천해드릴게요. <br />마음에 드는 항목만 골라 쓰시거나 직접 추가하셔도 좋아요.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.aiHelperBtn}
+                      onClick={handleApplyAiCategory}
+                      disabled={aiLoading}
+                    >
+                      {aiLoading ? (
+                        <span className={styles.aiHelperSpinner} aria-hidden="true" />
+                      ) : (
+                        <span
+                          className={styles.aiHelperBtnIcon}
+                          style={{ '--icon': `url(/img/icon/ic-AI.svg)` }}
+                        />
+                      )}
+                      {aiLoading ? 'AI가 추천 중...' : 'AI 추천'}
                     </button>
                   </div>
                 ) : (
-                  <div className={styles.aiBadge}>
-                    <span className={styles.aiBadgeText}>
-                      <span className={styles.aiBadgeIcon}>★</span>
-                      AI 추천 카테고리예요
+                  <div className={styles.aiAppliedNote}>
+                    <span className={styles.aiAppliedText}>
+                      <span className={styles.aiAppliedIcon}>★</span>
+                      AI 추천 카테고리가 적용되었어요
                     </span>
-                    <button type="button" className={styles.aiApplyBtn} onClick={handleResetAiCategory}>
+                    <button
+                      type="button"
+                      className={styles.aiAppliedResetBtn}
+                      onClick={handleResetAiCategory}
+                    >
                       기본으로 돌아가기
                     </button>
                   </div>
-                )}
-              </div>
+                )
+              )}
 
               {isAddingCustomCategory ? (
                 <input
@@ -774,18 +849,6 @@ const Page = () => {
               )}
               {menuErrors.category && <p className={styles.fieldError}>{menuErrors.category}</p>}
             </div>
-
-            <button
-              type="button"
-              className={styles.confirmBtn}
-              onClick={handleAddMenu}
-            >
-              <span
-                className={styles.confirmIcon}
-                style={{ '--icon': `url(/img/icon/ic-check.svg)` }}
-              />
-              추가
-            </button>
           </div>
         )}
 
@@ -907,18 +970,6 @@ const Page = () => {
               />
               {stockErrors.expirationDate && <p className={styles.fieldError}>{stockErrors.expirationDate}</p>}
             </div>
-
-            <button
-              type="button"
-              className={styles.confirmBtn}
-              onClick={handleAddStock}
-            >
-              <span
-                className={styles.confirmIcon}
-                style={{ '--icon': `url(/img/icon/ic-check.svg)` }}
-              />
-              추가
-            </button>
           </div>
         )}
 
@@ -1168,18 +1219,6 @@ const Page = () => {
                 inputMode="numeric"
               />
             </div>
-
-            <button
-              type="button"
-              className={styles.confirmBtn}
-              onClick={handleAddStaff}
-            >
-              <span
-                className={styles.confirmIcon}
-                style={{ '--icon': `url(/img/icon/ic-check.svg)` }}
-              />
-              추가
-            </button>
           </div>
         )}
 
@@ -1254,13 +1293,46 @@ const Page = () => {
         )}
       </div>
 
-      <button type="button" className={styles.completeBtn} onClick={handleComplete}>
-        설정완료
-      </button>
+      {isAddingMenu ? (
+        <button type="button" className={styles.completeBtn} onClick={handleAddMenu}>
+          추가
+        </button>
+      ) : isAddingStock ? (
+        <button type="button" className={styles.completeBtn} onClick={handleAddStock}>
+          추가
+        </button>
+      ) : isAddingStaff ? (
+        <button type="button" className={styles.completeBtn} onClick={handleAddStaff}>
+          추가
+        </button>
+      ) : hasAnyItem ? (
+        <button type="button" className={styles.completeBtn} onClick={handleComplete}>
+          설정완료
+        </button>
+      ) : null}
+
+      {showConfirmModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowConfirmModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.modalTitle}>사장님, 잠깐만요!</h3>
+            <p className={styles.modalDesc}>
+              아직 <strong>{missingLabels.join(', ')}</strong> 정보가 비어있어요.
+              <br />나중에 관리 페이지에서 언제든 추가하실 수 있어요.  <br />어떻게 하시겠어요?
+            </p>
+            <div className={styles.modalActions}>
+              <button type="button" className={styles.modalSkipBtn} onClick={handleSkipAndComplete}>
+                괜찮아요, 이대로 완료
+              </button>
+              <button type="button" className={styles.modalGoBtn} onClick={handleGoToMissingTab}>
+                지금 입력하러 갈게요
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )
 }
 
 export default Page
- 

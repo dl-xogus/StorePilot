@@ -27,9 +27,11 @@ const Page = () => {
 
   const [storeNameError, setStoreNameError] = useState(false);
   const [industryError, setIndustryError] = useState(false);
+  const [customIndustryError, setCustomIndustryError] = useState(false);
   const [addressError, setAddressError] = useState(false);
   const [storeNameShake, setStoreNameShake] = useState(false);
   const [industryShake, setIndustryShake] = useState(false);
+  const [customIndustryShake, setCustomIndustryShake] = useState(false);
   const [addressShake, setAddressShake] = useState(false);
 
   const storeNameRef = useRef(null);
@@ -53,8 +55,9 @@ const Page = () => {
     const storeNameEmpty = !storeName.trim();
     const addressEmpty = !address.trim();
     const industryEmpty = !industry;
+    const customIndustryEmpty = industry === 'other' && !customIndustry.trim();
 
-    if (storeNameEmpty || addressEmpty || industryEmpty) {
+    if (storeNameEmpty || addressEmpty || industryEmpty || customIndustryEmpty) {
       if (storeNameEmpty) {
         setStoreNameError(true);
         triggerShake(setStoreNameShake);
@@ -62,6 +65,10 @@ const Page = () => {
       if (industryEmpty) {
         setIndustryError(true);
         triggerShake(setIndustryShake);
+      }
+      if (customIndustryEmpty) {
+        setCustomIndustryError(true);
+        triggerShake(setCustomIndustryShake);
       }
       if (addressEmpty) {
         setAddressError(true);
@@ -192,12 +199,19 @@ const Page = () => {
           <div className={`${styles.customIndustryWrapper} ${industry === 'other' ? styles.open : ''}`}>
             <input
               type="text"
-              className={styles.boxText}
+              className={`${styles.boxText} ${customIndustryError ? styles.boxTextError : ''} ${customIndustryShake ? styles.shake : ''}`}
               placeholder="업종을 직접 입력하세요"
               value={customIndustry}
-              onChange={(e) => setCustomIndustry(e.target.value)}
+              onChange={(e) => {
+                setCustomIndustry(e.target.value);
+                if (customIndustryError) setCustomIndustryError(false);
+              }}
+              onAnimationEnd={() => setCustomIndustryShake(false)}
               tabIndex={industry === 'other' ? 0 : -1}
             />
+            {customIndustryError && (
+              <p className={styles.errorText}>⚠ 매장 업종을 입력해주세요</p>
+            )}
           </div>
         </div>
 

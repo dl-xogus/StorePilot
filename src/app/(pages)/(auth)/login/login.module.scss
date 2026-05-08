@@ -2,6 +2,7 @@
 
 .container {
     padding-top: 100px;
+    width: 90%;
     max-width: 564px;
     margin: 0 auto;
     display: flex;
@@ -171,5 +172,132 @@
         align-items: center;
         gap: 6px;
         margin-top: -40px;
+    }
+
+    @media (max-width: 1023px) {
+        padding-top: 80px;
+
+        .brand {
+            margin-bottom: 60px;
+
+            .brandTitle {
+                font-size: 54px;
+            }
+
+            .brandDescription {
+                font-size: 20px;
+            }
+        }
+
+        .loginForm {
+            .inputGroup {
+                gap: 40px;
+
+                .box .boxText {
+                    height: 56px;
+                    font-size: 17px;
+                }
+            }
+
+            .loginBtn {
+                height: 56px;
+            }
+        }
+
+        .divider {
+            margin: 24px 0;
+        }
+    }
+
+    @media (max-width: 767px) {
+        padding-top: 60px;
+
+        .brand {
+            margin-bottom: 40px;
+
+            .brandTitle {
+                font-size: 40px;
+            }
+
+            .brandDescription {
+                font-size: 16px;
+            }
+        }
+
+        .loginForm {
+            gap: 24px;
+
+            .inputGroup {
+                gap: 30px;
+
+                .box .boxText {
+                    height: 50px;
+                    font-size: 15px;
+                    padding: 0 18px;
+                }
+            }
+
+            .loginBtn {
+                height: 50px;
+                font-size: 15px;
+            }
+        }
+
+        .divider {
+            margin: 20px 0;
+            gap: 20px;
+
+            .dividerText {
+                font-size: 14px;
+            }
+        }
+
+        .signupPrompt {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        padding-top: 50px;
+
+        .brand {
+            margin-bottom: 44px;
+            gap: 8px;
+
+            .brandTitle {
+                font-size: 30px;
+            }
+
+            .brandDescription {
+                font-size: 14px;
+            }
+        }
+
+        .loginForm {
+            gap: 28px;
+
+            .inputGroup {
+                gap: 30px;
+
+                .box .boxText {
+                    height: 46px;
+                    font-size: 14px;
+                }
+            }
+
+            .loginBtn {
+                height: 46px;
+                font-size: 14px;
+            }
+        }
+
+        .divider {
+            margin: 28px 0;
+        }
+
+        .socialLoginBtn {
+            margin-bottom: 32px;
+            flex-direction: column;
+        }
     }
 }

@@ -18,6 +18,16 @@ export const authOption = {
     NaverProvider({
       clientId: process.env.NAVER_CLIENT_ID,
       clientSecret: process.env.NAVER_CLIENT_SECRET,
+      // 기본 매핑은 nickname을 name으로 넣기 때문에 실명(response.name)을 우선 사용
+      profile(profile) {
+        const r = profile.response;
+        return {
+          id: r.id,
+          name: r.name || r.nickname || (r.email ? r.email.split('@')[0] : ''),
+          email: r.email,
+          image: r.profile_image,
+        };
+      },
     }),
     
     // 이메일 로그인 (새로 추가)
