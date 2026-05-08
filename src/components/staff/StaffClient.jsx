@@ -107,6 +107,16 @@ function Staff() {
 
       return;
     }
+    if (name === "phone") {
+      const onlyNumber = value.replace(/[^0-9]/g, "");
+
+      setForm((prev) => ({
+        ...prev,
+        phone: onlyNumber,
+      }));
+
+      return;
+    }
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -245,6 +255,16 @@ function Staff() {
     }
   });
 
+  const formatPhone = (value = "") => {
+    const onlyNumber = value.replace(/[^0-9]/g, "");
+
+    if (onlyNumber.length < 4) return onlyNumber;
+    if (onlyNumber.length < 8)
+      return onlyNumber.replace(/(\d{3})(\d+)/, "$1-$2");
+
+    return onlyNumber.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+  };
+
   return (
     <section className={styles.staff}>
       <div className={styles.staffContainer}>
@@ -322,8 +342,17 @@ function Staff() {
 
             {/* body */}
             <ul className={styles.tableBody}>
+              {/* 직원 없을 때 */}
+              {employees.length === 0 && !showForm && (
+                <li className={styles.empty}>등록된 직원이 없어요</li>
+              )}
+
+              {/* 검색했는데 결과 없을 때 */}
+              {employees.length > 0 && sortedEmployees.length === 0 && (
+                <li className={styles.empty}>검색 결과가 없어요</li>
+              )}
               {showForm && (
-                <li className={styles.tableRow}  ref={formRef}>
+                <li className={styles.tableRow} ref={formRef}>
                   <input type="checkbox" className={styles.checkbox} />
 
                   <span>
@@ -397,7 +426,7 @@ function Staff() {
                     <input
                       placeholder="전화번호"
                       name="phone"
-                      value={form.phone}
+                      value={formatPhone(form.phone)}
                       onChange={handleChange}
                     />
                   </span>
@@ -415,6 +444,7 @@ function Staff() {
                   onUpdate={handleUpdate}
                   onSelect={handleSelect}
                   selected={selected}
+                  formatPhone={formatPhone}
                 />
               ))}
             </ul>

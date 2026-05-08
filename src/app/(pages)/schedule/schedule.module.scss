@@ -86,8 +86,15 @@
 }
 
 .scheduleNavArrow {
-    img {
+    
+    .btnleft {
         padding-right: 7px;
+        cursor: pointer;
+        padding-bottom: 5px;
+    }
+
+    .btnright{
+        padding-left: 7px;
         cursor: pointer;
         padding-bottom: 5px;
     }
@@ -160,6 +167,13 @@
 
 .scheduleList::-webkit-scrollbar {
     display: none;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px 0;
+  color: #aaa;
+  font-size: 1.2rem;
 }
 
 

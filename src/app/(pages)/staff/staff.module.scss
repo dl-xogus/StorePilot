@@ -134,7 +134,7 @@
 }
 
 /* ================== 공통 컬럼 ================== */
-$table-columns: 5% 9% 9% 11% 8% 14% 12% 12% 5%;
+$table-columns: 5% 9% 9% 11% 8% 10% 12% 12% 5%;
 
 /* ================== Table Header ================== */
 .tableHeader {
@@ -213,6 +213,13 @@ $table-columns: 5% 9% 9% 11% 8% 14% 12% 12% 5%;
 
 .tableRow:hover {
   background-color: #292929;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px 0;
+  color: #aaa;
+  font-size: 1.2rem;
 }
 
 /* ================== Input ================== */
