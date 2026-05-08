@@ -1,6 +1,6 @@
 
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import styles from '@/app/(pages)/menu/menu.module.scss'
 import axios from 'axios';
@@ -317,7 +317,18 @@ function Menu() {
         );
     });
 
+    const tableRef = useRef(null);
 
+const handleOpenAdd = () => {
+    setIsAdding(true);
+
+    setTimeout(() => {
+        tableRef.current?.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }, 100);
+};
 
 
 
@@ -356,7 +367,7 @@ function Menu() {
                     </div>
 
                     <div className={styles.icon}>
-                        <div className={styles.btn} onClick={() => setIsAdding(true)}>
+                        <div className={styles.btn} onClick={handleOpenAdd}>
                             <img src='./img/icon/ic-plus(black).svg' />
                         </div>
                         <div className={styles.btn} onClick={handleDelete} >
@@ -368,8 +379,8 @@ function Menu() {
             </section>
 
             {/* 표 */}
-            <section className={styles.section}>
-                <div className={styles.graph}>
+            <section className={styles.section} ref={tableRef}>
+                <div className={styles.graph} >
                     <div className={styles.titleLine}>
                         <input
                             type="checkbox"
