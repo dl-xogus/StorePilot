@@ -163,7 +163,7 @@ export default function Landing() {
           <span>지금 바로 스마트한 매장 운영을 시작하세요.</span>
         </div>
         <div className={styles.btn}>
-          <button>시작하기<img src='./img/landing/Arrow.svg' className={styles.arrow} /></button>
+          <button onClick={() => router.push("/login")}>시작하기<img src='./img/landing/Arrow.svg' className={styles.arrow} /></button>
         </div>
 
       </section>

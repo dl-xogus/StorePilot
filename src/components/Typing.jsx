@@ -7,7 +7,7 @@ export default function Typing() {
     const texts = [
         "이번 주 매출 예측해줘",
         "재고 부족 상품 알려줘",
-        "다음 주 근무표 만들어줘",
+        "이번 달 인건비 계산해서 보여줘",
     ];
 
     const [textIndex, setTextIndex] = useState(0);

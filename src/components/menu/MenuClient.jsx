@@ -2,7 +2,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import styles from './menu.module.scss'
+import styles from '@/app/(pages)/menu/menu.module.scss'
 import axios from 'axios';
 import Ai from '@/components/menu/Ai';
 
@@ -60,8 +60,8 @@ function Menu() {
                 ...item,
                 checked: false
             }));
-            
-            
+
+
 
 
             setMenuData(dataWithCheck);
@@ -127,6 +127,22 @@ function Menu() {
 
         setIsAdding(false);
     };
+
+    //드롭다운
+    const [openDropdown, setOpenDropdown] = useState(null);
+
+    const categories = [
+        "치킨",
+        "사이드",
+        "분식",
+        "탕",
+        "음료"
+    ];
+
+    const statuses = [
+        "판매중",
+        "품절"
+    ];
 
     // 판매중|품절 색상 구별
     const getStatusClass = (status) => {
@@ -300,7 +316,7 @@ function Menu() {
             normalize(name).includes(normalize(search))
         );
     });
-    
+
 
 
 
@@ -452,37 +468,89 @@ function Menu() {
                             <p> - </p>
 
                             {/* 카테고리 */}
-                            <select
-                                value={newItem.category}
-                                onChange={e => setNewItem({ ...newItem, category: e.target.value })}
-                            >
-                                <option value="">카테고리 선택</option>
-                                <option value="치킨">치킨</option>
-                                <option value="사이드">사이드</option>
-                                <option value="분식">분식</option>
-                                <option value="탕">탕</option>
-                                <option value="음료">음료</option>
-                            </select>
+                            <div className={styles.dropdown}>
+                                <div
+                                    className={styles.selected}
+                                    onClick={() =>
+                                        setOpenDropdown(
+                                            openDropdown === "add-category"
+                                                ? null
+                                                : "add-category"
+                                        )
+                                    }
+                                >
+                                    {newItem.category || "카테고리 선택"}
+                                    <span><img src="./img/icon/ic-down.svg" /></span>
+                                </div>
+
+                                {openDropdown === "add-category" && (
+                                    <ul className={styles.menuList}>
+                                        {categories.map((item) => (
+                                            <li
+                                                key={item}
+                                                onClick={() => {
+                                                    setNewItem({
+                                                        ...newItem,
+                                                        category: item
+                                                    });
+
+                                                    setOpenDropdown(null);
+                                                }}
+                                            >
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+
 
                             {/* 현재 상태 */}
-                            <select
-                                value={newItem.status}
-                                onChange={e => setNewItem({ ...newItem, status: e.target.value })}
-                            >
-                                <option value="">상태 선택</option>
-                                <option value="판매중">판매중</option>
-                                <option value="품절">품절</option>
-                            </select>
+                            <div className={styles.dropdown}>
+                                <div
+                                    className={styles.selected}
+                                    onClick={() =>
+                                        setOpenDropdown(
+                                            openDropdown === "add-status"
+                                                ? null
+                                                : "add-status"
+                                        )
+                                    }
+                                >
+                                    {newItem.status || "상태 선택"}
+                                    <span><img src="./img/icon/ic-down.svg" /></span>
+                                </div>
+
+                                {openDropdown === "add-status" && (
+                                    <ul className={styles.menuList}>
+                                        {statuses.map((item) => (
+                                            <li
+                                                key={item}
+                                                onClick={() => {
+                                                    setNewItem({
+                                                        ...newItem,
+                                                        status: item
+                                                    });
+
+                                                    setOpenDropdown(null);
+                                                }}
+                                            >
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
 
                             <div className={styles.AllinputBtn}>
                                 <button
                                     onClick={handleAdd}
-                                    className={styles.inputBtn}>
+                                    className={styles.saveBtn}>
                                     저장
                                 </button>
                                 <button
                                     onClick={() => setIsAdding(false)}
-                                    className={styles.inputBtn}>
+                                    className={styles.cancelBtn}>
                                     취소
                                 </button>
                             </div>
@@ -529,32 +597,84 @@ function Menu() {
                                                 <p>-</p>
 
 
-                                                <select
-                                                    value={editItem.category}
-                                                    onChange={e => setEditItem({ ...editItem, category: e.target.value })}
-                                                >
-                                                    <option value="">카테고리 선택</option>
-                                                    <option value="치킨">치킨</option>
-                                                    <option value="사이드">사이드</option>
-                                                    <option value="분식">분식</option>
-                                                    <option value="탕">탕</option>
-                                                    <option value="음료">음료</option>
-                                                </select>
+                                                <div className={styles.dropdown}>
+                                                    <div
+                                                        className={styles.selected}
+                                                        onClick={() =>
+                                                            setOpenDropdown(
+                                                                openDropdown === `edit-category-${item._id}`
+                                                                    ? null
+                                                                    : `edit-category-${item._id}`
+                                                            )
+                                                        }
+                                                    >
+                                                        {editItem.category || "카테고리 선택"}
+                                                        <span><img src="./img/icon/ic-down.svg" /></span>
+                                                    </div>
 
-                                                <select
-                                                    value={editItem.status}
-                                                    onChange={e => setEditItem({ ...editItem, status: e.target.value })}
-                                                >
-                                                    <option value="판매중">판매중</option>
-                                                    <option value="품절">품절</option>
-                                                </select>
+                                                    {openDropdown === `edit-category-${item._id}` && (
+                                                        <ul className={styles.menuList}>
+                                                            {categories.map((category) => (
+                                                                <li
+                                                                    key={category}
+                                                                    onClick={() => {
+                                                                        setEditItem({
+                                                                            ...editItem,
+                                                                            category
+                                                                        });
+
+                                                                        setOpenDropdown(null);
+                                                                    }}
+                                                                >
+                                                                    {category}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+
+                                                <div className={styles.dropdown}>
+                                                    <div
+                                                        className={styles.selected}
+                                                        onClick={() =>
+                                                            setOpenDropdown(
+                                                                openDropdown === `edit-status-${item._id}`
+                                                                    ? null
+                                                                    : `edit-status-${item._id}`
+                                                            )
+                                                        }
+                                                    >
+                                                        {editItem.status || "상태 선택"}
+                                                        <span><img src="./img/icon/ic-down.svg" /></span>
+                                                    </div>
+
+                                                    {openDropdown === `edit-status-${item._id}` && (
+                                                        <ul className={styles.menuList}>
+                                                            {statuses.map((status) => (
+                                                                <li
+                                                                    key={status}
+                                                                    onClick={() => {
+                                                                        setEditItem({
+                                                                            ...editItem,
+                                                                            status
+                                                                        });
+
+                                                                        setOpenDropdown(null);
+                                                                    }}
+                                                                >
+                                                                    {status}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
 
                                                 {/* 저장 / 취소 */}
                                                 <div className={styles.AllinputBtn}>
-                                                    <button onClick={() => handleEditSave(item, i)} className={styles.inputBtn}>
+                                                    <button onClick={() => handleEditSave(item, i)} className={styles.saveBtn}>
                                                         수정
                                                     </button>
-                                                    <button onClick={() => setEditingId(null)} className={styles.inputBtn}>
+                                                    <button onClick={() => setEditingId(null)} className={styles.cancelBtn}>
                                                         취소
                                                     </button>
                                                 </div>
@@ -563,7 +683,7 @@ function Menu() {
                                             <>
                                                 <p data-label="메뉴명">{item.name}</p>
                                                 <p data-label="가격">{formatNumber(item.price)}</p>
-                                                <p data-label="판매량">{item.sales }</p>
+                                                <p data-label="판매량">{item.sales}</p>
                                                 <p data-label="카테고리">{item.category}</p>
                                                 <p data-label="상태" className={getStatusClass(item.status)}>{item.status}</p>
                                                 <p className={styles.editBtn} onClick={() => handleEditClick(item, i)}  >

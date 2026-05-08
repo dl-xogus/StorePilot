@@ -221,11 +221,16 @@
 
 .Line input {
     width: 120px;
-    background: #2a2b2d;
-    border: 1px solid #444;
+    background-color: #1F2022;
+    border: 1px solid rgba(151, 156, 153, 0.32);
     color: white;
     padding: 5px;
-    border-radius: 5px;
+    border-radius: 10px;
+    height: 32px;
+
+    &:hover {
+        border: 1px solid rgb(99, 235, 144);
+    }
 }
 
 .AllinputBtn {
@@ -240,18 +245,104 @@
         border: none;
     }
 
+    .saveBtn {
+        width: 45px;
+        height: 30px;
+
+        border-radius: 8px;
+        border: none;
+
+        background-color: #76DE99;
+        //background-image: url('/img/icon/input_check.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 16px;
+    }
+
+    .cancelBtn {
+        width: 45px;
+        height: 30px;
+
+        border-radius: 8px;
+        border: none;
+
+        background-color: #ff6b6b;
+        //background-image: url('/img/icon/delete_solid.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 14px;
+    }
+
 }
 
 //드롭다운
-.Line select {
+.dropdown {
+    position: relative;
     width: 120px;
-    background: #2a2b2d;
-    border: 1px solid #444;
-    color: #7e7f83;
-    padding: 5px;
-    border-radius: 5px;
-    cursor: pointer;
+    font-size: 14px;
+
+    span img {
+        width: 15px;
+    }
 }
+
+.selected {
+    height: 35px;
+    padding: 0 12px;
+
+    background-color: #1F2022;
+    border: 1px solid #444;
+    border-radius: 10px;
+
+    color: white;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    transition: 0.2s;
+
+    &:hover {
+        border-color: #76DE99;
+    }
+}
+
+.menuList {
+    position: absolute;
+    top: 45px;
+    left: 0;
+
+    width: 100%;
+    padding: 5px;
+    margin: 0;
+
+    list-style: none;
+
+    background: #2a2b2d;
+    border: 0.1px solid rgb(99, 235, 144);
+    border-radius: 12px;
+
+    z-index: 100;
+}
+
+.menuList li {
+    padding: 10px;
+    border-radius: 8px;
+
+    color: white;
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    &:hover {
+        background: #d8ddda38;
+        color: #ffffff;
+    }
+}
+
+
+
 
 .active {
     color: #4CAF50;
@@ -357,8 +448,11 @@
 }
 
 
+
+/* =========================  반응형  ============================ */
+
 /* 태블릿 */
-@media (max-width: 1024px) {
+@media (max-width: 1524px) {
     .section {
         height: 350px;
     }
@@ -402,36 +496,32 @@
         font-size: 12px;
     }
 
-    .inputBtn:nth-last-of-type(2) {
-        width: 30px;
+    .saveBtn {
+        width: 45px;
         height: 30px;
 
-        /* 텍스트 숨기기 */
-        font-size: 0;
+        border-radius: 8px;
+        border: none;
 
-        /* 아이콘 넣기 */
-        background: #76DE99 url('/img/icon/input_check.svg') no-repeat center / 16px;
-
-        /* 가운데 정렬 보정 */
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        background-color: #76DE99;
+        //background-image: url('/img/icon/input_check.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 16px;
     }
 
-    .inputBtn:nth-last-of-type(1) {
-        width: 30px;
+    .cancelBtn {
+        width: 45px;
         height: 30px;
 
-        /* 텍스트 숨기기 */
-        font-size: 0;
+        border-radius: 8px;
+        border: none;
 
-        /* 아이콘 넣기 */
-        background: #ff6b6b url('/img/icon/delete_solid.svg') no-repeat center /12px;
-
-        /* 가운데 정렬 보정 */
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        background-color: #ff6b6b;
+        //background-image: url('/img/icon/delete_solid.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 14px;
     }
 
     .AllaiBox {
@@ -491,6 +581,10 @@
     }
 }
 
+/* 기본 (PC에서는 숨김) */
+.Line p::before {
+    display: none;
+}
 
 /* 모바일 */
 @media (max-width: 768px) {
@@ -510,40 +604,95 @@
         }
     }
 
-
-    .titleLine,
-    .Line {
-        font-size: 14px;
-
-        /* 컬럼 축소 */
-        grid-template-columns:
-            60px
-            /* 체크 */
-            1fr
-            /* 이름 */
-            1fr
-            /* 값1 */
-            1fr
-            /* 값2 */
-            1fr 90px 40px;
+    /* 헤더 숨김 */
+    .section .titleLine {
+        display: none;
     }
 
 
-    /* 내부 요소 정렬 */
-    .Line>div {
+    /* 기존 grid → 카드형 변환 */
+    .Line {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        height: auto;
+        padding: 15px;
+        margin: 10px;
+
+        background: #262729;
+        border: 1px solid #2D2C2F;
+        border-radius: 12px;
+        position: relative;
+        padding-top: 45px;
+        line-height: 1.5;
+
+
+    }
+
+    .Line p {
         display: flex;
         justify-content: space-between;
         font-size: 13px;
+
+        &:hover {
+            background: #2e2e2e5e;
+            border-radius: none;
+        }
     }
 
-    /* input / select */
-    .Line input,
-    .Line select {
-        width: 100%;
+    /* 체크박스 (input 직접 지정) */
+    .Line input[type="checkbox"] {
+        position: absolute;
+        top: 10px;
+        left: 15px;
+    }
+
+    /*  수정 버튼 (마지막 p) */
+    .Line p:last-of-type {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+
+        display: flex;
+        align-items: center;
+    }
+
+    /*  data-label 표시 */
+    .Line p::before {
+        content: attr(data-label);
+        display: block;
+        color: #aaa;
+        font-size: 12px;
+    }
+
+    /* 각 컬럼을 한 줄씩 보이게 */
+    .Line>* {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
         font-size: 13px;
     }
 
-    /* 버튼 영역 */
+    /* 마지막 줄 여백 제거 */
+    .Line>*:last-child {
+        margin-bottom: 0;
+    }
+
+    /*  첫 줄 (체크 + 이름) */
+    .Line>*:nth-child(1) {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    /*  input */
+    .Line input {
+        width: 55%;
+        font-size: 12px;
+    }
+
+    /*  버튼 영역 */
     .AllinputBtn {
         display: flex;
         justify-content: flex-end;
@@ -551,24 +700,51 @@
         margin-top: 5px;
     }
 
-    /* 아이콘 버튼 유지 */
+    /*  버튼 → 아이콘 */
     .inputBtn {
         width: 30px;
         height: 30px;
         font-size: 0;
+        border-radius: 8px;
+        border: none;
+    }
+
+    .checkbox,
+    .editBtn {
+        order: -1;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
+
     }
 
-    .inputBtn:nth-last-of-type(2) {
-        background: #76DE99 url('/img/icon/input_check.svg') no-repeat center / 16px;
+
+    .saveBtn {
+        width: 45px;
+        height: 30px;
+
+        border-radius: 8px;
+        border: none;
+
+        background-color: #76DE99;
+        //background-image: url('/img/icon/input_check.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 16px;
     }
 
-    .inputBtn:nth-last-of-type(1) {
-        background: #ff6b6b url('/img/icon/delete_solid.svg') no-repeat center / 12px;
-    }
+    .cancelBtn {
+        width: 45px;
+        height: 30px;
 
+        border-radius: 8px;
+        border: none;
+
+        background-color: #ff6b6b;
+        //background-image: url('/img/icon/delete_solid.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 14px;
+    }
 
     /*  AI 영역 (세로 정렬) */
     .AllaiBox {
@@ -611,10 +787,7 @@
 
 
 
-/* 기본 (PC에서는 숨김) */
-.Line p::before {
-    display: none;
-}
+
 
 /* 초소형 모바일 */
 @media (max-width: 480px) {
@@ -731,12 +904,32 @@
     }
 
     /*  버튼 → 아이콘 */
-    .inputBtn {
+    .saveBtn {
         width: 30px;
         height: 30px;
         font-size: 0;
         border-radius: 8px;
         border: none;
+
+        background-color: #76DE99;
+        background-image: url('/img/icon/input_check.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 16px;
+    }
+
+    .cancelBtn {
+        width: 30px;
+        height: 30px;
+        font-size: 0;
+        border-radius: 8px;
+        border: none;
+
+        background-color: #ff6b6b;
+        background-image: url('/img/icon/delete_solid.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 14px;
     }
 
     .checkbox,
@@ -747,13 +940,7 @@
 
     }
 
-    .inputBtn:nth-child(1) {
-        background: #76DE99 url('/img/icon/input_check.svg') no-repeat center / 16px;
-    }
 
-    .inputBtn:nth-child(2) {
-        background: #ff6b6b url('/img/icon/delete_solid.svg') no-repeat center / 14px;
-    }
 
 
     /*  AI 영역 (세로 정렬) */
