@@ -128,6 +128,8 @@ const Page = () => {
     : INDUSTRIES[industryKey].label;
   const industryIcon = INDUSTRIES[industryKey].icon;
   const categoryOptions = CATEGORIES[industryKey];
+  const itemNoun = industryKey == 'other' ? '상품' : '메뉴';
+  const itemFulNoun = industryKey == 'other' ? '상품명' : '메뉴명';
   const optionsToShow = aiCategories ?? categoryOptions;
 
   const tabs = TABS.map((t) =>
