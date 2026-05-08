@@ -129,7 +129,7 @@ function Dashboard() {
             </div>
           </Link>
 
-          <Link href="/stock" className={`${style.summaryCard} ${style.caution}`}>
+          <Link href="#" className={`${style.summaryCard} ${style.caution}`}>
             <div className={`${style.summaryInner} ${style.caution}`}>
               <p><img src='/img/icon/ic-dashboard-stock.png' /></p>
               <div className={style.summaryText}>
@@ -139,7 +139,7 @@ function Dashboard() {
             </div>
           </Link>
 
-          <Link href="/stock" className={`${style.summaryCard} ${style.danger}`}>
+          <Link href="#" className={`${style.summaryCard} ${style.danger}`}>
             <div className={`${style.summaryInner} ${style.danger}`}>
               <p><img src='/img/icon/ic-dashboard-danger.png' /></p>
               <div className={style.summaryText}>
@@ -178,7 +178,7 @@ function Dashboard() {
           </article>
 
           <article className={style.infoCard}>
-            <Link href="/stock">
+            <Link href="#">
               <div className={style.cardTitle}>
                 <h3>발주 추천</h3>
                 <span><img src="/img/icon/ic-dashboard-right-arrow.png" /></span>
@@ -192,7 +192,7 @@ function Dashboard() {
           </article>
 
           <article className={style.infoCard}>
-            <Link href="/stock">
+            <Link href="#">
               <div className={style.cardTitle}>
                 <h3>폐기 위험 품목</h3>
                 <span><img src="/img/icon/ic-dashboard-right-arrow.png" /></span>
