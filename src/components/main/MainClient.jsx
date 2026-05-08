@@ -88,7 +88,7 @@ export default function MainClient() {
     useEffect(() => {
         axios.get('/api/employee/db', {
             params: {
-                ownerId: 'qwe@email.com'
+                ownerId: ownerId
             }
         })
             .then(res => {
