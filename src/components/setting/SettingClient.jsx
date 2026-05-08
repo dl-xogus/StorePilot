@@ -8,6 +8,7 @@ import axios from "axios";
 import { signOut } from "next-auth/react";
 
 function Setting() {
+    const testAccount = "qwe@email.com"
     const [modify, setModify] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -59,6 +60,11 @@ function Setting() {
         );
 
         if (!confirmDelete) return;
+
+        /* 테스트 계정 삭제 불가 */
+        if (account?.id === testAccount) {
+            return alert("테스트 계정은 삭제할 수 없습니다.");
+        }
 
         try {
             await axios.delete("/api/setting");
