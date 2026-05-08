@@ -4,11 +4,12 @@ import { getServerSession } from 'next-auth'
 import { authOption } from '@/app/api/auth/[...nextauth]/route'
 
 // Google AI Studio API 키로 클라이언트 초기화
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
-console.log(
-  'API KEY:',
-  process.env.GOOGLE_AI_API_KEY
-);
+// const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+const genAI_SALES = new GoogleGenerativeAI(process.env.AI_KEY_SALES);
+const genAI_MENU = new GoogleGenerativeAI(process.env.AI_KEY_MENU);
+const genAI_SCHEDULE = new GoogleGenerativeAI(process.env.AI_KEY_SCHEDULE);
+const genAI_CATEGORY = new GoogleGenerativeAI(process.env.AI_KEY_CATEGORY);
+const genAI_STOCK = new GoogleGenerativeAI(process.env.AI_KEY_STOCK);
 
 /* 예상매출액 계산 */
 export const calculatePredictedSales = (salesData) => {
@@ -49,7 +50,7 @@ const salesPrompt = async () => {
   const calculatedData = calculatePredictedSales(salesData);
 
   /* 2단계: Gemma 4 31B 모델 준비 */
-  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+  const model = genAI_SALES.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
   /* 3단계: 계산된 통계를 프롬프트에 담아 AI에게 분석 요청 */
   /* JSON 형식으로만 응답하도록 강제 */
@@ -124,7 +125,7 @@ const menuPrompt = async () => {
   }, { max: null, min: null });
 
   // 2단계: Gemma 모델 준비
-  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+  const model = genAI_MENU.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
   // 3단계: 계산된 통계를 프롬프트에 담아 AI에게 분석 요청
   // JSON 형식으로만 응답하도록 강제
@@ -286,7 +287,7 @@ const schedulePrompt = async () => {
       2단계: AI 모델 준비
   ========================= */
 
-  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+  const model = genAI_SCHEDULE.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
   /* =========================
       3단계: AI 프롬프트
@@ -399,31 +400,35 @@ advice도 짧은 한 줄로 작성하세요.
 };
 
 /* 카테고리 추천 프롬프트 */
-const categoryPrompt = async (industry) => {
+const categoryPrompt = async (industry, customIndustry) => {
   // 업종 라벨 매핑 (클라이언트의 industry key → 한국어 라벨)
+  // 단, 'other' 선택 시 사장님이 직접 입력한 업종명(customIndustry)이 있으면 그것을 우선 사용
   const industryLabels = {
     restaurant: '요식업',
     cafe: '카페',
     other: '기타',
   };
-  const industryLabel = industryLabels[industry] ?? '기타';
+  const industryLabel = (industry === 'other' && customIndustry?.trim())
+    ? customIndustry.trim()
+    : (industryLabels[industry] ?? '기타');
 
   // Gemma 모델 준비
-  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+  const model = genAI_CATEGORY.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
-  // 업종에 어울리는 메뉴 카테고리 6개 추천 요청
+  // 업종에 어울리는 메뉴 카테고리 6~10개 추천 요청
   const prompt = `당신은 매장 운영 컨설턴트입니다.
-  아래 입력한 업종에 기반하여 가장 적절하고 보편적인 상품 및 서비스 카테고리 6개를 추천해주세요.
+  아래 입력한 업종에서 보편적으로 판매하거나 제공하는 상품 및 서비스 카테고리를 6개에서 10개 사이로 추천해주세요.
  업종 : "${industryLabel}"
 
 조건:
 - 각 카테고리는 2~6글자 한국어
 - 중복되거나 의미가 겹치는 항목 금지
 - 너무 세부적이지 않고 보편적인 분류로
+- 항목 개수는 6개 이상 10개 이하
 - 마지막 항목은 반드시 "기타"
 
 반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 아래 형식으로만 반환하세요.
-{"categories": ["카테고리1", "카테고리2", "카테고리3", "카테고리4", "카테고리5", "기타"]}`;
+{"categories": ["카테고리1", "카테고리2", "...", "기타"]}`;
 
   /* 4단계: AI 응답 유효성 검사 - 카테고리 배열 구조 체크 */
   const isValid = (parsed) => {
@@ -468,7 +473,7 @@ const categoryPrompt = async (industry) => {
 /* AI 호출 */
 export async function POST(req) {
   try {
-    const { keyword, ownerId, industry } = await req.json();
+    const { keyword, ownerId, industry, customIndustry } = await req.json();
 
     if (!ownerId) {
       return NextResponse.json({ error: 'ownerId가 필요합니다.' }, { status: 400 });
@@ -484,7 +489,7 @@ export async function POST(req) {
       case 'stock':
         return await stockPrompt(ownerId);
       case 'category':
-        return await categoryPrompt(industry);
+        return await categoryPrompt(industry, customIndustry);
     }
   } catch (e) {
     console.error('[AI] 에러:', e);

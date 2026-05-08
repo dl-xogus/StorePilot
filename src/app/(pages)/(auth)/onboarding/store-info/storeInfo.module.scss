@@ -3,6 +3,7 @@
 .container {
     @include container;
     flex-direction: column;
+    width: 90%;
     max-width: 564px;
     padding-top: 50px;
 
@@ -349,6 +350,195 @@
 
             &:hover {
                 color: $white;
+            }
+        }
+    }
+
+    @media (max-width: 1023px) {
+        padding-top: 40px;
+
+        .postcodeOverlay {
+            left: 360px;
+        }
+
+        .backLink {
+            margin-bottom: 36px;
+        }
+
+        .steps {
+            margin-bottom: 40px;
+        }
+
+        .heading {
+            margin-bottom: 28px;
+
+            h1 {
+                font-size: 44px;
+            }
+        }
+
+        .storeInfoForm {
+            .box {
+                .boxText {
+                    height: 56px;
+                }
+
+                .industries {
+                    .industryCard {
+                        height: 110px;
+                    }
+                }
+            }
+
+            .nextBtn {
+                height: 56px;
+            }
+        }
+
+        .addressInput .searchBtn {
+            height: 56px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        padding-top: 30px;
+
+        .backLink {
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .steps {
+            margin-bottom: 28px;
+
+            .step .stepLabel {
+                font-size: 15px;
+            }
+        }
+
+        .heading {
+            margin-bottom: 20px;
+
+            h1 {
+                font-size: 36px;
+            }
+
+            span {
+                font-size: 15px;
+            }
+        }
+
+        .storeInfoForm {
+            .box {
+                .boxText {
+                    height: 50px;
+                    font-size: 15px;
+                    padding: 0 18px;
+                }
+
+                .addressInput .boxText {
+                    padding-left: 42px;
+                }
+
+                .industries {
+                    gap: 8px;
+
+                    .industryCard {
+                        gap: 10px;
+
+                        .industryIcon {
+                            width: 24px;
+                            height: 24px;
+                        }
+
+                        .industryLabel {
+                            font-size: 13px;
+                        }
+                    }
+                }
+            }
+
+            .nextBtn {
+                height: 50px;
+                font-size: 16px;
+            }
+        }
+
+        .addressInput {
+            gap: 6px;
+
+            .searchBtn {
+                padding: 10px 14px;
+                font-size: 14px;
+                height: 50px;
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        padding-top: 32px;
+
+        .postcodeOverlay {
+            left: 280px;
+        }
+
+        .backLink {
+            margin-bottom: 32px;
+        }
+
+        .steps {
+            margin-bottom: 32px;
+        }
+
+        .heading {
+            margin-bottom: 28px;
+
+            h1 {
+                font-size: 30px;
+            }
+        }
+
+        .storeInfoForm {
+            gap: 26px;
+
+            .box {
+                gap: 10px;
+
+                .boxText {
+                    height: 46px;
+                    font-size: 14px;
+                }
+
+                .industries {
+                    gap: 6px;
+
+                    .industryCard {
+                        height: 90px;
+                        gap: 8px;
+
+                        .industryIcon {
+                            width: 22px;
+                            height: 22px;
+                        }
+
+                        .industryLabel {
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+
+            .nextBtn {
+                height: 46px;
+                font-size: 15px;
+            }
+        }
+
+        .addressInput {
+            .searchBtn {
+                padding: 8px 12px;
+                font-size: 13px;
+                height: 46px;
             }
         }
     }

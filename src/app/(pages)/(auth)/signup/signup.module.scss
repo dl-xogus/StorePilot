@@ -3,6 +3,7 @@
 .container {
     @include container;
     flex-direction: column;
+    width: 90%;
     max-width: 564px;
     padding-top: 50px;
 
@@ -81,14 +82,15 @@
 
         .google,
         .naver {
-            width: 265px;
-            height: 52px;
+            flex: 1;
+            max-width: 265px;
+            height: auto;
             cursor: pointer;
 
             img {
                 display: block;
-                width: 265px;
-                height: 52px;
+                width: 100%;
+                height: auto;
                 border-radius: 7px;
             }
         }
@@ -257,5 +259,173 @@
         display: flex;
         align-items: center;
         gap: 6px;
+    }
+
+    @media (max-width: 1023px) {
+        padding-top: 40px;
+
+        .backLink {
+            margin-bottom: 36px;
+        }
+
+        .steps {
+            margin-bottom: 24px;
+        }
+
+        .heading {
+            margin-bottom: 28px;
+
+            h1 {
+                font-size: 44px;
+            }
+        }
+
+        .socialSignupBtn {
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .divider {
+            margin-bottom: 24px;
+        }
+
+        .signupForm {
+            gap: 24px;
+
+            .inputGroup {
+                gap: 20px;
+
+                .box .boxText {
+                    height: 56px;
+                }
+            }
+
+            .nextBtn {
+                height: 56px;
+            }
+        }
+    }
+
+    @media (max-width: 767px) {
+        padding-top: 30px;
+
+        .backLink {
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .steps {
+            margin-bottom: 20px;
+
+            .step .stepLabel {
+                font-size: 15px;
+            }
+        }
+
+        .heading {
+            margin-bottom: 20px;
+
+            h1 {
+                font-size: 36px;
+            }
+
+            span {
+                font-size: 15px;
+            }
+        }
+
+        .divider {
+            margin-bottom: 20px;
+        }
+
+        .signupForm {
+            gap: 20px;
+
+            .inputGroup {
+                gap: 16px;
+
+                .box .boxText {
+                    height: 50px;
+                    font-size: 15px;
+                    padding: 0 18px;
+                }
+            }
+
+            .nextBtn {
+                height: 50px;
+                font-size: 16px;
+            }
+        }
+
+        .loginPrompt {
+            font-size: 14px;
+            margin-top: 24px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        padding-top: 32px;
+
+        .backLink {
+            margin-bottom: 32px;
+        }
+
+        .steps {
+            margin-bottom: 28px;
+        }
+
+        .heading {
+            margin-bottom: 28px;
+
+            h1 {
+                font-size: 30px;
+            }
+        }
+
+        .socialSignupBtn {
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .divider {
+            margin-bottom: 28px;
+        }
+
+        .signupForm {
+            gap: 28px;
+
+            .inputGroup {
+                gap: 26px;
+
+                .box .boxText {
+                    height: 46px;
+                    font-size: 14px;
+                }
+            }
+
+            .nextBtn {
+                height: 46px;
+                font-size: 15px;
+            }
+        }
+
+        .loginPrompt {
+            margin-top: 32px;
+        }
+    }
+
+    @media (max-width: 387px) {
+        .socialSignupBtn {
+            flex-direction: column;
+            gap: 12px;
+
+            .google,
+            .naver {
+                flex: initial;
+                width: 100%;
+                max-width: 280px;
+                margin: 0 auto;
+            }
+        }
     }
 }

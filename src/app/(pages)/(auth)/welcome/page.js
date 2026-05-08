@@ -1,14 +1,25 @@
 import Link from 'next/link'
+import { getServerSession } from 'next-auth'
+import { authOption } from '@/app/api/auth/[...nextauth]/route'
 import styles from './welcom.module.scss'
 
 export default async function page({ searchParams }) {
   const { name } = await searchParams;
-  const displayName = typeof name === 'string' ? name : '';
+  const session = await getServerSession(authOption);
+  const displayName =
+    (typeof name === 'string' && name) ||
+    session?.user?.name ||
+    '';
 
   return (
     <div className={styles.container}>
 
-      <div className={styles.check}></div>
+      <div className={styles.check}>
+        <svg className={styles.checkSvg} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" className={styles.checkCircle} />
+          <path d="M30 52 L45 67 L72 38" className={styles.checkMark} />
+        </svg>
+      </div>
 
       <div className={styles.completeText}>
         <h1>가입이 완료됐어요, {displayName} 님</h1>
