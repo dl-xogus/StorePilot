@@ -128,12 +128,12 @@ const Page = () => {
     : INDUSTRIES[industryKey].label;
   const industryIcon = INDUSTRIES[industryKey].icon;
   const categoryOptions = CATEGORIES[industryKey];
-  const itemNoun = industryKey == 'other' ? '상품' : '메뉴';
-  const itemFulNoun = industryKey == 'other' ? '상품명' : '메뉴명';
+  const itemNoun = industryKey === 'other' ? '상품' : '메뉴';      // 메뉴/상품
+  const itemFullNoun = industryKey === 'other' ? '상품명' : '메뉴명'; // 메뉴명/상품명
   const optionsToShow = aiCategories ?? categoryOptions;
 
   const tabs = TABS.map((t) =>
-    t.key === 'menu' && industryKey === 'other' ? { ...t, label: '상품' } : t
+    t.key === 'menu' ? { ...t, label: itemNoun } : t
   );
 
   useEffect(() => {
@@ -337,7 +337,7 @@ const Page = () => {
 
   const handleAddMenu = async () => {
     const errors = {};
-    if (menuName.trim() === '') errors.menuName = '상품명을 입력해주세요.';
+    if (menuName.trim() === '') errors.menuName = `${itemFullNoun}을 입력해주세요.`;
     if (price.trim() === '') errors.price = '가격을 입력해주세요.';
     if (category.trim() === '') errors.category = '카테고리를 선택해주세요.';
 
@@ -378,7 +378,7 @@ const Page = () => {
       setIsAddingMenu(false);
     } catch (err) {
       console.error(err);
-      alert('메뉴 저장 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+      alert(`${itemNoun} 저장 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.`);
     }
   };
 
@@ -399,7 +399,7 @@ const Page = () => {
       setMenuItems((prev) => prev.filter((_, i) => i !== index));
     } catch (err) {
       console.error(err);
-      alert('메뉴 삭제 중 오류가 발생했어요.');
+      alert(`${itemNoun} 삭제 중 오류가 발생했어요.`);
     }
   };
 
@@ -682,14 +682,14 @@ const Page = () => {
                 style={{ '--icon': `url(/img/icon/menu.svg)` }}
               />
             </span>
-            <h3 className={styles.emptyTitle}>아직 등록된 메뉴가 없어요.</h3>
-            <p className={styles.emptyDesc}>메뉴를 등록하면 AI가 효자 메뉴와 아쉬운 메뉴를 찾아드려요</p>
+            <h3 className={styles.emptyTitle}>{`아직 등록된 ${itemNoun}${industryKey === 'other' ? '이' : '가'} 없어요.`}</h3>
+            <p className={styles.emptyDesc}>{`${itemNoun}${industryKey === 'other' ? '을' : '를'} 등록하면 AI가 효자 ${itemNoun}${industryKey === 'other' ? '과' : '와'} 아쉬운 ${itemNoun}${industryKey === 'other' ? '을' : '를'} 찾아드려요`}</p>
             <button type="button" className={styles.addBtn} onClick={() => setIsAddingMenu(true)}>
               <span
                 className={styles.addIcon}
                 style={{ '--icon': `url("/img/icon/ic-plus(black).svg")` }}
               />
-              첫 메뉴 추가하기
+              {`첫 ${itemNoun} 추가하기`}
             </button>
           </div>
         )}
@@ -711,12 +711,12 @@ const Page = () => {
             </div>
 
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>상품</label>
+              <label className={styles.fieldLabel}>{itemNoun}</label>
               <input
                 ref={menuNameRef}
                 type="text"
                 className={`${styles.fieldInput} ${menuErrors.menuName ? styles.fieldInputError : ''}`}
-                placeholder="상품명을 입력해주세요."
+                placeholder={`${itemFullNoun}을 입력해주세요.`}
                 value={menuName}
                 onChange={(e) => {
                   setMenuName(e.target.value);
@@ -732,7 +732,7 @@ const Page = () => {
                 ref={menuPriceRef}
                 type="text"
                 className={`${styles.fieldInput} ${menuErrors.price ? styles.fieldInputError : ''}`}
-                placeholder="메뉴의 가격을 입력해주세요."
+                placeholder={`${itemNoun}의 가격을 입력해주세요.`}
                 value={formatPrice(price)}
                 onChange={handlePriceChange}
                 inputMode="numeric"
@@ -886,7 +886,7 @@ const Page = () => {
             <div className={styles.summaryBar}>
               <span className={styles.summaryStar}>★</span>
               <span className={styles.summaryText}>
-                총 {menuItems.length}개의 메뉴가 등록되었습니다.
+                {`총 ${menuItems.length}개의 ${itemNoun}${industryKey === 'other' ? '이' : '가'} 등록되었습니다.`}
               </span>
             </div>
 
@@ -899,7 +899,7 @@ const Page = () => {
                 className={styles.addMoreIcon}
                 style={{ '--icon': `url("/img/icon/ic-plus(white).svg")` }}
               />
-              메뉴추가
+              {`${itemNoun}추가`}
             </button>
           </div>
         )}
