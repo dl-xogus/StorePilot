@@ -483,7 +483,7 @@
             /* 값1 */
             1fr
             /* 값2 */
-            1fr 120px 60px;
+            1fr 130px 60px;
     }
 
     .Line input {
@@ -497,14 +497,15 @@
     }
 
     .saveBtn {
-        width: 45px;
+        width: auto;
         height: 30px;
 
         border-radius: 8px;
         border: none;
 
         background-color: #76DE99;
-        //background-image: url('/img/icon/input_check.svg');
+        font-size: 0;
+        background-image: url('/img/icon/input_check.svg');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 16px;
@@ -518,7 +519,8 @@
         border: none;
 
         background-color: #ff6b6b;
-        //background-image: url('/img/icon/delete_solid.svg');
+        font-size: 0;
+        background-image: url('/img/icon/delete_solid.svg');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 14px;
@@ -724,9 +726,9 @@
 
         border-radius: 8px;
         border: none;
-
         background-color: #76DE99;
-        //background-image: url('/img/icon/input_check.svg');
+        font-size: 0;
+        background-image: url('/img/icon/input_check.svg');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 16px;
@@ -738,9 +740,9 @@
 
         border-radius: 8px;
         border: none;
-
         background-color: #ff6b6b;
-        //background-image: url('/img/icon/delete_solid.svg');
+        font-size: 0;
+        background-image: url('/img/icon/delete_solid.svg');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 14px;
