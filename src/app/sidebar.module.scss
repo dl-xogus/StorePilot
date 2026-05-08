@@ -114,6 +114,11 @@
 
                 .text {
                     padding-left: 14px;
+                    flex: 1;
+                    max-width: 200px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
             }
 
@@ -251,5 +256,13 @@
 
         width: 280px;
         height: 100vh;
+        
+        .bottom{
+            .user{
+                .text{
+                    max-width: 100px;
+                }
+            }
+        }
     }
 }

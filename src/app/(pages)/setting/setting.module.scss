@@ -373,9 +373,9 @@
     .setting {
         width: 90%;
 
-        .popupWrap{
-            .resetBox{
-                h1{
+        .popupWrap {
+            .resetBox {
+                h1 {
                     font-size: 30px;
                 }
             }
@@ -400,33 +400,65 @@
 @media (max-width: 480px) {
 
     .setting {
-       
+
 
         .inner {
-            >h1{
+            >h1 {
                 font-size: 30px;
                 margin-top: 70px;
             }
+
             .content {
 
                 .account {
 
                     .accountGrid {
-                     
-                        .profileCard{
-                            .profileIcon{
-                                .profileText{
-                                    >strong{
-                                        font-size: 16px;
+                        display: block;
+
+                        .profileCard {
+                            .profileIcon {
+                                gap: 10px;
+
+                                >p {
+                                    margin-left: 16px;
+                                }
+
+                                .profileText {
+                                    >strong {
+                                        font-size: 15px;
                                     }
                                 }
                             }
-                            .moreBtn{
+
+                            .moreBtn {
                                 top: 5px;
                                 right: 0;
                             }
                         }
                     }
+
+                    .loginCard {
+                        margin-top: 17px;
+                        padding-left: 16px
+                    }
+                }
+            }
+
+            .dangerArea {
+                margin-top: 40px;
+            }
+
+            .storeInfo {
+                .infoList {
+
+                    font-size: 15px;
+
+                    .infoName,
+                    .infoAdd {
+                        padding-left: 16px;
+
+                    }
+
                 }
             }
         }
