@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import styles from '@/app/(pages)/sales/popup/AddSalesPopup.module.scss';
 import period from '@/components/sales/DateSelectTab.module.scss';
+import styles from '@/app/(pages)/sales/popup/AddSalesPopup.module.scss';
+import MAF from './MenuAddForm.module.scss'
 
 export default function MenuAddForm({ menuData, onAdd }) {
   const [selected, setSelected] = useState('메뉴 선택');
@@ -31,17 +32,17 @@ export default function MenuAddForm({ menuData, onAdd }) {
       <form className={styles.text} onSubmit={handleSubmit}>
         <div>
           {/* 메뉴 선택 드롭다운 */}
-          <div className={`${period.period} ${styles.period}`}>
-            <div className={`${period.periodItem}`}>
+          <div className={`${period.period} ${MAF.period}`}>
+            <div className={`${period.periodItem} ${MAF.periodItem}`}>
               <div
-                className={`${period.periodBtn} ${openDropdown && styles.periodBtnOpen}`}
+                className={`${period.periodBtn} ${MAF.periodBtn} ${openDropdown && MAF.periodBtnOpen}`}
                 onClick={() => setOpenDropdown(v => !v)}
               >
                 {selected}
                 <p><img src="./img/icon/ic-down.svg" alt="펼침아이콘" /></p>
               </div>
               {openDropdown && (
-                <ul className={`${period.dropdown} ${styles.dropdown}`}>
+                <ul className={`${period.dropdown} ${MAF.dropdown}`}>
                   {menuData.map((item, i) => (
                     <li
                       key={i}

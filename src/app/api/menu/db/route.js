@@ -6,12 +6,14 @@ import { getServerSession } from 'next-auth';
 import { authOption } from '../../auth/[...nextauth]/route';
 
 /* 메뉴 목록 조회 */
-export async function GET(request) {
+export async function GET() {
   const session = await getServerSession(authOption)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const ownerId = session.user.email
 
+  console.log('[menu GET] ownerId:', ownerId);
   const menu = await getMenus(ownerId);
+  console.log('[menu GET] menu count:', menu?.length);
 
   return NextResponse.json({ menu: menu || [] });
 };

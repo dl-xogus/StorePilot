@@ -78,6 +78,9 @@ export default function Front({ onClose }) {
 
     setQuantities({});
     window.dispatchEvent(new CustomEvent('sales-updated'));
+
+    alert('매출이 추가 되었습니다.');
+
     onClose();
   };
 
@@ -113,10 +116,7 @@ export default function Front({ onClose }) {
     });
 
   return (
-    <div
-      className={styles.back}
-      onClick={e => e.target === e.currentTarget && onClose()}
-    >
+    <div className={styles.back} /* onClick={e => e.target === e.currentTarget && onClose()} */>
       <div className={styles.popup}>
         <div className={styles.title}>
           <div className={styles.titleName}>

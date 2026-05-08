@@ -23,24 +23,24 @@ const getWeekOfMonth = (date) => {
 }
 
 export default function SalesClient() {
-  
+
 
   const [salesData, setSalesData] = useState([]);
   const [checkedAll, setCheckedAll] = useState(false);
   const [checked, setChecked] = useState([]);
   const [popupOpen, setPopupOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
-  
+
   const today = getKoreaToday()
 
   /* 탭 전환 시 DateSelectTab의 비활성화 항목 결정 + 매출 필터링 기준 */
-  const [activeTab, setActiveTab] = useState('일별');         
+  const [activeTab, setActiveTab] = useState('일별');
 
   /* 탭 전환 시 열려 있던 드롭다운을 닫기 위해 SaleClient.jsx에서 관리 */
-  const [openDropdown, setOpenDropdown] = useState(null);    
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   /* 필터링에 사용하므로 SaleClient.jsx에서 관리 */
-  const [selected, setSelected] = useState({                 
+  const [selected, setSelected] = useState({
     year: `${today.getFullYear()}년`,
     month: `${today.getMonth() + 1}월`,
     week: `${getWeekOfMonth(today)}주차`,
@@ -106,6 +106,21 @@ export default function SalesClient() {
     return salesData.find(d => d.date === compareDateStr) ?? null;
   };
 
+  useEffect(() => {
+    axios.get('/api/setting')
+  }, []);
+
+  /* 테스트 계정은 매출 삭제 불가 */
+  const [account, setAccount] = useState({});
+  const testAccount = 'qwe@email.com';
+  useEffect(() => {
+    axios.get("/api/setting")
+      .then(res => setAccount(res.data.account))
+      .catch(err => {
+        console.error("계정 정보 조회 실패", err);
+      });
+  }, []);
+
   const handleDelete = async () => {
     const datesToDelete = salesData
       .filter((_, i) => checked[i])
@@ -113,13 +128,10 @@ export default function SalesClient() {
 
     if (datesToDelete.length === 0) return;
 
-    await axios.delete('/api/sales/db', {
-      params: {
-        ownerId: 'qwe@email.com',
-        storeId: '001',
-        dates: datesToDelete.join(','),
-      }
-    });
+    /* 테스트 계정은 매출 삭제 불가 */
+    if (account?.id === testAccount) return alert("테스트 계정은 매출을 삭제할 수 없습니다.");
+
+    await axios.delete('/api/sales/db', { params: { dates: datesToDelete.join(',') } });
 
     const remaining = salesData.filter(item => !datesToDelete.includes(item.date));
     setSalesData(remaining);
@@ -276,7 +288,7 @@ export default function SalesClient() {
                 </div>
 
                 <div className={sales.aiText}>
-                  <Ai salesData={salesData}/>
+                  {/* <Ai salesData={salesData} /> */}
                 </div>
               </div>
             </div>

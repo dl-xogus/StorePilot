@@ -24,7 +24,7 @@ export async function POST(request) {
   const ownerId = session.user.email
 
   const { date, day, dailySales, details } = await request.json()
-  await postSales(ownerId, null, date, day, dailySales, details);
+  await postSales(ownerId, date, day, dailySales, details);
   return NextResponse.json({ ok: true })
 }
 
@@ -52,7 +52,7 @@ export async function DELETE(request) {
   const datesParam = searchParams.get('dates');
 
   try {
-    await deleteSales(ownerId, null, datesParam);
+    await deleteSales(ownerId, datesParam);
     return NextResponse.json({ ok: true });
   } catch (e) {
     if (e.message === 'dates required')

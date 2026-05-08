@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 
@@ -18,10 +18,15 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
   // ─── 메뉴 목록 (API) ────────────────────────────────────────
   const [menuData, setMenuData] = useState([]);
 
+
+
+
   useEffect(() => {
     axios.get('/api/menu/db')
       .then(res => {
         const menu = res.data.menu;
+        console.log(res);
+
         setMenuData(menu);
         if (isEdit) {
           setAddMenus(
@@ -63,9 +68,26 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
   const [checkedAll, setCheckedAll] = useState(false);
   const [checked, setChecked] = useState(new Array((editItem?.details ?? []).length).fill(false));
 
+
+  /* 테스트 계정은 매출 삭제 불가 */
+  const [account, setAccount] = useState({});
+  const testAccount = 'qwe@email.com';
+  useEffect(() => {
+    axios.get("/api/setting")
+      .then(res => setAccount(res.data.account))
+      .catch(err => {
+        console.error("계정 정보 조회 실패", err);
+      });
+  }, []);
+
   const handleDelete = () => {
     const deleteNames = addMenus.filter((_, i) => checked[i]).map(item => item.name);
+
     if (deleteNames.length === 0) return;
+
+    /* 테스트 계정은 매출 삭제 불가 */
+    if (account?.id === testAccount) return alert("테스트 계정은 매출을 삭제할 수 없습니다.");
+
     const remaining = addMenus.filter(item => !deleteNames.includes(item.name));
     setAddMenus(remaining);
     setChecked(new Array(remaining.length).fill(false));
@@ -188,6 +210,9 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
   };
 
 
+  const linesRef = useRef(null);
+
+
   // ─── JSX ─────────────────────────────────────────────────────
   return (
     <div
@@ -245,7 +270,11 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
             </div>
 
             <div className={styles.btns}>
-              <p onClick={() => setAddInput(!addInput)}>
+              <p onClick={() => {
+                setAddInput(!addInput);
+                if (!addInput) linesRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+              }}>
+
                 <img src="./img/icon/ic-plus(black).svg" alt="추가버튼" />
               </p>
               <p onClick={handleDelete}>
@@ -287,7 +316,7 @@ export default function AddSalesPopup({ onClose, salesData, today, onSave, activ
               </div>
             </div>
 
-            <div className={styles.lines}>
+            <div className={styles.lines} ref={linesRef}>
               {addInput && <MenuAddForm menuData={menuData} onAdd={handleAdd} />}
 
               {sortedMenus.map((item) => {

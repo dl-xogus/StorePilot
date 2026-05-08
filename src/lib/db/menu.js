@@ -9,6 +9,7 @@ export async function getMenus(ownerId) {
 
     // 1. menu 가져오기
     const menuDoc = await menuCol.findOne({ ownerId });
+    console.log('[getMenus] menuDoc:', menuDoc);
     if (!menuDoc) return [];
 
     const menu = menuDoc.menu || [];
