@@ -301,3 +301,36 @@
         }
     }
 }
+
+.testAccount {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #17181B;
+    border: 1px solid #76DE99;
+    border-radius: 15px;
+    padding: 15px;
+
+    &.off {
+        display: none;
+    }
+
+    >div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+        padding-bottom: 10px;
+
+        >button {
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+    }
+
+    >p {
+        color: #bdbdbd;
+    }
+}
