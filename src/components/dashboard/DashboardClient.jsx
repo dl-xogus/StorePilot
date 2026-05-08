@@ -67,7 +67,7 @@ function Dashboard() {
   useEffect(() => {
     axios.get('/api/employee/db', {
       params: {
-        ownerId: 'qwe@email.com'
+        ownerId: ownerId
       }
     })
       .then(res => {
