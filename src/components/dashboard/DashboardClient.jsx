@@ -104,7 +104,7 @@ function Dashboard() {
         </div>
 
         <Link href="/main" className={style.backBtn}>
-          <img src="/img/icon/ic-dashboard-backBtn.png" alt="" />
+          <img src="/img/icon/ic-dashboard-backBtn.png" alt="이전으로" />
         </Link>
 
         <div className={style.cardWrap}>

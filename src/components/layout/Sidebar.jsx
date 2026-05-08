@@ -5,12 +5,14 @@ import React from 'react'
 import sidebar from "@/app/sidebar.module.scss"
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { useSession } from "next-auth/react";
 
 export default function Sidebar({ frontOpen, setFrontOpen }) {
 
   const [isOpen, setIsOpen] = useState(true);
 
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
 
   return (
@@ -111,7 +113,7 @@ export default function Sidebar({ frontOpen, setFrontOpen }) {
             <Link href="/setting">
               <span><img src="/img/icon/ic-sidebar-profile.png" alt="" /></span>
             </Link>
-            <span className={sidebar.text}>어드민</span>
+            <span className={sidebar.text}>{session?.user?.email}</span>
           </div>
           <div>
             <Link href="/setting" className={sidebar.settingIcon}>
