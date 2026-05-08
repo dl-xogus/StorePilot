@@ -133,6 +133,7 @@
                     border-radius: 10px;
                     cursor: pointer;
                     padding: 0;
+                    transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
 
                     .industryIcon {
                         display: block;
@@ -141,12 +142,27 @@
                         background-color: $grey2;
                         -webkit-mask: var(--icon) no-repeat center / contain;
                         mask: var(--icon) no-repeat center / contain;
+                        transition: background-color 0.25s ease;
                     }
 
                     .industryLabel {
                         font-size: 14px;
                         color: $grey1;
                         font-weight: 600;
+                        transition: color 0.25s ease;
+                    }
+
+                    &:hover:not(.active) {
+                        border-color: $click-border;
+                        transform: translateY(-2px);
+
+                        .industryIcon {
+                            background-color: $grey1;
+                        }
+
+                        .industryLabel {
+                            color: $white;
+                        }
                     }
 
                     &.active {
