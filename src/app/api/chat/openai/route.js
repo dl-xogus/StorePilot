@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { toolDescriptions, runTool } from '@/lib/ai/tools'
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY)
+const genAI = new GoogleGenerativeAI(process.env.AI_KEY_CHAT)
 
 async function callLLM(messages, temperature = 0.3) {
   const model = genAI.getGenerativeModel({

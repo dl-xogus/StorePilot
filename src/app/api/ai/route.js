@@ -4,11 +4,12 @@ import { getServerSession } from 'next-auth'
 import { authOption } from '@/app/api/auth/[...nextauth]/route'
 
 // Google AI Studio API 키로 클라이언트 초기화
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
-console.log(
-  'API KEY:',
-  process.env.GOOGLE_AI_API_KEY
-);
+// const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+const genAI_SALES = new GoogleGenerativeAI(process.env.AI_KEY_SALES);
+const genAI_MENU = new GoogleGenerativeAI(process.env.AI_KEY_MENU);
+const genAI_SCHEDULE = new GoogleGenerativeAI(process.env.AI_KEY_SCHEDULE);
+const genAI_CATEGORY = new GoogleGenerativeAI(process.env.AI_KEY_CATEGORY);
+const genAI_STOCK = new GoogleGenerativeAI(process.env.AI_KEY_STOCK);
 
 /* 예상매출액 계산 */
 export const calculatePredictedSales = (salesData) => {
@@ -49,7 +50,7 @@ const salesPrompt = async () => {
   const calculatedData = calculatePredictedSales(salesData);
 
   /* 2단계: Gemma 4 31B 모델 준비 */
-  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+  const model = genAI_SALES.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
   /* 3단계: 계산된 통계를 프롬프트에 담아 AI에게 분석 요청 */
   /* JSON 형식으로만 응답하도록 강제 */
@@ -124,7 +125,7 @@ const menuPrompt = async () => {
   }, { max: null, min: null });
 
   // 2단계: Gemma 모델 준비
-  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+  const model = genAI_MENU.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
   // 3단계: 계산된 통계를 프롬프트에 담아 AI에게 분석 요청
   // JSON 형식으로만 응답하도록 강제
@@ -286,7 +287,7 @@ const schedulePrompt = async () => {
       2단계: AI 모델 준비
   ========================= */
 
-  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+  const model = genAI_SCHEDULE.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
   /* =========================
       3단계: AI 프롬프트
@@ -409,7 +410,7 @@ const categoryPrompt = async (industry) => {
   const industryLabel = industryLabels[industry] ?? '기타';
 
   // Gemma 모델 준비
-  const model = genAI.getGenerativeModel({ model: 'gemma-4-31b-it' });
+  const model = genAI_CATEGORY.getGenerativeModel({ model: 'gemma-4-31b-it' });
 
   // 업종에 어울리는 메뉴 카테고리 6개 추천 요청
   const prompt = `당신은 매장 운영 컨설턴트입니다.

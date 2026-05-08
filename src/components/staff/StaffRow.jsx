@@ -1,4 +1,4 @@
-import styles from '../staff.module.scss';
+import styles from '../../app/(pages)/staff/staff.module.scss';
 import { useState, useEffect } from 'react';
 
 function StaffRow({ emp, index, onUpdate, onSelect, selected }) {
@@ -38,45 +38,37 @@ function StaffRow({ emp, index, onUpdate, onSelect, selected }) {
 
 
   // input 값 변경 처리
-  const handleChange = (e) => {
+const handleChange = (e) => {
 
-    const { name, value } = e.target;
+  const { name, value } = e.target;
 
-    // 🔥 시급
-    if (name === "hourlyWage") {
+  if (name === "hourlyWage") {
 
-      const onlyNumber = value.replace(/[^0-9]/g, '');
-
-      setEditData(prev => ({
-        ...prev,
-        [name]: onlyNumber
-      }));
-
-      return;
-    }
-
-    // 근무요일
-    if (name === "days") {
-
-      // 월화수목금토일 + / 만 허용
-      let cleaned = value.replace(/[^월화수목금토일/]/g, '');
-
-      // // 중복 제거
-      cleaned = cleaned.replace(/\/+/g, '/');
-
-      setEditData(prev => ({
-        ...prev,
-        days: cleaned
-      }));
-
-      return;
-    }
+    const onlyNumber = value.replace(/[^0-9]/g, '');
 
     setEditData(prev => ({
       ...prev,
-      [name]: value
+      hourlyWage: onlyNumber
     }));
-  };
+
+    return;
+  }
+
+  if (name === "days") {
+
+    setEditData(prev => ({
+      ...prev,
+      days: value
+    }));
+
+    return;
+  }
+
+  setEditData(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
 
 
   // 저장 버튼 클릭 시

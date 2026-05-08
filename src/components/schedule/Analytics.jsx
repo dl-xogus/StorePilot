@@ -2,11 +2,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './Analytics.module.scss';
+import useAIStore from '@/store/aiStore';
+import ScheduleCallAi from '@/components/schedule/Ai';
 
 function Analytics({ employees = [] }) {
 
   const [payType, setPayType] = useState('day');
   const [aiResult, setAiResult] = useState(null);
+  const {schedule} = useAIStore();
 
 
   useEffect(() => {
@@ -26,9 +29,16 @@ function Analytics({ employees = [] }) {
       }
     };
 
-    fetchAI();
+    //fetchAI();
 
-  }, []);
+    setAiResult(schedule)
+
+    
+
+  }, [schedule]);
+
+  console.log(schedule);
+  
 
 
   // 근무 요일 수
@@ -83,43 +93,24 @@ function Analytics({ employees = [] }) {
     return sum + calcPay(emp);
   }, 0);
 
-  return (
+   return (
     <div className={styles.analytics}>
 
-      {/* AI 영역 */}
-      <div className={styles.analyticsAi}>
-        <div className={styles.analyticsHeader}>
-          <div className={styles.headerLeft}>
-            <img src='./img/icon/ic-AI.svg' />
-            <h2>AI 분석</h2>
-          </div>
-        </div>
-
-        <div className={styles.analyticsList}>
-          <ul>
-            <li>
-              <span>
-                {aiResult?.summary || 'AI가 근무표를 분석 중입니다.'}
-              </span>
-
-              <span>
-                 {aiResult?.advice || '. . .'}
-              </span>
-            </li>
-
-          </ul>
-        </div>
-      </div>
+      {/* AI 분석 */}
+      <ScheduleCallAi />
 
       {/* 직원별 인건비 */}
       <div className={styles.employee}>
+
         <div className={styles.analyticsHeader}>
+
           <div className={styles.headerLeft}>
-            <img src='./img/icon/ic_schedul-analytics.svg' />
+            <img src='./img/icon/ic_schedul-analytics.svg' alt='아이콘' />
             <h2>직원별 인건비 분석</h2>
           </div>
 
           <div className={styles.btn}>
+
             <button
               className={payType === 'day' ? styles.activeBtn : ''}
               onClick={() => setPayType('day')}
@@ -140,28 +131,50 @@ function Analytics({ employees = [] }) {
             >
               월급
             </button>
+
           </div>
         </div>
 
         <ul className={styles.employeeList}>
+
           {employees.map((emp, i) => (
+
             <li key={i} className={styles.employeeItem}>
+
               <span>{emp.name}</span>
-              <span>근무 시간 {emp.time}</span>
-              <span className={styles.payDetail}>
-                {Math.round(calcHours(emp))}시간 × {emp.hourlyWage?.toLocaleString()}원 =
-                {' '}
-                <strong>{calcPay(emp).toLocaleString()}원</strong>
+
+              <span>
+                근무 시간 {emp.time}
               </span>
+
+              <span className={styles.payDetail}>
+
+                {Math.round(calcHours(emp))}시간 ×
+                {' '}
+                {emp.hourlyWage?.toLocaleString()}원 =
+                {' '}
+
+                <strong>
+                  {calcPay(emp).toLocaleString()}원
+                </strong>
+
+              </span>
+
             </li>
           ))}
+
         </ul>
       </div>
 
       {/* 총 인건비 */}
       <div className={styles.employeeTotal}>
+
         <span>총 인건비</span>
-        <span>{total.toLocaleString()}원</span>
+
+        <span>
+          {total.toLocaleString()}원
+        </span>
+
       </div>
 
     </div>
