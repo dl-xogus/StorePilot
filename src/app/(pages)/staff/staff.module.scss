@@ -118,12 +118,12 @@
 /* ================== Table ================== */
 .staffTable {
   width: 100%;
-  border-radius: 11px;
   background-color: #1f2022;
   overflow-y: auto;
-  overflow-x: auto;
+  border-bottom-left-radius: 11px;
+  border-bottom-right-radius: 11px;
 
-  height: 61vh;
+  height: 50vh;
 
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -134,7 +134,7 @@
 }
 
 /* ================== 공통 컬럼 ================== */
-$table-columns: 5% 9% 9% 11% 8% 10% 12% 12% 5%;
+$table-columns: 5% 9% 9% 10% 8% 12% 12% 12% 5%;
 
 /* ================== Table Header ================== */
 .tableHeader {
@@ -142,6 +142,8 @@ $table-columns: 5% 9% 9% 11% 8% 10% 12% 12% 5%;
   grid-template-columns: $table-columns;
   align-items: center;
   column-gap: 20px;
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
 
   padding: 23px 0 23px 36px;
   background-color: #262729;
@@ -253,12 +255,11 @@ $table-columns: 5% 9% 9% 11% 8% 10% 12% 12% 5%;
 
   .staffTable {
     width: 100%;
-    border-radius: 11px;
     background-color: #1f2022;
     overflow-y: auto;
     overflow-x: auto;
 
-    height: 61vh;
+    height: 50vh;
 
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -402,7 +403,6 @@ $table-columns: 5% 9% 9% 11% 8% 10% 12% 12% 5%;
     font-size: 12px;
   }
 
-  /* 🔥 수정 아이콘 위치 변경 */
   .tableRow img {
     position: absolute;
     top: 12px;
@@ -419,9 +419,8 @@ $table-columns: 5% 9% 9% 11% 8% 10% 12% 12% 5%;
   span:nth-of-type(1) {
     margin-top: 10px;
   }
+
 }
-
-
 
 /* ================== 태블릿 ================== */
 @media (max-width: 1023px) {

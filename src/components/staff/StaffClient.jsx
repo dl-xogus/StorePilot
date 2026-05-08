@@ -302,8 +302,7 @@ function Staff() {
             </div>
           </div>
 
-          <div className={styles.staffTable}>
-            {/* header */}
+
             <ul className={styles.tableHeader}>
               <input
                 className={styles.checkbox}
@@ -338,7 +337,9 @@ function Staff() {
               <li>근무요일</li>
               <li>근무시간</li>
               <li>전화번호</li>
+            {/* header */}
             </ul>
+          <div className={styles.staffTable}>
 
             {/* body */}
             <ul className={styles.tableBody}>
