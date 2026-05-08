@@ -192,7 +192,7 @@ export default function main() {
               <p><img src='/img/icon/ic-main-sales.png' /></p>
               <div className={style.summaryText}>
                 <p>예상 매출</p>
-                <strong>{sales?.predictedAmount.toLocaleString() ?? '-'} 원</strong>
+                <strong>{sales?.predictedAmount?.toLocaleString() ?? '-'} 원</strong>
               </div>
             </div>
           </div>
