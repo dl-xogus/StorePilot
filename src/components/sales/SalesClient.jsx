@@ -36,7 +36,7 @@ export default function SalesClient() {
   /* 탭 전환 시 DateSelectTab의 비활성화 항목 결정 + 매출 필터링 기준 */
   const [activeTab, setActiveTab] = useState('일별');         
 
-  /* 탭 전환 시 열려 있던 드롭다운을 닫기 위해 page.jsx에서 관리 */
+  /* 탭 전환 시 열려 있던 드롭다운을 닫기 위해 SaleClient.jsx에서 관리 */
   const [openDropdown, setOpenDropdown] = useState(null);    
 
   /* 필터링에 사용하므로 SaleClient.jsx에서 관리 */
