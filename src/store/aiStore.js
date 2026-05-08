@@ -26,7 +26,7 @@ const useAIStore = create((set, get) => ({
       .catch(() => set({ loading: { ...get().loading, menu: false } }));
 
     /* 근무표 AI 호출 */
-    axios.post('/api/ai', { keyword: 'schedule' })
+    axios.post('/api/ai', { keyword: 'schedule', ownerId })
       .then(res => set({ schedule: res.data, loading: { ...get().loading, schedule: false } }))
       .catch(() => set({ loading: { ...get().loading, schedule: false } }));
 
