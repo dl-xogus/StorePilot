@@ -91,9 +91,15 @@ export const authOption = {
 
         console.log('[signIn]', { provider: account.provider, email: user.email, intent, existing: !!existing });
 
-        // 로그인 시도인데 가입 이력 없음 → 거부
+        // 로그인 시도인데 가입 이력 없음 → 자동 가입 처리 후 welcome으로
         if (intent === 'login' && !existing) {
-          return '/login?error=NotRegistered';
+          await collection.insertOne({
+            id: user.email,
+            name: user.name || user.email.split('@')[0],
+            provider: account.provider,
+            createdAt: new Date(),
+          });
+          return `/welcome?name=${encodeURIComponent(user.name || '')}`;
         }
 
         // 회원가입 시도인데 이미 가입됨 → 거부

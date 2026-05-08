@@ -25,6 +25,7 @@ const CATEGORIES = {
 };
 
 const PARTS = ['홀', '주방', '배달', '카운터', '기타'];
+const PARTS_OTHER = ['점장', '매니저', '정직원', '아르바이트'];
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 
 const TIME_OPTIONS = (() => {
@@ -67,6 +68,7 @@ const Page = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [menuName, setMenuName] = useState('');
   const [price, setPrice] = useState('');
+  const [menuQuantity, setMenuQuantity] = useState('');
   const [category, setCategory] = useState('');
   const [isAddingCustomCategory, setIsAddingCustomCategory] = useState(false);
   const [customCategoryDraft, setCustomCategoryDraft] = useState('');
@@ -102,6 +104,7 @@ const Page = () => {
 
   const menuNameRef = useRef(null);
   const menuPriceRef = useRef(null);
+  const menuQuantityRef = useRef(null);
   const menuCategoryRef = useRef(null);
   const menuCustomCategoryRef = useRef(null);
 
@@ -131,10 +134,14 @@ const Page = () => {
   const itemNoun = industryKey === 'other' ? '상품' : '메뉴';      // 메뉴/상품
   const itemFullNoun = industryKey === 'other' ? '상품명' : '메뉴명'; // 메뉴명/상품명
   const optionsToShow = aiCategories ?? categoryOptions;
+  const partsToShow = industryKey === 'other' ? PARTS_OTHER : PARTS;
+  const partsLabel = industryKey === 'other' ? '직급' : '근무 파트';
 
-  const tabs = TABS.map((t) =>
-    t.key === 'menu' ? { ...t, label: itemNoun } : t
-  );
+  const tabs = TABS
+    .filter((t) => !(industryKey === 'other' && t.key === 'stock'))
+    .map((t) =>
+      t.key === 'menu' ? { ...t, label: itemNoun } : t
+    );
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -339,12 +346,14 @@ const Page = () => {
     const errors = {};
     if (menuName.trim() === '') errors.menuName = `${itemFullNoun}을 입력해주세요.`;
     if (price.trim() === '') errors.price = '가격을 입력해주세요.';
+    if (industryKey === 'other' && menuQuantity.trim() === '') errors.quantity = '수량을 입력해주세요.';
     if (category.trim() === '') errors.category = '카테고리를 선택해주세요.';
 
     if (Object.keys(errors).length > 0) {
       setMenuErrors(errors);
       if (errors.menuName) menuNameRef.current?.focus();
       else if (errors.price) menuPriceRef.current?.focus();
+      else if (errors.quantity) menuQuantityRef.current?.focus();
       else if (errors.category) {
         if (isAddingCustomCategory) menuCustomCategoryRef.current?.focus();
         else menuCategoryRef.current?.focus();
@@ -359,19 +368,30 @@ const Page = () => {
     }
 
     try {
-      const { data } = await axios.post('/api/menu/db', {
+      const payload = {
         ownerId,
         name: menuName,
         price: Number(price),
         category,
         status: 'active',
-      });
+      };
+      if (industryKey === 'other') {
+        payload.quantity = Number(menuQuantity);
+      }
+
+      const { data } = await axios.post('/api/menu/db', payload);
       if (!data?.success) throw new Error(data?.error ?? 'unknown');
 
       setMenuErrors({});
-      setMenuItems((prev) => [...prev, { id: data.id, menuName, price, category }]);
+      setMenuItems((prev) => [
+        ...prev,
+        industryKey === 'other'
+          ? { id: data.id, menuName, price, category, quantity: menuQuantity }
+          : { id: data.id, menuName, price, category },
+      ]);
       setMenuName('');
       setPrice('');
+      setMenuQuantity('');
       setCategory('');
       setIsAddingCustomCategory(false);
       setCustomCategoryDraft('');
@@ -442,9 +462,14 @@ const Page = () => {
   };
 
   const togglePart = (part) => {
-    setStaffParts((prev) =>
-      prev.includes(part) ? prev.filter((p) => p !== part) : [...prev, part]
-    );
+    setStaffParts((prev) => {
+      // 기타 업종(직급): 단일 선택. 같은 걸 다시 누르면 해제, 다른 걸 누르면 교체
+      if (industryKey === 'other') {
+        return prev.includes(part) ? [] : [part];
+      }
+      // 요식업/카페(근무파트): 다중 선택
+      return prev.includes(part) ? prev.filter((p) => p !== part) : [...prev, part];
+    });
     clearError(setStaffErrors, 'staffParts');
   };
 
@@ -475,7 +500,7 @@ const Page = () => {
     const errors = {};
     if (staffName.trim() === '') errors.staffName = '이름을 입력해주세요.';
     if (staffAge.trim() === '') errors.staffAge = '나이를 입력해주세요.';
-    if (staffParts.length === 0) errors.staffParts = '근무 파트를 선택해주세요.';
+    if (staffParts.length === 0) errors.staffParts = `${partsLabel}을 선택해주세요.`;
     if (staffDays.length === 0) errors.staffDays = '근무 요일을 선택해주세요.';
     if (startTime === '') errors.startTime = '시작 시간을 선택해주세요.';
     if (endTime === '') errors.endTime = '종료 시간을 선택해주세요.';
@@ -584,7 +609,7 @@ const Page = () => {
   const missingTabs = (() => {
     const arr = [];
     if (menuItems.length === 0) arr.push('menu');
-    if (stockItems.length === 0) arr.push('stock');
+    if (industryKey !== 'other' && stockItems.length === 0) arr.push('stock');
     if (staffItems.length === 0) arr.push('staff');
     return arr;
   })();
@@ -740,6 +765,25 @@ const Page = () => {
               {menuErrors.price && <p className={styles.fieldError}>{menuErrors.price}</p>}
             </div>
 
+            {industryKey === 'other' && (
+              <div className={styles.formField}>
+                <label className={styles.fieldLabel}>수량</label>
+                <input
+                  ref={menuQuantityRef}
+                  type="text"
+                  className={`${styles.fieldInput} ${menuErrors.quantity ? styles.fieldInputError : ''}`}
+                  placeholder="ex) 10"
+                  value={menuQuantity}
+                  onChange={(e) => {
+                    setMenuQuantity(e.target.value.replace(/\D/g, ''));
+                    clearError(setMenuErrors, 'quantity');
+                  }}
+                  inputMode="numeric"
+                />
+                {menuErrors.quantity && <p className={styles.fieldError}>{menuErrors.quantity}</p>}
+              </div>
+            )}
+
             <div className={styles.formField}>
               <label className={styles.fieldLabel}>카테고리</label>
 
@@ -864,6 +908,11 @@ const Page = () => {
                     <span className={styles.itemDate}>{item.category}</span>
                   </div>
                   <div className={styles.itemRight}>
+                    {industryKey === 'other' && item.quantity != null && (
+                      <span className={styles.itemQuantity}>
+                        {item.quantity}<small>개</small>
+                      </span>
+                    )}
                     <span className={styles.itemQuantity}>
                       {formatPrice(item.price)}<small>원</small>
                     </span>
@@ -1080,9 +1129,9 @@ const Page = () => {
             </div>
 
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>근무 파트</label>
+              <label className={styles.fieldLabel}>{partsLabel}</label>
               <div className={styles.chipGroup} ref={staffPartsRef}>
-                {PARTS.map((p) => (
+                {partsToShow.map((p) => (
                   <button
                     type="button"
                     key={p}
@@ -1295,15 +1344,15 @@ const Page = () => {
         )}
       </div>
 
-      {isAddingMenu ? (
+      {tab === 'menu' && isAddingMenu ? (
         <button type="button" className={styles.completeBtn} onClick={handleAddMenu}>
           추가
         </button>
-      ) : isAddingStock ? (
+      ) : tab === 'stock' && isAddingStock ? (
         <button type="button" className={styles.completeBtn} onClick={handleAddStock}>
           추가
         </button>
-      ) : isAddingStaff ? (
+      ) : tab === 'staff' && isAddingStaff ? (
         <button type="button" className={styles.completeBtn} onClick={handleAddStaff}>
           추가
         </button>

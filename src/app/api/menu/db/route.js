@@ -22,7 +22,8 @@ export async function POST(request) {
   try {
     const body = await request.json();
 
-    const { ownerId, name, price, category, status } = body;
+    // 팀원 진윤서가 작업함 — 기타 업종 상품 등록 시 quantity 필드 추가
+    const { ownerId, name, price, category, quantity, status } = body;
 
     console.log("받은 데이터:", body);
 
@@ -40,6 +41,7 @@ export async function POST(request) {
             name,
             price,
             category,
+            quantity,
             status,
             createdAt: new Date()
           }
