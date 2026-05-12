@@ -75,9 +75,7 @@ export default function MainClient() {
     }, []);
 
 
-    /* 예상 매출액 - store에서 읽기 */
-    // const { sales } = useAIStore();
-
+    /* 예상 매출액 */
     const [sales, setSales] = useState(null);
 
     const salesFunc = (sales) => {
