@@ -1,14 +1,12 @@
 "use client";
 
-import React from 'react'
 import style from '@/app/(pages)/main/main.module.scss'
 import { useState, useEffect } from "react";
-import Link from 'next/link'
 import { useSession } from 'next-auth/react'
-import useAIStore from '@/store/aiStore'
 import { getTodayLaborCost } from '@/lib/utils/employeeCalc'
-
-
+import { calculatePredictedSales } from '@/lib/utils/salesCalc';
+import Link from 'next/link'
+import useAIStore from '@/store/aiStore'
 import axios from 'axios'
 
 export default function MainClient() {
@@ -78,7 +76,29 @@ export default function MainClient() {
 
 
     /* 예상 매출액 - store에서 읽기 */
-    const { sales } = useAIStore();
+    // const { sales } = useAIStore();
+
+    const [sales, setSales] = useState(null);
+
+    const salesFunc = (sales) => {
+        const data = sales.map(s => ({ date: s.date, amount: Number(s.dailySales) }));
+        const recent = data.slice(-7);
+        console.log('recent: ', recent);
+        
+        const average = recent.reduce((sum, d) => sum + d.amount, 0) / recent.length;
+        console.log('average: ', average);
+        
+        
+        return setSales(Math.round(average));
+    };
+
+    useEffect(() => {
+        axios.get('/api/sales/db')
+            .then(res => salesFunc(res.data.sales))
+            .catch(err => console.error('매출 조회 실패', err));
+    }, []);
+    console.log('sales:', sales);
+
 
     // 인건비
     const [employees, setEmployees] = useState([])
@@ -224,7 +244,7 @@ export default function MainClient() {
                             <p><img src='/img/icon/ic-main-sales.png' /></p>
                             <div className={style.summaryText}>
                                 <p>예상 매출</p>
-                                <strong>{sales?.predictedAmount.toLocaleString() ?? '-'} 원</strong>
+                                <strong>{sales?.toLocaleString() ?? '-'} 원</strong>
                             </div>
                         </div>
                     </div>

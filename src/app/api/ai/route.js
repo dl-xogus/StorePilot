@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth'
 import { authOption } from '@/app/api/auth/[...nextauth]/route'
+import { calculatePredictedSales } from '@/lib/utils/salesCalc';
 
 // Google AI Studio API 키로 클라이언트 초기화
 // const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
@@ -11,30 +12,6 @@ const genAI_SCHEDULE = new GoogleGenerativeAI(process.env.AI_KEY_SCHEDULE);
 const genAI_CATEGORY = new GoogleGenerativeAI(process.env.AI_KEY_CATEGORY);
 const genAI_STOCK = new GoogleGenerativeAI(process.env.AI_KEY_STOCK);
 
-/* 예상매출액 계산 */
-export const calculatePredictedSales = (salesData) => {
-  const data = salesData.map(s => ({ date: s.date, amount: Number(s.dailySales) }));
-
-  /* 최근 7일 데이터만 추출 */
-  const recent = data.slice(-7);
-
-  /* 최근 7일 평균 → 예상 매출액으로 사용 */
-  const average = recent.reduce((sum, d) => sum + d.amount, 0) / recent.length;
-
-  /* 트렌드: 가장 마지막 날 매출 vs 7일 전 매출 비교 */
-  /* 데이터가 7개 미만이면 첫 번째 날과 비교 */
-  const last = data.at(-1)?.amount ?? 0;
-  const prev = data.length >= 7 ? data.at(-7)?.amount ?? 0 : data.at(0)?.amount ?? 0;
-  const trend = last > prev ? '상승' : '하락';
-
-  return {
-    predictedAmount: Math.round(average),  // 예상 매출액
-    trend,                                  // 상승 / 하락
-    recentAverage: Math.round(average),     // 최근 7일 평균 (predictedAmount와 동일)
-    maxAmount: Math.max(...data.map(d => d.amount)),  // 전체 기간 최고 매출
-    minAmount: Math.min(...data.map(d => d.amount)),  // 전체 기간 최저 매출
-  };
-};
 
 /* 매출 프롬프트 */
 const salesPrompt = async () => {
