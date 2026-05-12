@@ -8,14 +8,6 @@ Vercel을 통해 배포되어 있습니다.
 
 👉 **[https://kd-storepilot.vercel.app](https://kd-storepilot.vercel.app)**
 
-## 🌐 배포
-
-Vercel을 통해 배포되어 있습니다.
-
-👉 **[https://kd-storepilot.vercel.app](https://kd-storepilot.vercel.app)**
-
----
-
 ## 📌 프로젝트 소개
 StorePilot는 매장 운영 데이터를 기반으로  
 AI 분석 및 시각화를 제공하는 스마트 매장 관리 서비스입니다.
