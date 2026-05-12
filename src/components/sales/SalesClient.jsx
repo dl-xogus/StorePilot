@@ -288,7 +288,7 @@ export default function SalesClient() {
                 </div>
 
                 <div className={sales.aiText}>
-                  {/* <Ai salesData={salesData} /> */}
+                  <Ai salesData={salesData} />
                 </div>
               </div>
             </div>
