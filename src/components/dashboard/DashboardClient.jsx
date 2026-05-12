@@ -76,8 +76,28 @@ function Dashboard() {
       .catch(err => console.error('직원 조회 실패', err))
   }, [])
 
-  /* 예상 매출액 - store에서 읽기 */
-  const { sales } = useAIStore();
+  /* 예상 매출액 */
+  const [sales, setSales] = useState(null);
+
+    const salesFunc = (sales) => {
+        const data = sales.map(s => ({ date: s.date, amount: Number(s.dailySales) }));
+        const recent = data.slice(-7);
+        console.log('recent: ', recent);
+        
+        const average = recent.reduce((sum, d) => sum + d.amount, 0) / recent.length;
+        console.log('average: ', average);
+        
+        
+        return setSales(Math.round(average));
+    };
+
+    useEffect(() => {
+        axios.get('/api/sales/db')
+            .then(res => salesFunc(res.data.sales))
+            .catch(err => console.error('매출 조회 실패', err));
+    }, []);
+    console.log('sales:', sales);
+
 
   function getTodayFormatted() {
     const date = new Date();
@@ -114,7 +134,7 @@ function Dashboard() {
               <p><img src='/img/icon/ic-main-sales.png' /></p>
               <div className={style.summaryText}>
                 <p>예상 매출</p>
-                <strong>{sales?.predictedAmount?.toLocaleString() ?? '-'} 원</strong>
+                <strong>{sales?.toLocaleString() ?? '-'} 원</strong>
               </div>
             </div>
           </Link>
