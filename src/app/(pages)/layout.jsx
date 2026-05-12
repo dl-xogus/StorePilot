@@ -94,6 +94,7 @@ export default function RootLayout({ children }) {
                     <Sidebar
                         setFrontOpen={setFrontOpen}
                         frontOpen={fronOpen}
+                        setIsMobileMenuOpen={setIsMobileMenuOpen} // 2026/05/12 수정
                     />
                 </div>
             )}
